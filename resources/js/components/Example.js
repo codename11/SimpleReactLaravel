@@ -8,7 +8,6 @@ class Example extends React.Component {
         super(props);
         this.state = {
             user: JSON.parse(this.props.user),
-            info: null,
         };
 
     }

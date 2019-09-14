@@ -66234,8 +66234,7 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Example).call(this, props));
     _this.state = {
-      user: JSON.parse(_this.props.user),
-      info: null
+      user: JSON.parse(_this.props.user)
     };
     return _this;
   }
