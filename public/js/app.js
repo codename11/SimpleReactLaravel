@@ -66296,9 +66296,9 @@ function (_React$Component) {
         className: "card"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
-      }, "Data from Laravel to React component"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Data from Laravel to React component with Ajax's help"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body"
-      }, "Currently logged user: ", user.name, " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Current temperature: ", temp)))));
+      }, "Currently logged user: ", user.name, " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Current temperature: ", temp, "\xB0C")))));
     }
   }]);
 

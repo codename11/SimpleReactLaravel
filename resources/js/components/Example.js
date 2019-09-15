@@ -81,10 +81,10 @@ class Example extends React.Component {
                 <div className="row justify-content-center">
                     <div className="col-md-8">
                         <div className="card">
-                            <div className="card-header">Data from Laravel to React component</div>
+                            <div className="card-header">Data from Laravel to React component with Ajax's help</div>
                             <div className="card-body">
                                 Currently logged user: {user.name} <br/>
-                                Current temperature: {temp}
+                                Current temperature: {temp}°C
                             </div>
                             
                         </div>
