@@ -16,5 +16,6 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::get('/index', 'PagesController@index');
+Route::post('/indexAjax','HomeController@ajaxIndex');
 
-Route::get('/home', 'HomeController@index')->name('home');

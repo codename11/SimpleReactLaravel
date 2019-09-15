@@ -23,11 +23,14 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
-    {
-        
-        $user = auth()->user();
-        return view('home')->with(compact("user"));
+    public function ajaxIndex(Request $request){    
+           
+        if($request->ajax()){
+
+            $user = auth()->user();
+            return response()->json($user);
+        }
 
     }
+
 }

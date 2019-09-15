@@ -7,7 +7,8 @@ class Example extends React.Component {
 
         super(props);
         this.state = {
-            user: JSON.parse(this.props.user),
+            user: "",
+            weather: "",
         };
 
     }
@@ -15,7 +16,6 @@ class Example extends React.Component {
     componentDidMount(){
 
         $.getJSON('https://ipinfo.io/geo', (response) => { 
-            //console.log(response);
 
             let url = "http://api.openweathermap.org/data/2.5/weather?q="+response.city+","+response.country+"&appid=d42174afed4a1bb7fb19c043dee296b5";
 
@@ -24,26 +24,57 @@ class Example extends React.Component {
                 async: true, 
                 success: (data) => {
 
+                    console.log("success");
                     this.setState({
-                        ...data,
+                        weather: data,
                     });
 
                 }, 
                 error: (data)=>{
+
+                    console.log("error");
                     console.log(data);
+
                 }
 
             });
 
         });
 
+        let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+
+        $.ajax({
+            url: '/indexAjax',
+            type: 'POST',
+            data: {_token: token , message: "bravo"},
+            dataType: 'JSON',
+    
+            success: (response) => { 
+
+                console.log("success");
+                console.log(response);
+                this.setState({
+                    user: response,
+                });
+    
+            },
+            error: (response) => {
+
+                console.log("error");
+                console.log(response);
+                
+            }
+
+        });
+        
+
     }
 
     render(){
         
-        const user = this.state.user;
         console.log(this.state);
-        const temp = this.state.main ? (this.state.main.temp-273.15).toFixed(2) : "";
+        const user = this.state.user ? this.state.user : "";
+        const temp = this.state.weather.main ? (this.state.weather.main.temp-273.15).toFixed(2) : "";
         
         return (
             <div className="container">
@@ -51,9 +82,8 @@ class Example extends React.Component {
                     <div className="col-md-8">
                         <div className="card">
                             <div className="card-header">Data from Laravel to React component</div>
-                            
                             <div className="card-body">
-                                Currently logged user:{user.name} <br/>
+                                Currently logged user: {user.name} <br/>
                                 Current temperature: {temp}
                             </div>
                             
@@ -62,13 +92,13 @@ class Example extends React.Component {
                 </div>
             </div>
         );
+    
     }
 
 }
 
 if(document.getElementById('example')){
 
-    let user = document.getElementById('example').getAttribute('user');
-    ReactDOM.render(<Example user={user}/>, document.getElementById('example'));
+    ReactDOM.render(<Example/>, document.getElementById('example'));
 
 }
