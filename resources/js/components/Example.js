@@ -9,6 +9,7 @@ class Example extends React.Component {
         this.state = {
             user: "",
             weather: "",
+            request: "",
         };
 
     }
@@ -54,7 +55,8 @@ class Example extends React.Component {
                 console.log("success");
                 console.log(response);
                 this.setState({
-                    user: response,
+                    user: response.user,
+                    request: response.request,
                 });
     
             },
@@ -67,7 +69,6 @@ class Example extends React.Component {
 
         });
         
-
     }
 
     render(){

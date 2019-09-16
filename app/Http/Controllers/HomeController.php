@@ -34,7 +34,12 @@ class HomeController extends Controller
         if($request->ajax()){
 
             $user = auth()->user();
-            return response()->json($user);
+            $response = array(
+                "user" => $user,
+                "request" => $request->all(),
+            );
+            
+            return response()->json($response);
         }
 
     }

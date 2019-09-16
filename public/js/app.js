@@ -66229,7 +66229,8 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Example).call(this, props));
     _this.state = {
       user: "",
-      weather: ""
+      weather: "",
+      request: ""
     };
     return _this;
   }
@@ -66271,7 +66272,8 @@ function (_React$Component) {
           console.log(response);
 
           _this2.setState({
-            user: response
+            user: response.user,
+            request: response.request
           });
         },
         error: function error(response) {
