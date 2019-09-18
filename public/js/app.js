@@ -66205,9 +66205,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -66230,15 +66230,73 @@ function (_React$Component) {
     _this.state = {
       user: "",
       weather: "",
-      request: ""
+      request: "",
+      fullFileName: "",
+      fileUrl: "",
+      fileName: "",
+      fileExt: "",
+      video: null
     };
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.fileUpload = _this.fileUpload.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Example, [{
+    key: "fileUpload",
+    value: function fileUpload(e) {
+      this.setState({
+        fullFileName: e.target.value ? e.target.value.split("\\").pop() : this.state.filePlaceholder,
+        fileUrl: e.target.value ? e.target.value : this.state.filePlaceholder,
+        fileName: e.target.value.split("\\").pop().split(".")[0],
+        fileExt: e.target.value.split("\\").pop().split(".")[1]
+      });
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this2 = this;
+
+      e.preventDefault();
+      var forma = e.target;
+      var createFormElements = {};
+      createFormElements.video = forma.elements[0].files[0];
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      var myformData = new FormData();
+      myformData.append('video', createFormElements.video);
+      myformData.append('fullFileName', this.state.fullFileName);
+      myformData.append('fileUrl', this.state.fileUrl);
+      myformData.append('fileName', this.state.fileName);
+      myformData.append('fileExt', this.state.fileExt);
+      myformData.append('_token', token);
+      myformData.append('message', "bravo");
+      $.ajax({
+        url: '/upload',
+        enctype: 'multipart/form-data',
+        type: 'POST',
+        data: myformData,
+        dataType: 'JSON',
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function success(response) {
+          console.log("success");
+          console.log(response);
+
+          _this2.setState({
+            video: response.video
+          });
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+        }
+      });
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
+      var _this3 = this;
 
       $.getJSON('https://ipinfo.io/geo', function (response) {
         var url = "http://api.openweathermap.org/data/2.5/weather?q=" + response.city + "," + response.country + "&appid=d42174afed4a1bb7fb19c043dee296b5";
@@ -66248,7 +66306,7 @@ function (_React$Component) {
           success: function success(data) {
             console.log("success");
 
-            _this2.setState({
+            _this3.setState({
               weather: data
             });
           },
@@ -66271,7 +66329,7 @@ function (_React$Component) {
           console.log("success");
           console.log(response);
 
-          _this2.setState({
+          _this3.setState({
             user: response.user,
             request: response.request
           });
@@ -66285,9 +66343,23 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log(this.state);
+      //console.log(this.state);
       var user = this.state.user ? this.state.user : "";
       var temp = this.state.weather.main ? (this.state.weather.main.temp - 273.15).toFixed(2) : "";
+      var videoUrl = this.state.video && this.state.video.name ? "/storage/videos/" + this.state.video.name : null;
+      var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("video", {
+        width: "320",
+        height: "240",
+        controls: true,
+        preload: "auto",
+        autoPlay: true
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
+        src: videoUrl,
+        type: "video/mp4"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
+        src: videoUrl,
+        type: "video/ogg"
+      }), "Your browser does not support the video tag.") : "";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -66299,8 +66371,27 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-header"
       }, "Data from Laravel to React component with Ajax's help"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-body"
-      }, "Currently logged user: ", user.name, " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Current temperature: ", temp, "\xB0C")))));
+        className: "card-body text-center"
+      }, "Currently logged user: ", user.name, " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Current temperature: ", temp, "\xB0C ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        onSubmit: this.handleSubmit,
+        encType: "multipart/form-data"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "custom-file mb-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        className: "custom-file-input",
+        id: "customFile",
+        name: "video",
+        onChange: this.fileUpload,
+        required: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "custom-file-label",
+        htmlFor: "customFile"
+      }, this.state.fullFileName ? this.state.fullFileName : "Choose file")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        className: "btn btn-primary",
+        type: "submit",
+        value: "Submit"
+      })), video)))));
     }
   }]);
 

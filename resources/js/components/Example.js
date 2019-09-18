@@ -10,9 +10,74 @@ class Example extends React.Component {
             user: "",
             weather: "",
             request: "",
+            fullFileName: "",
+            fileUrl: "",
+            fileName: "",
+            fileExt: "",
+            video: null,
+
         };
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.fileUpload = this.fileUpload.bind(this);
 
     }
+
+    fileUpload(e) {
+
+        this.setState({
+            fullFileName: e.target.value ? e.target.value.split("\\").pop() : this.state.filePlaceholder,
+            fileUrl: e.target.value ? e.target.value : this.state.filePlaceholder,
+            fileName: (e.target.value.split("\\").pop()).split(".")[0],
+            fileExt: (e.target.value.split("\\").pop()).split(".")[1],
+        });
+        
+    }
+    
+    handleSubmit(e) {
+        e.preventDefault();
+
+        let forma = e.target;
+        let createFormElements = {};
+        createFormElements.video = forma.elements[0].files[0];
+
+        let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+        let myformData = new FormData();
+        myformData.append('video', createFormElements.video);
+        myformData.append('fullFileName', this.state.fullFileName);
+        myformData.append('fileUrl', this.state.fileUrl);
+        myformData.append('fileName', this.state.fileName);
+        myformData.append('fileExt', this.state.fileExt);
+        myformData.append('_token', token);
+        myformData.append('message', "bravo");
+        
+        $.ajax({
+            url: '/upload',
+            enctype: 'multipart/form-data',
+            type: 'POST',
+            data: myformData,
+            dataType: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: (response) => { 
+
+                console.log("success");
+                console.log(response);
+                this.setState({
+                    video: response.video,
+                });
+                
+            },
+            error: (response) => {
+
+                console.log("error");
+                console.log(response);
+                
+            }
+
+        });
+
+    }    
 
     componentDidMount(){
 
@@ -73,10 +138,17 @@ class Example extends React.Component {
 
     render(){
         
-        console.log(this.state);
+        //console.log(this.state);
         const user = this.state.user ? this.state.user : "";
         const temp = this.state.weather.main ? (this.state.weather.main.temp-273.15).toFixed(2) : "";
         
+        let videoUrl = this.state.video && this.state.video.name ? "/storage/videos/"+this.state.video.name : null;
+        let video = videoUrl ? <video width="320" height="240" controls preload="auto" autoPlay>
+            <source src={videoUrl} type="video/mp4"/>
+            <source src={videoUrl} type="video/ogg"/>
+            Your browser does not support the video tag.
+        </video> : "";
+
         return (
             <div className="container">
                 <div className="row justify-content-center">
@@ -84,9 +156,22 @@ class Example extends React.Component {
                         <div className="card">
                             
                             <div className="card-header">Data from Laravel to React component with Ajax's help</div>
-                            <div className="card-body">
+                            <div className="card-body text-center">
                                 Currently logged user: {user.name} <br/>
-                                Current temperature: {temp}°C
+                                Current temperature: {temp}°C <br/>
+
+                                <form onSubmit={this.handleSubmit} encType="multipart/form-data">
+
+                                    <div className="custom-file mb-3">
+                                        <input type="file" className="custom-file-input" id="customFile" name="video" onChange={this.fileUpload} required/>
+                                        <label className="custom-file-label" htmlFor="customFile">{this.state.fullFileName ? this.state.fullFileName : "Choose file"}</label>
+                                    </div>
+
+                                    <input className="btn btn-primary" type="submit" value="Submit" />
+                                </form>
+                                
+                                {video}
+
                             </div>
                             
                         </div>
