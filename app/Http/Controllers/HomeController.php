@@ -53,7 +53,9 @@ class HomeController extends Controller
         if($request->ajax()){
             
             $validator = \Validator::make($request->all(), [
-                'video' => 'required|mimes:mp4,ogx,oga,ogv,ogg,webm,avi'
+                'video' => 'required|mimes:mp4,ogx,oga,ogv,ogg,webm,avi',
+                "title" => "required|min:6|max:24",
+                "description" => "required|min:6|max:255",
             ]);
 
             if ($validator->passes()){
@@ -69,6 +71,8 @@ class HomeController extends Controller
                     $video = new Videos;
                     $video->name = $fileNameToStore;
                     $video->user_id = auth()->user()->id;
+                    $video->title = $request->input("title");
+                    $video->description = $request->input("description");
                     $video->save();
                     $response = array(
                         "success" => "File uploaded!",

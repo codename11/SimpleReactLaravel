@@ -66239,10 +66239,18 @@ function (_React$Component) {
     };
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.fileUpload = _this.fileUpload.bind(_assertThisInitialized(_this));
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Example, [{
+    key: "handleChange",
+    value: function handleChange(event) {
+      this.setState({
+        value: event.target.value
+      });
+    }
+  }, {
     key: "fileUpload",
     value: function fileUpload(e) {
       this.setState({
@@ -66259,11 +66267,15 @@ function (_React$Component) {
 
       e.preventDefault();
       var forma = e.target;
-      var createFormElements = {};
-      createFormElements.video = forma.elements[0].files[0];
+      var formElements = {};
+      formElements.title = forma.elements[0].value;
+      formElements.description = forma.elements[1].value;
+      formElements.video = forma.elements[2].files[0];
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       var myformData = new FormData();
-      myformData.append('video', createFormElements.video);
+      myformData.append('title', formElements.title);
+      myformData.append('description', formElements.description);
+      myformData.append('video', formElements.video);
       myformData.append('fullFileName', this.state.fullFileName);
       myformData.append('fileUrl', this.state.fileUrl);
       myformData.append('fileName', this.state.fileName);
@@ -66286,6 +66298,10 @@ function (_React$Component) {
           _this2.setState({
             video: response.video
           });
+
+          formElements.title = null;
+          formElements.description = null;
+          formElements.video = null;
         },
         error: function error(response) {
           console.log("error");
@@ -66372,10 +66388,30 @@ function (_React$Component) {
         className: "card-header"
       }, "Data from Laravel to React component with Ajax's help"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body text-center"
-      }, "Currently logged user: ", user.name, " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Current temperature: ", temp, "\xB0C ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+      }, "Currently logged user: ", user.name, " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Current temperature: ", temp, "\xB0C ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
         onSubmit: this.handleSubmit,
         encType: "multipart/form-data"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "title"
+      }, "Title:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control",
+        name: "title",
+        id: "title",
+        required: true
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "description"
+      }, "Description:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
+        className: "form-control",
+        rows: "5",
+        name: "description",
+        id: "description",
+        required: true
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "custom-file mb-3"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "file",
@@ -66388,7 +66424,7 @@ function (_React$Component) {
         className: "custom-file-label",
         htmlFor: "customFile"
       }, this.state.fullFileName ? this.state.fullFileName : "Choose file")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        className: "btn btn-primary",
+        className: "btn btn-outline-primary",
         type: "submit",
         value: "Submit"
       })), video)))));

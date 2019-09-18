@@ -19,7 +19,12 @@ class Example extends React.Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.fileUpload = this.fileUpload.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
     }
 
     fileUpload(e) {
@@ -37,12 +42,16 @@ class Example extends React.Component {
         e.preventDefault();
 
         let forma = e.target;
-        let createFormElements = {};
-        createFormElements.video = forma.elements[0].files[0];
+        let formElements = {};
+        formElements.title = forma.elements[0].value;
+        formElements.description = forma.elements[1].value;
+        formElements.video = forma.elements[2].files[0];
 
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
         let myformData = new FormData();
-        myformData.append('video', createFormElements.video);
+        myformData.append('title', formElements.title);
+        myformData.append('description', formElements.description);
+        myformData.append('video', formElements.video);
         myformData.append('fullFileName', this.state.fullFileName);
         myformData.append('fileUrl', this.state.fileUrl);
         myformData.append('fileName', this.state.fileName);
@@ -66,6 +75,10 @@ class Example extends React.Component {
                 this.setState({
                     video: response.video,
                 });
+
+                formElements.title = null;
+                formElements.description = null;
+                formElements.video = null;
                 
             },
             error: (response) => {
@@ -158,16 +171,26 @@ class Example extends React.Component {
                             <div className="card-header">Data from Laravel to React component with Ajax's help</div>
                             <div className="card-body text-center">
                                 Currently logged user: {user.name} <br/>
-                                Current temperature: {temp}°C <br/>
+                                Current temperature: {temp}°C <br/><br/>
 
                                 <form onSubmit={this.handleSubmit} encType="multipart/form-data">
+
+                                    <div className="form-group">
+                                        <label htmlFor="title">Title:</label>
+                                        <input type="text" className="form-control" name="title" id="title" required/>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="description">Description:</label>
+                                        <textarea className="form-control" rows="5" name="description" id="description" required></textarea>
+                                    </div>
 
                                     <div className="custom-file mb-3">
                                         <input type="file" className="custom-file-input" id="customFile" name="video" onChange={this.fileUpload} required/>
                                         <label className="custom-file-label" htmlFor="customFile">{this.state.fullFileName ? this.state.fullFileName : "Choose file"}</label>
                                     </div>
 
-                                    <input className="btn btn-primary" type="submit" value="Submit" />
+                                    <input className="btn btn-outline-primary" type="submit" value="Submit" />
                                 </form>
                                 
                                 {video}
