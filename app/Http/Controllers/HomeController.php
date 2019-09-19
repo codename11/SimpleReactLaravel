@@ -66,7 +66,7 @@ class HomeController extends Controller
                     $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                     $extension = $request->file("video")->getClientOriginalExtension();
                     $fileNameToStore = $filename."_".time().".".$extension;
-                    $path = $request->file("video")->storeAs("public/videos", $fileNameToStore);
+                    $path = $request->file("video")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStore);
                     
                     $video = new Videos;
                     $video->name = $fileNameToStore;
@@ -75,8 +75,9 @@ class HomeController extends Controller
                     $video->description = $request->input("description");
                     $video->save();
                     $response = array(
-                        "success" => "File uploaded!",
+                        "message" => "A success! File uploaded!",
                         "video" => $video,
+                        "user" => auth()->user(),
                     );
                     
                     return response()->json($response);
@@ -85,7 +86,7 @@ class HomeController extends Controller
                 else{
 
                     $response = array(
-                        "error" => "There's no such thing!",
+                        "message" => "An error. There's no such thing!",
                         "request" => $request->all(),
                     );
                     
@@ -97,7 +98,7 @@ class HomeController extends Controller
 
             if ($validator->fails()){
                 $response = array(
-                    "error" => "Validation failed.",
+                    "message" => "An error. Validation failed.",
                     "request" => $request->all(),
                 );
                 

@@ -66197,6 +66197,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -66222,12 +66224,14 @@ function (_React$Component) {
   _inherits(Example, _React$Component);
 
   function Example(props) {
+    var _this$state;
+
     var _this;
 
     _classCallCheck(this, Example);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Example).call(this, props));
-    _this.state = {
+    _this.state = (_this$state = {
       user: "",
       weather: "",
       request: "",
@@ -66236,14 +66240,62 @@ function (_React$Component) {
       fileName: "",
       fileExt: "",
       video: null
-    };
+    }, _defineProperty(_this$state, "user", null), _defineProperty(_this$state, "message", ""), _defineProperty(_this$state, "switch", false), _defineProperty(_this$state, "remaining", null), _this$state);
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.fileUpload = _this.fileUpload.bind(_assertThisInitialized(_this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
+    _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
+    _this.trackTime = _this.trackTime.bind(_assertThisInitialized(_this));
+    _this.volume = _this.volume.bind(_assertThisInitialized(_this));
+    _this.fullScreen = _this.fullScreen.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Example, [{
+    key: "fullScreen",
+    value: function fullScreen() {
+      var elem = this.videoRef.current;
+
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        /* Firefox */
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        /* Chrome, Safari & Opera */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        /* IE/Edge */
+        elem.msRequestFullscreen();
+      }
+    }
+  }, {
+    key: "volume",
+    value: function volume(e) {
+      this.videoRef.current.volume = e.target.value / 100;
+    }
+  }, {
+    key: "trackTime",
+    value: function trackTime(e) {
+      this.setState({
+        remaining: e.target.duration - e.target.currentTime
+      });
+    }
+  }, {
+    key: "playPause",
+    value: function playPause() {
+      this.setState({
+        "switch": !this.state["switch"]
+      });
+
+      if (this.videoRef.current.paused) {
+        this.videoRef.current.play();
+      } else {
+        this.videoRef.current.pause();
+      }
+    }
+  }, {
     key: "handleChange",
     value: function handleChange(event) {
       this.setState({
@@ -66296,7 +66348,9 @@ function (_React$Component) {
           console.log(response);
 
           _this2.setState({
-            video: response.video
+            video: response.video,
+            user: response.user,
+            message: response.message
           });
 
           formElements.title = null;
@@ -66306,6 +66360,10 @@ function (_React$Component) {
         error: function error(response) {
           console.log("error");
           console.log(response);
+
+          _this2.setState({
+            message: response.message
+          });
         }
       });
     }
@@ -66362,20 +66420,54 @@ function (_React$Component) {
       //console.log(this.state);
       var user = this.state.user ? this.state.user : "";
       var temp = this.state.weather.main ? (this.state.weather.main.temp - 273.15).toFixed(2) : "";
-      var videoUrl = this.state.video && this.state.video.name ? "/storage/videos/" + this.state.video.name : null;
-      var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("video", {
-        width: "320",
-        height: "240",
-        controls: true,
+      var PlayPause = this.state["switch"] ? "fa fa-pause-circle" : "fa fa-play-circle";
+      var minutes = Math.floor(this.state.remaining / 60);
+      minutes = ("" + minutes).length === 1 ? "0" + minutes : minutes; //Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
+
+      var seconds = Math.floor(this.state.remaining % 60);
+      seconds = ("" + seconds).length === 1 ? "0" + seconds : seconds; //Same as mins, but for seconds.
+
+      var remainingTime = minutes + " : " + seconds;
+      var videoUrl = this.state.video && this.state.video.name ? "/storage/" + this.state.user.name + "'s Videos/" + this.state.video.name : null;
+      var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "videoWrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("video", {
+        ref: this.videoRef,
         preload: "auto",
-        autoPlay: true
+        autoPlay: true,
+        onTimeUpdate: this.trackTime
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
         src: videoUrl,
         type: "video/mp4"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
         src: videoUrl,
         type: "video/ogg"
-      }), "Your browser does not support the video tag.") : "";
+      }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "controls"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btn",
+        onClick: this.playPause
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: PlayPause
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "time"
+      }, remainingTime), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "range",
+        className: "custom-range",
+        id: "customRange",
+        name: "points1",
+        onChange: this.volume
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "time",
+        onClick: this.fullScreen
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-expand"
+      })))) : "";
+      var message = this.state.message ? this.state.message.indexOf("success") > -1 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "alert alert-success"
+      }, this.state.message) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "alert alert-warning"
+      }, this.state.message) : "";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -66388,7 +66480,7 @@ function (_React$Component) {
         className: "card-header"
       }, "Data from Laravel to React component with Ajax's help"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body text-center"
-      }, "Currently logged user: ", user.name, " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Current temperature: ", temp, "\xB0C ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+      }, "Currently logged user: ", user.name, " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Current temperature: ", temp, "\xB0C ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), message, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
         onSubmit: this.handleSubmit,
         encType: "multipart/form-data"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
