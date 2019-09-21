@@ -53,12 +53,12 @@ class List extends React.Component {
                         <div className="card-header videoTitle">{item.title}</div>
 
                         <div className="card-body">
-                            <a href="#" className="videoName" title={item.name}>{item.name}</a>
+                            <a href={"list/"+item.id} className="videoName" title={item.name}>{item.name}</a>
                             <div>{item.description}</div>
                         </div>
 
                         <div className="card-footer">
-                            <a href="#" className="channell" title={item.user.name}>{item.user.name}</a>
+                            <a href={"list/"+item.id} className="channell" title={item.user.name}>{item.user.name}</a>
                         </div>
 
                     </div>

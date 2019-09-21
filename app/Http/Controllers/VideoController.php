@@ -8,6 +8,7 @@ use App\Videos;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
@@ -117,7 +118,28 @@ class VideoController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('show');
+    }
+
+    public function ajaxShow(Request $request)
+    {
+        if($request->ajax()){
+
+            $video = Videos::find($request->videoId);
+            $user = User::find($video->user_id);
+            //"/storage/"+this.state.user.name+"'s Videos/"+this.state.video.name
+            $url = 'public/'.$user->name."'s Videos/".$video->name;
+            $size = ("".((Storage::size($url))/1024)/1024);
+            $response = array(
+                "video" => $video,
+                "user" => $user,
+                "size" => (float)substr($size,0,4),
+                "url" => $url,
+            );
+            
+            return response()->json($response);
+
+        }
     }
 
     /**

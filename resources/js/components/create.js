@@ -15,7 +15,6 @@ class Create extends React.Component {
             fileName: "",
             fileExt: "",
             video: null,
-            user: null,
             message: "",
             switch: false,
             remaining: null,
@@ -150,9 +149,12 @@ class Create extends React.Component {
     componentDidMount(){
 
         $.getJSON('https://ipinfo.io/geo', (response) => { 
-
-            let url = "http://api.openweathermap.org/data/2.5/weather?q="+response.city+","+response.country+"&appid=d42174afed4a1bb7fb19c043dee296b5";
-
+        
+            let apiKey ="51540f31c56cd698baf3fa00a533d487";
+            let location = response.loc.split(",");
+            
+            let url = "http://api.openweathermap.org/data/2.5/weather?lat="+location[0]+"&lon="+location[1]+"&appid="+apiKey;
+            
             $.ajax({
                 url: url, 
                 async: true, 
@@ -251,7 +253,7 @@ class Create extends React.Component {
 
                                     <div className="form-group">
                                         <label htmlFor="title">Title:</label>
-                                        <input type="text" className="form-control" name="title" id="title" required/>
+                                        <input type="text" maxlength="24" className="form-control" name="title" id="title" required/>
                                     </div>
 
                                     <div className="form-group">
@@ -270,7 +272,7 @@ class Create extends React.Component {
                                 {video}
 
                             </div>
-                            
+                            <div className="card-footer">Go at it. Upload an video!</div>
                         </div>
                     </div>
                 </div>

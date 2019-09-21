@@ -21,7 +21,6 @@ $cyan: #6cb2eb;
 .videoWrapper{
     width: 100%;
     border-radius: 5px;
-    margin: 10px;
     border: 3px solid black;
     background-color: black;
 }
@@ -63,6 +62,7 @@ video{
     padding-top: 10px !important;
     font-size: 16px;
     cursor: pointer !important;
+    border-radius: 5px;
 }
   
 .btnV:hover {
@@ -102,6 +102,13 @@ video{
 
 a, a:link, a:visited, a:hover, a:active, a:focus{
     text-decoration: none !important;
-    color: inherit  !important;
+    color: inherit !important;
 }
 
+.videoCardBody{
+    padding: 0.5rem !important;
+}
+
+.progress, .progress-bar{
+    height: 5px !important;
+}

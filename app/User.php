@@ -38,7 +38,7 @@ class User extends Authenticatable
     ];
 
     public function videos(){
-        return $this->hasMany("App\Videos","id");
+        return $this->belongsTo("App\Videos","id");
     }
 
 }

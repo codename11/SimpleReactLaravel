@@ -66126,6 +66126,8 @@ __webpack_require__(/*! ./components/list */ "./resources/js/components/list.js"
 
 __webpack_require__(/*! ./components/dashboard */ "./resources/js/components/dashboard.js");
 
+__webpack_require__(/*! ./components/show */ "./resources/js/components/show.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -66201,8 +66203,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -66228,14 +66228,12 @@ function (_React$Component) {
   _inherits(Create, _React$Component);
 
   function Create(props) {
-    var _this$state;
-
     var _this;
 
     _classCallCheck(this, Create);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Create).call(this, props));
-    _this.state = (_this$state = {
+    _this.state = {
       user: "",
       weather: "",
       request: "",
@@ -66243,8 +66241,11 @@ function (_React$Component) {
       fileUrl: "",
       fileName: "",
       fileExt: "",
-      video: null
-    }, _defineProperty(_this$state, "user", null), _defineProperty(_this$state, "message", ""), _defineProperty(_this$state, "switch", false), _defineProperty(_this$state, "remaining", null), _this$state);
+      video: null,
+      message: "",
+      "switch": false,
+      remaining: null
+    };
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.fileUpload = _this.fileUpload.bind(_assertThisInitialized(_this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
@@ -66377,7 +66378,9 @@ function (_React$Component) {
       var _this3 = this;
 
       $.getJSON('https://ipinfo.io/geo', function (response) {
-        var url = "http://api.openweathermap.org/data/2.5/weather?q=" + response.city + "," + response.country + "&appid=d42174afed4a1bb7fb19c043dee296b5";
+        var apiKey = "51540f31c56cd698baf3fa00a533d487";
+        var location = response.loc.split(",");
+        var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + location[0] + "&lon=" + location[1] + "&appid=" + apiKey;
         $.ajax({
           url: url,
           async: true,
@@ -66493,6 +66496,7 @@ function (_React$Component) {
         htmlFor: "title"
       }, "Title:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "text",
+        maxlength: "24",
         className: "form-control",
         name: "title",
         id: "title",
@@ -66523,7 +66527,9 @@ function (_React$Component) {
         className: "btn btn-outline-primary",
         type: "submit",
         value: "Submit"
-      })), video)))));
+      })), video), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-footer"
+      }, "Go at it. Upload an video!")))));
     }
   }]);
 
@@ -66600,7 +66606,9 @@ function (_React$Component) {
       var _this2 = this;
 
       $.getJSON('https://ipinfo.io/geo', function (response) {
-        var url = "http://api.openweathermap.org/data/2.5/weather?q=" + response.city + "," + response.country + "&appid=d42174afed4a1bb7fb19c043dee296b5";
+        var apiKey = "51540f31c56cd698baf3fa00a533d487";
+        var location = response.loc.split(",");
+        var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + location[0] + "&lon=" + location[1] + "&appid=" + apiKey;
         $.ajax({
           url: url,
           async: true,
@@ -66672,7 +66680,7 @@ function (_React$Component) {
         href: "/create"
       }, "Upload an Video"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-footer"
-      }, "Footer")));
+      }, "Go at it. Upload an video!")));
     }
   }]);
 
@@ -66779,13 +66787,13 @@ function (_React$Component) {
         }, item.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "card-body"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-          href: "#",
+          href: "list/" + item.id,
           className: "videoName",
           title: item.name
         }, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, item.description)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "card-footer"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-          href: "#",
+          href: "list/" + item.id,
           className: "channell",
           title: item.user.name
         }, item.user.name))));
@@ -66801,6 +66809,224 @@ function (_React$Component) {
 
 if (document.getElementById('list')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(List, null), document.getElementById('list'));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/show.js":
+/*!*****************************************!*\
+  !*** ./resources/js/components/show.js ***!
+  \*****************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var Show =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Show, _React$Component);
+
+  function Show(props) {
+    var _this;
+
+    _classCallCheck(this, Show);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Show).call(this, props));
+    _this.state = {
+      video: "",
+      "switch": false,
+      remaining: null,
+      user: "",
+      progress: 0,
+      duration: 0,
+      currentTime: 0
+    };
+    _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
+    _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
+    _this.trackTime = _this.trackTime.bind(_assertThisInitialized(_this));
+    _this.volume = _this.volume.bind(_assertThisInitialized(_this));
+    _this.fullScreen = _this.fullScreen.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Show, [{
+    key: "fullScreen",
+    value: function fullScreen() {
+      var elem = this.videoRef.current;
+
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        /* Firefox */
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        /* Chrome, Safari & Opera */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        /* IE/Edge */
+        elem.msRequestFullscreen();
+      }
+    }
+  }, {
+    key: "volume",
+    value: function volume(e) {
+      this.videoRef.current.volume = e.target.value / 100;
+    }
+  }, {
+    key: "trackTime",
+    value: function trackTime(e) {
+      this.setState({
+        remaining: e.target.duration - e.target.currentTime,
+        duration: e.target.duration,
+        currentTime: e.target.currentTime
+      });
+    }
+  }, {
+    key: "playPause",
+    value: function playPause() {
+      this.setState({
+        "switch": !this.state["switch"]
+      });
+
+      if (this.videoRef.current.paused) {
+        this.videoRef.current.play();
+      } else {
+        this.videoRef.current.pause();
+      }
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      var urlId = window.location.href;
+      var getaVideoIdId = urlId.lastIndexOf("/");
+      var videoId = urlId.substring(getaVideoIdId + 1, urlId.length);
+      $.ajax({
+        url: '/showAjax',
+        type: 'POST',
+        data: {
+          _token: token,
+          message: "bravo",
+          videoId: videoId
+        },
+        dataType: 'JSON',
+        success: function success(response) {
+          console.log("success");
+          console.log(response);
+
+          _this2.setState({
+            video: response.video,
+            user: response.user
+          });
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+        }
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      console.log(this.state);
+      var progress = this.state.currentTime * 100 / this.state.duration;
+      var PlayPause = this.state["switch"] ? "fa fa-pause-circle" : "fa fa-play-circle";
+      var minutes = Math.floor(this.state.remaining / 60);
+      minutes = ("" + minutes).length === 1 ? "0" + minutes : minutes; //Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
+
+      var seconds = Math.floor(this.state.remaining % 60);
+      seconds = ("" + seconds).length === 1 ? "0" + seconds : seconds; //Same as mins, but for seconds.
+
+      var remainingTime = minutes + " : " + seconds;
+      var videoUrl = this.state.video && this.state.video.name ? "/storage/" + this.state.user.name + "'s Videos/" + this.state.video.name : null;
+      var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "videoWrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("video", {
+        ref: this.videoRef,
+        preload: "auto",
+        autoPlay: true,
+        onTimeUpdate: this.trackTime
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
+        src: videoUrl,
+        type: "video/mp4"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
+        src: videoUrl,
+        type: "video/ogg"
+      }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "progress"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "progress-bar bg-success",
+        style: {
+          width: progress + "%"
+        }
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "controls"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btnV",
+        onClick: this.playPause
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: PlayPause
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "time"
+      }, remainingTime), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "range",
+        className: "custom-range",
+        id: "customRange",
+        name: "points1",
+        onChange: this.volume
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "time",
+        onClick: this.fullScreen
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-expand"
+      })))) : "";
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-header"
+      }, this.state.video.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-body videoCardBody"
+      }, video), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-footer"
+      }, " Uploaded by ", this.state.user.name)));
+    }
+  }]);
+
+  return Show;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+if (document.getElementById('show')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Show, null), document.getElementById('show'));
 }
 
 /***/ }),
