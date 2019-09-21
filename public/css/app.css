@@ -37,7 +37,7 @@ video {
   justify-content: space-evenly;
 }
 
-.btn {
+.btnV {
   background-color: DodgerBlue !important;
   border: none !important;
   color: white !important;
@@ -47,7 +47,7 @@ video {
   cursor: pointer !important;
 }
 
-.btn:hover {
+.btnV:hover {
   background-color: RoyalBlue !important;
 }
 
@@ -59,6 +59,38 @@ video {
 
 #customRange {
   margin-top: 7%;
+}
+
+.grid-container1 {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
+  grid-gap: 10px;
+  padding: 10px;
+  justify-content: space-evenly;
+  align-content: space-evenly;
+}
+
+.videoName {
+  font-size: 1.4em;
+  margin-bottom: 10px;
+  display: block;
+  text-decoration: none !important;
+  font-family: "Georgia";
+}
+
+.channell,
+.videoTitle {
+  font-family: "Palatino Linotype";
+}
+
+a,
+a:link,
+a:visited,
+a:hover,
+a:active,
+a:focus {
+  text-decoration: none !important;
+  color: inherit !important;
 }
 
 /*!

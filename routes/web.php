@@ -16,7 +16,16 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-Route::get('/home', 'HomeController@index');
-Route::post('/indexAjax','HomeController@ajaxIndex');
-Route::post('/upload','HomeController@ajaxUpload');
+
+Route::get('/dashboard', 'DashboardController@dashboard');
+Route::post('/dashboardInfo', 'DashboardController@ajaxInfo');
+
+Route::post('/infoAjax','DashboardController@ajaxInfo');
+
+Route::get('/create','VideoController@create');
+Route::post('/upload','VideoController@store');
+
+Route::get('/list','VideoController@list');
+Route::post('/listData','VideoController@index');
+
 

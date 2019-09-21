@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-class Example extends React.Component {
+class Create extends React.Component {
     
     constructor(props) {
 
@@ -178,7 +178,7 @@ class Example extends React.Component {
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
 
         $.ajax({
-            url: '/indexAjax',
+            url: '/infoAjax',
             type: 'POST',
             data: {_token: token , message: "bravo"},
             dataType: 'JSON',
@@ -212,7 +212,6 @@ class Example extends React.Component {
         
         let PlayPause = this.state.switch ? "fa fa-pause-circle" : "fa fa-play-circle";
         
-        
         let minutes = Math.floor(this.state.remaining/60);
         minutes = (""+minutes).length===1 ? "0"+minutes : minutes;//Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
         let seconds = Math.floor(this.state.remaining%60);
@@ -227,7 +226,7 @@ class Example extends React.Component {
             </video>
             <div id="controls">
                 
-                <button className="btn" onClick={this.playPause}><i className={PlayPause}></i></button>
+                <button className="btnV" onClick={this.playPause}><i className={PlayPause}></i></button>
                 <div className="time">{remainingTime}</div>
                 <input type="range" className="custom-range" id="customRange" name="points1" onChange={this.volume}/>
                 <div className="time" onClick={this.fullScreen}><i className="fa fa-expand"></i></div>
@@ -282,8 +281,9 @@ class Example extends React.Component {
 
 }
 
-if(document.getElementById('example')){
+if(document.getElementById('create')){
 
-    ReactDOM.render(<Example/>, document.getElementById('example'));
+    ReactDOM.render(<Create/>, document.getElementById('create'));
 
 }
+

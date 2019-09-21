@@ -66120,7 +66120,11 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  */
 
 
-__webpack_require__(/*! ./components/Example */ "./resources/js/components/Example.js");
+__webpack_require__(/*! ./components/create */ "./resources/js/components/create.js");
+
+__webpack_require__(/*! ./components/list */ "./resources/js/components/list.js");
+
+__webpack_require__(/*! ./components/dashboard */ "./resources/js/components/dashboard.js");
 
 /***/ }),
 
@@ -66182,10 +66186,10 @@ if (token) {
 
 /***/ }),
 
-/***/ "./resources/js/components/Example.js":
-/*!********************************************!*\
-  !*** ./resources/js/components/Example.js ***!
-  \********************************************/
+/***/ "./resources/js/components/create.js":
+/*!*******************************************!*\
+  !*** ./resources/js/components/create.js ***!
+  \*******************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -66218,19 +66222,19 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var Example =
+var Create =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(Example, _React$Component);
+  _inherits(Create, _React$Component);
 
-  function Example(props) {
+  function Create(props) {
     var _this$state;
 
     var _this;
 
-    _classCallCheck(this, Example);
+    _classCallCheck(this, Create);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Example).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Create).call(this, props));
     _this.state = (_this$state = {
       user: "",
       weather: "",
@@ -66252,7 +66256,7 @@ function (_React$Component) {
     return _this;
   }
 
-  _createClass(Example, [{
+  _createClass(Create, [{
     key: "fullScreen",
     value: function fullScreen() {
       var elem = this.videoRef.current;
@@ -66392,7 +66396,7 @@ function (_React$Component) {
       });
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       $.ajax({
-        url: '/indexAjax',
+        url: '/infoAjax',
         type: 'POST',
         data: {
           _token: token,
@@ -66445,7 +66449,7 @@ function (_React$Component) {
       }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "controls"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-        className: "btn",
+        className: "btnV",
         onClick: this.playPause
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         className: PlayPause
@@ -66523,11 +66527,280 @@ function (_React$Component) {
     }
   }]);
 
-  return Example;
+  return Create;
 }(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
 
-if (document.getElementById('example')) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Example, null), document.getElementById('example'));
+if (document.getElementById('create')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Create, null), document.getElementById('create'));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/dashboard.js":
+/*!**********************************************!*\
+  !*** ./resources/js/components/dashboard.js ***!
+  \**********************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var Dashboard =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Dashboard, _React$Component);
+
+  function Dashboard(props) {
+    var _this;
+
+    _classCallCheck(this, Dashboard);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Dashboard).call(this, props));
+    _this.state = {
+      user: "",
+      weather: ""
+    };
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Dashboard, [{
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      e.preventDefault();
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      $.getJSON('https://ipinfo.io/geo', function (response) {
+        var url = "http://api.openweathermap.org/data/2.5/weather?q=" + response.city + "," + response.country + "&appid=d42174afed4a1bb7fb19c043dee296b5";
+        $.ajax({
+          url: url,
+          async: true,
+          success: function success(data) {
+            console.log("success");
+
+            _this2.setState({
+              weather: data
+            });
+          },
+          error: function error(data) {
+            console.log("error");
+            console.log(data);
+          }
+        });
+      });
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      $.ajax({
+        url: '/dashboardInfo',
+        type: 'POST',
+        data: {
+          _token: token,
+          message: "bravo"
+        },
+        dataType: 'JSON',
+        success: function success(response) {
+          console.log("success");
+          console.log(response);
+
+          _this2.setState({
+            user: response.user,
+            request: response.request
+          });
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+        }
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var temp = this.state.weather.main ? (this.state.weather.main.temp - 273.15).toFixed(2) : "";
+      var tempText = "";
+
+      if (temp > 30) {
+        tempText = "It is rather hot";
+      } else if (temp < 25 && temp > 20) {
+        tempText = "It's quite nice";
+      } else if (temp < 20 && temp > 10) {
+        tempText = "It's starting to get chilly at";
+      } else if (temp < 10) {
+        tempText = "It is going to be quite cold at";
+      }
+
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-header"
+      }, "Hello ", this.state.user.name, "! ", tempText, " ", temp, "\xB0C"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-body"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btn btn-outline-success"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "nav-link",
+        href: "/create"
+      }, "Upload an Video"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-footer"
+      }, "Footer")));
+    }
+  }]);
+
+  return Dashboard;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+if (document.getElementById('dashboard')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Dashboard, null), document.getElementById('dashboard'));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/list.js":
+/*!*****************************************!*\
+  !*** ./resources/js/components/list.js ***!
+  \*****************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var List =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(List, _React$Component);
+
+  function List(props) {
+    var _this;
+
+    _classCallCheck(this, List);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(List).call(this, props));
+    _this.state = {
+      videos: ""
+    };
+    return _this;
+  }
+
+  _createClass(List, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      $.ajax({
+        url: '/listData',
+        type: 'POST',
+        data: {
+          _token: token,
+          message: "bravo"
+        },
+        dataType: 'JSON',
+        success: function success(response) {
+          console.log("success");
+          console.log(response);
+
+          _this2.setState({
+            videos: response.videos
+          });
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+        }
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      //console.log(this.state);
+      var videos = this.state.videos ? this.state.videos.map(function (item, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "container",
+          key: index
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "card"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "card-header videoTitle"
+        }, item.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "card-body"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          href: "#",
+          className: "videoName",
+          title: item.name
+        }, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, item.description)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "card-footer"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          href: "#",
+          className: "channell",
+          title: item.user.name
+        }, item.user.name))));
+      }) : "";
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "grid-container1"
+      }, videos);
+    }
+  }]);
+
+  return List;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+if (document.getElementById('list')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(List, null), document.getElementById('list'));
 }
 
 /***/ }),

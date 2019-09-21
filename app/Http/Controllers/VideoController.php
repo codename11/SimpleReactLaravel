@@ -7,48 +7,26 @@ use App\User;
 use App\Videos;
 use Auth;
 use Illuminate\Support\Facades\Validator;
-//use Validator;
 use Illuminate\Support\Facades\File;
 
-class HomeController extends Controller
+class VideoController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
-
     /**
-     * Show the application dashboard.
+     * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return \Illuminate\Http\Response
      */
 
-    public function index()
+    public function create()
     {
-        return view('home');
+        return view('create');
     }
 
-    public function ajaxIndex(Request $request){    
-
-        if($request->ajax()){
-
-            $user = auth()->user();
-            $response = array(
-                "user" => $user,
-                "request" => $request->all(),
-            );
-            
-            return response()->json($response);
-        }
-
-    }
-
-    public function ajaxUpload(Request $request){    
+    public function store(Request $request){    
 
         if($request->ajax()){
             
@@ -109,4 +87,70 @@ class HomeController extends Controller
 
     }
 
+    public function list()
+    {
+        return view('list');
+    }
+
+    public function index(Request $request)
+    {
+
+        if($request->ajax()){
+
+            $videos = Videos::with("user")->get();
+
+            $response = array(
+                "videos" => $videos,
+            );
+            
+            return response()->json($response);
+
+        }
+        
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
 }
