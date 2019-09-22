@@ -63,10 +63,30 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+
+        $fileNameToStore = "";
+        if(array_key_exists('avatar', $data)){
+            
+            $filenameWithExt = $data['avatar']->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $data['avatar']->getClientOriginalExtension();
+            $fileNameToStore = $filename."_".time().".".$extension;
+        
+            $img = \Image::make($data['avatar']);
+            $path = str_replace("/","\\",addcslashes(public_path('storage/profile_pics/'.$fileNameToStore),"\f\r\n\t"));
+            $img->resize(32, 32)->save($path);
+         
+        }
+        else{
+            $fileNameToStore = "user.jpg";
+        }
+        
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            "avatar" => $fileNameToStore
         ]);
+
     }
 }

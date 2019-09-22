@@ -45,7 +45,7 @@ class List extends React.Component {
     render(){
         //console.log(this.state);
         let videos = this.state.videos ? this.state.videos.map((item, index) => {
-
+            
             return <div className="container" key={index}>
 
                     <div className="card">
@@ -53,7 +53,7 @@ class List extends React.Component {
                         <div className="card-header videoTitle">{item.title}</div>
 
                         <div className="card-body">
-                            <a href={"list/"+item.id} className="videoName" title={item.name}>{item.name}</a>
+                            <a href={"list/"+item.id} className="videoName" title={item.name}><img className="thumbImg" src={"/storage/"+item.user.name+"'s Thumbnails/"+(item.thumbnail ? item.thumbnail : "nothumbnail.jpg")} alt={item.thumbnail} /></a>
                             <div>{item.description}</div>
                         </div>
 
@@ -68,7 +68,7 @@ class List extends React.Component {
 
         return (
             <div className="grid-container1">
-               {videos}
+               {videos.length > 0 ? videos : (<div><img className="img-fluid cent novideos" src="/storage/novideos.gif" alt="novideos" /><span className="cent notice">No videos uploaded yet...</span></div>)}
             </div>
         );
     

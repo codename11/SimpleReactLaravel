@@ -66237,6 +66237,8 @@ function (_React$Component) {
       user: "",
       weather: "",
       request: "",
+      clip: {},
+      thumbnail: {},
       fullFileName: "",
       fileUrl: "",
       fileName: "",
@@ -66310,12 +66312,27 @@ function (_React$Component) {
   }, {
     key: "fileUpload",
     value: function fileUpload(e) {
-      this.setState({
-        fullFileName: e.target.value ? e.target.value.split("\\").pop() : this.state.filePlaceholder,
-        fileUrl: e.target.value ? e.target.value : this.state.filePlaceholder,
-        fileName: e.target.value.split("\\").pop().split(".")[0],
-        fileExt: e.target.value.split("\\").pop().split(".")[1]
-      });
+      if (e.target.id === "video") {
+        var clip = {};
+        clip.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.clip.filePlaceholder;
+        clip.fileUrl = e.target.value ? e.target.value : this.state.clip.filePlaceholder;
+        clip.fileName = e.target.value.split("\\").pop().split(".")[0];
+        clip.fileExt = e.target.value.split("\\").pop().split(".")[1];
+        this.setState({
+          clip: clip
+        });
+      }
+
+      if (e.target.id === "thumbnail") {
+        var thumbnail = {};
+        thumbnail.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.thumbnail.filePlaceholder;
+        thumbnail.fileUrl = e.target.value ? e.target.value : this.state.thumbnail.filePlaceholder;
+        thumbnail.fileName = e.target.value.split("\\").pop().split(".")[0];
+        thumbnail.fileExt = e.target.value.split("\\").pop().split(".")[1];
+        this.setState({
+          thumbnail: thumbnail
+        });
+      }
     }
   }, {
     key: "handleSubmit",
@@ -66327,16 +66344,14 @@ function (_React$Component) {
       var formElements = {};
       formElements.title = forma.elements[0].value;
       formElements.description = forma.elements[1].value;
-      formElements.video = forma.elements[2].files[0];
+      formElements.thumbnail = forma.elements[2].files[0];
+      formElements.video = forma.elements[3].files[0];
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       var myformData = new FormData();
       myformData.append('title', formElements.title);
       myformData.append('description', formElements.description);
+      myformData.append('thumbnail', formElements.thumbnail);
       myformData.append('video', formElements.video);
-      myformData.append('fullFileName', this.state.fullFileName);
-      myformData.append('fileUrl', this.state.fileUrl);
-      myformData.append('fileName', this.state.fileName);
-      myformData.append('fileExt', this.state.fileExt);
       myformData.append('_token', token);
       myformData.append('message', "bravo");
       $.ajax({
@@ -66496,7 +66511,7 @@ function (_React$Component) {
         htmlFor: "title"
       }, "Title:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "text",
-        maxlength: "24",
+        maxLength: "24",
         className: "form-control",
         name: "title",
         id: "title",
@@ -66516,14 +66531,26 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "file",
         className: "custom-file-input",
-        id: "customFile",
+        id: "thumbnail",
+        name: "thumbnail",
+        onChange: this.fileUpload,
+        required: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "custom-file-label",
+        htmlFor: "thumbnail"
+      }, this.state.thumbnail.fullFileName ? this.state.thumbnail.fullFileName : "Choose thumbnail")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "custom-file mb-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        className: "custom-file-input",
+        id: "video",
         name: "video",
         onChange: this.fileUpload,
         required: true
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "custom-file-label",
-        htmlFor: "customFile"
-      }, this.state.fullFileName ? this.state.fullFileName : "Choose file")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        htmlFor: "video"
+      }, this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose video")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         className: "btn btn-outline-primary",
         type: "submit",
         value: "Submit"
@@ -66790,7 +66817,11 @@ function (_React$Component) {
           href: "list/" + item.id,
           className: "videoName",
           title: item.name
-        }, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, item.description)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+          className: "thumbImg",
+          src: "/storage/" + item.user.name + "'s Thumbnails/" + (item.thumbnail ? item.thumbnail : "nothumbnail.jpg"),
+          alt: item.thumbnail
+        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, item.description)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "card-footer"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
           href: "list/" + item.id,
@@ -66800,7 +66831,13 @@ function (_React$Component) {
       }) : "";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container1"
-      }, videos);
+      }, videos.length > 0 ? videos : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+        className: "img-fluid cent novideos",
+        src: "/storage/novideos.gif",
+        alt: "novideos"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "cent notice"
+      }, "No videos uploaded yet...")));
     }
   }]);
 

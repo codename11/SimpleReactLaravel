@@ -9,6 +9,7 @@ use Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class VideoController extends Controller
 {
@@ -34,6 +35,7 @@ class VideoController extends Controller
             $validator = \Validator::make($request->all(), [
                 'video' => 'required|mimes:mp4,ogx,oga,ogv,ogg,webm,avi',
                 "title" => "required|min:6|max:24",
+                "thumbnail" => 'required|mimes:jpg,jpeg,png,bmp|max:1999',
                 "description" => "required|min:6|max:255",
             ]);
 
@@ -46,11 +48,33 @@ class VideoController extends Controller
                     $extension = $request->file("video")->getClientOriginalExtension();
                     $fileNameToStore = $filename."_".time().".".$extension;
                     $path = $request->file("video")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStore);
-                    
+
+                }
+
+                if($request->hasFile("thumbnail")){
+
+                    $filenameWithExtThumb = $request->file("thumbnail")->getClientOriginalName();
+                    $filenameThumb = pathinfo($filenameWithExtThumb, PATHINFO_FILENAME);
+                    $extensionThumb = $request->file("thumbnail")->getClientOriginalExtension();
+                    $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
+
+                    $image_resize = Image::make($request->file("thumbnail")->getRealPath());              
+                    $image_resize->resize(320, 240);
+
+                    $pathThumb = $request->file("thumbnail")->storeAs("public/".auth()->user()->name."'s Thumbnails", $fileNameToStoreThumb);
+
+                }
+                else{
+                    $fileNameToStore = "nothumbnail.jpg";
+                }
+
+                if($request->hasFile("video") && $request->hasFile("thumbnail")){
+
                     $video = new Videos;
                     $video->name = $fileNameToStore;
                     $video->user_id = auth()->user()->id;
                     $video->title = $request->input("title");
+                    $video->thumbnail = $fileNameToStoreThumb;
                     $video->description = $request->input("description");
                     $video->save();
                     $response = array(
@@ -127,7 +151,7 @@ class VideoController extends Controller
 
             $video = Videos::find($request->videoId);
             $user = User::find($video->user_id);
-            //"/storage/"+this.state.user.name+"'s Videos/"+this.state.video.name
+            
             $url = 'public/'.$user->name."'s Videos/".$video->name;
             $size = ("".((Storage::size($url))/1024)/1024);
             $response = array(

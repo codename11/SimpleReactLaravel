@@ -10,6 +10,8 @@ class Create extends React.Component {
             user: "",
             weather: "",
             request: "",
+            clip: {},
+            thumbnail: {},
             fullFileName: "",
             fileUrl: "",
             fileName: "",
@@ -79,12 +81,33 @@ class Create extends React.Component {
 
     fileUpload(e) {
 
-        this.setState({
-            fullFileName: e.target.value ? e.target.value.split("\\").pop() : this.state.filePlaceholder,
-            fileUrl: e.target.value ? e.target.value : this.state.filePlaceholder,
-            fileName: (e.target.value.split("\\").pop()).split(".")[0],
-            fileExt: (e.target.value.split("\\").pop()).split(".")[1],
-        });
+        if(e.target.id==="video"){
+            
+            let clip = {};
+            clip.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.clip.filePlaceholder;
+            clip.fileUrl = e.target.value ? e.target.value : this.state.clip.filePlaceholder;
+            clip.fileName = (e.target.value.split("\\").pop()).split(".")[0];
+            clip.fileExt = (e.target.value.split("\\").pop()).split(".")[1];
+
+            this.setState({
+                clip: clip,
+            });
+
+        }
+
+        if(e.target.id==="thumbnail"){
+            
+            let thumbnail = {};
+            thumbnail.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.thumbnail.filePlaceholder;
+            thumbnail.fileUrl = e.target.value ? e.target.value : this.state.thumbnail.filePlaceholder;
+            thumbnail.fileName = (e.target.value.split("\\").pop()).split(".")[0];
+            thumbnail.fileExt = (e.target.value.split("\\").pop()).split(".")[1];
+
+            this.setState({
+                thumbnail: thumbnail,
+            });
+
+        }
         
     }
     
@@ -95,17 +118,15 @@ class Create extends React.Component {
         let formElements = {};
         formElements.title = forma.elements[0].value;
         formElements.description = forma.elements[1].value;
-        formElements.video = forma.elements[2].files[0];
+        formElements.thumbnail = forma.elements[2].files[0];
+        formElements.video = forma.elements[3].files[0];
 
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
         let myformData = new FormData();
         myformData.append('title', formElements.title);
         myformData.append('description', formElements.description);
+        myformData.append('thumbnail', formElements.thumbnail);
         myformData.append('video', formElements.video);
-        myformData.append('fullFileName', this.state.fullFileName);
-        myformData.append('fileUrl', this.state.fileUrl);
-        myformData.append('fileName', this.state.fileName);
-        myformData.append('fileExt', this.state.fileExt);
         myformData.append('_token', token);
         myformData.append('message', "bravo");
         
@@ -253,7 +274,7 @@ class Create extends React.Component {
 
                                     <div className="form-group">
                                         <label htmlFor="title">Title:</label>
-                                        <input type="text" maxlength="24" className="form-control" name="title" id="title" required/>
+                                        <input type="text" maxLength="24" className="form-control" name="title" id="title" required/>
                                     </div>
 
                                     <div className="form-group">
@@ -262,8 +283,13 @@ class Create extends React.Component {
                                     </div>
 
                                     <div className="custom-file mb-3">
-                                        <input type="file" className="custom-file-input" id="customFile" name="video" onChange={this.fileUpload} required/>
-                                        <label className="custom-file-label" htmlFor="customFile">{this.state.fullFileName ? this.state.fullFileName : "Choose file"}</label>
+                                        <input type="file" className="custom-file-input" id="thumbnail" name="thumbnail" onChange={this.fileUpload} required/>
+                                        <label className="custom-file-label" htmlFor="thumbnail">{this.state.thumbnail.fullFileName ? this.state.thumbnail.fullFileName : "Choose thumbnail"}</label>
+                                    </div>
+
+                                    <div className="custom-file mb-3">
+                                        <input type="file" className="custom-file-input" id="video" name="video" onChange={this.fileUpload} required/>
+                                        <label className="custom-file-label" htmlFor="video">{this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose video"}</label>
                                     </div>
 
                                     <input className="btn btn-outline-primary" type="submit" value="Submit" />
