@@ -31,7 +31,7 @@ video {
   border-top: 1px solid DodgerBlue;
   padding: 5px;
   display: grid;
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto;
   grid-column-gap: 5px;
   justify-content: space-evenly;
 }
@@ -99,7 +99,7 @@ a:focus {
 
 .progress,
 .progress-bar {
-  height: 5px !important;
+  height: 15px !important;
 }
 
 #karusel {
@@ -185,6 +185,16 @@ a:focus {
 
 .dashImg {
   border-radius: 5px;
+}
+
+.progress-bar-num {
+  position: absolute;
+  left: 50%;
+}
+
+.muted {
+  font-size: 2em;
+  color: white;
 }
 
 /*!

@@ -66903,17 +66903,72 @@ function (_React$Component) {
       user: "",
       progress: 0,
       duration: 0,
-      currentTime: 0
+      currentTime: 0,
+      muted: false,
+      volume: 0,
+      width1: 0,
+      width2: 0
     };
     _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
     _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.trackTime = _this.trackTime.bind(_assertThisInitialized(_this));
     _this.volume = _this.volume.bind(_assertThisInitialized(_this));
     _this.fullScreen = _this.fullScreen.bind(_assertThisInitialized(_this));
+    _this.progressRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
+    _this.trackProgress = _this.trackProgress.bind(_assertThisInitialized(_this));
+    _this.mute = _this.mute.bind(_assertThisInitialized(_this));
+    _this.test = _this.test.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Show, [{
+    key: "test",
+    value: function test(e) {
+      console.log(e.target.style.width);
+    }
+  }, {
+    key: "mute",
+    value: function mute() {
+      this.setState({
+        muted: !this.state.muted
+      });
+    }
+  }, {
+    key: "trackProgress",
+    value: function trackProgress(e) {
+      if (e.target.id === "progress-bar") {
+        var msClick1 = e.pageX;
+        var elemWidth = e.target.offsetWidth;
+        var parentWidth = e.target.parentElement.offsetWidth;
+        var rewTime = Math.round(msClick1 / (parentWidth / 100).toFixed(2));
+        this.setState({
+          remaining: this.state.duration - this.state.duration / 100 * rewTime,
+          duration: this.state.duration,
+          currentTime: this.state.duration / 100 * rewTime,
+          width1: elemWidth / (parentWidth / 100),
+          width2: Math.round(elemWidth / (parentWidth / 100).toFixed(2))
+        });
+        this.videoRef.current.currentTime = this.state.duration / 100 * rewTime - 10;
+      }
+
+      if (e.target.id === "progress") {
+        var _msClick = e.pageX;
+        var childWidth = e.target.childNodes[1].offsetWidth;
+        var myWidth = e.target.offsetWidth;
+
+        var _rewTime = Math.round(_msClick / (myWidth / 100).toFixed(2));
+
+        this.setState({
+          remaining: this.state.duration - this.state.duration / 100 * _rewTime,
+          duration: this.state.duration,
+          currentTime: this.state.duration / 100 * _rewTime,
+          width1: childWidth / (myWidth / 100),
+          width2: Math.round(childWidth / (myWidth / 100).toFixed(2))
+        });
+        this.videoRef.current.currentTime = this.state.duration / 100 * _rewTime - 10;
+      }
+    }
+  }, {
     key: "fullScreen",
     value: function fullScreen() {
       var elem = this.videoRef.current;
@@ -66935,6 +66990,10 @@ function (_React$Component) {
     key: "volume",
     value: function volume(e) {
       this.videoRef.current.volume = e.target.value / 100;
+      this.setState({
+        volume: e.target.value / 100,
+        muted: true ? this.videoRef.current.volume === 0 : undefined
+      });
     }
   }, {
     key: "trackTime",
@@ -66942,7 +67001,9 @@ function (_React$Component) {
       this.setState({
         remaining: e.target.duration - e.target.currentTime,
         duration: e.target.duration,
-        currentTime: e.target.currentTime
+        currentTime: e.target.currentTime,
+        width1: e.target.currentTime * 100 / e.target.duration,
+        width2: e.target.currentTime / e.target.duration
       });
     }
   }, {
@@ -66994,7 +67055,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log(this.state);
+      //console.log(this.state);
       var progress = this.state.currentTime * 100 / this.state.duration;
       var PlayPause = this.state["switch"] ? "fa fa-pause-circle" : "fa fa-play-circle";
       var minutes = Math.floor(this.state.remaining / 60);
@@ -67005,13 +67066,15 @@ function (_React$Component) {
 
       var remainingTime = minutes + " : " + seconds;
       var videoUrl = this.state.video && this.state.video.name ? "/storage/" + this.state.user.name + "'s Videos/" + this.state.video.name : null;
+      var muted = this.state.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
       var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "videoWrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("video", {
         ref: this.videoRef,
         preload: "auto",
         autoPlay: true,
-        onTimeUpdate: this.trackTime
+        onTimeUpdate: this.trackTime,
+        muted: this.state.muted
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
         src: videoUrl,
         type: "video/mp4"
@@ -67019,11 +67082,17 @@ function (_React$Component) {
         src: videoUrl,
         type: "video/ogg"
       }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "progress"
+        id: "progress",
+        onClick: this.trackProgress,
+        className: "progress text-center"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "progress-bar-num"
+      }, Math.round(progress.toFixed(2)) + "%"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "progress-bar",
+        onClick: this.trackProgress,
         className: "progress-bar bg-success",
         style: {
-          width: progress + "%"
+          width: Math.round(progress.toFixed(2)) + "%"
         }
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "controls"
@@ -67034,7 +67103,12 @@ function (_React$Component) {
         className: PlayPause
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "time"
-      }, remainingTime), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      }, remainingTime), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "muted",
+        onClick: this.mute
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: muted
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "range",
         className: "custom-range",
         id: "customRange",

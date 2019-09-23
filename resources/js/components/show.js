@@ -14,13 +14,73 @@ class Show extends React.Component {
             progress: 0,
             duration: 0,
             currentTime: 0,
+            muted: false,
+            volume: 0,
+            width1: 0,
+            width2: 0,
+
         };
         this.playPause = this.playPause.bind(this);
         this.videoRef = React.createRef();
         this.trackTime = this.trackTime.bind(this);
         this.volume = this.volume.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
+        this.progressRef = React.createRef();
+        this.trackProgress = this.trackProgress.bind(this);
+        this.mute = this.mute.bind(this);
+        this.test = this.test.bind(this);
+    }
 
+    test(e){
+        console.log(e.target.style.width);
+    }
+
+    mute(){
+
+        this.setState({
+            muted: !this.state.muted,
+        });
+
+    }
+
+    trackProgress(e){
+
+        if(e.target.id==="progress-bar"){
+
+            let msClick1 = e.pageX;
+            let elemWidth = e.target.offsetWidth; 
+            let parentWidth = e.target.parentElement.offsetWidth;
+            let rewTime = Math.round(msClick1/(parentWidth/100).toFixed(2));
+
+            this.setState({
+                remaining: this.state.duration - ((this.state.duration/100)*rewTime),
+                duration: this.state.duration,
+                currentTime: ((this.state.duration/100)*rewTime),
+                width1: (elemWidth/(parentWidth/100)),
+                width2: Math.round(elemWidth/(parentWidth/100).toFixed(2)),
+            });
+            this.videoRef.current.currentTime = ((this.state.duration/100)*rewTime)-10;
+
+        }
+
+        if(e.target.id==="progress"){
+
+            let msClick1 = e.pageX;
+            let childWidth = e.target.childNodes[1].offsetWidth; 
+            let myWidth = e.target.offsetWidth;
+            let rewTime = Math.round(msClick1/(myWidth/100).toFixed(2));
+
+            this.setState({
+                remaining: this.state.duration - ((this.state.duration/100)*rewTime),
+                duration: this.state.duration,
+                currentTime: ((this.state.duration/100)*rewTime),
+                width1: (childWidth/(myWidth/100)),
+                width2: Math.round(childWidth/(myWidth/100).toFixed(2)),
+            });
+            this.videoRef.current.currentTime = ((this.state.duration/100)*rewTime)-10;
+
+        }
+        
     }
 
     fullScreen(){
@@ -42,7 +102,13 @@ class Show extends React.Component {
     }
 
     volume(e){
+
         this.videoRef.current.volume = e.target.value/100;
+        this.setState({
+            volume: (e.target.value/100),
+            muted: true ? (this.videoRef.current.volume===0) : false,
+        });
+
     }
 
     trackTime(e){
@@ -50,6 +116,8 @@ class Show extends React.Component {
             remaining: e.target.duration - e.target.currentTime,
             duration: e.target.duration,
             currentTime: e.target.currentTime,
+            width1: e.target.currentTime*100/e.target.duration,
+            width2: e.target.currentTime/e.target.duration,
         });
     }
 
@@ -99,8 +167,8 @@ class Show extends React.Component {
     }
 
     render(){
-        console.log(this.state);
-
+        //console.log(this.state);
+        
         let progress = this.state.currentTime*100/this.state.duration;
 
         let PlayPause = this.state.switch ? "fa fa-pause-circle" : "fa fa-play-circle";
@@ -113,18 +181,22 @@ class Show extends React.Component {
 
         let videoUrl = this.state.video && this.state.video.name ? "/storage/"+this.state.user.name+"'s Videos/"+this.state.video.name : null;
 
-        let video = videoUrl ? <div  className={"videoWrapper"}><video ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime}>
+        let muted = this.state.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
+
+        let video = videoUrl ? <div  className={"videoWrapper"}><video ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted}>
             <source src={videoUrl} type="video/mp4"/>
             <source src={videoUrl} type="video/ogg"/>
             Your browser does not support the video tag.
             </video>
-            <div className="progress">
-                <div className="progress-bar bg-success" style={{width: progress+"%"}}></div>
+            <div id="progress" onClick={this.trackProgress} className="progress text-center">
+                <div className="progress-bar-num">{Math.round(progress.toFixed(2))+"%"}</div>
+                <div id="progress-bar" onClick={this.trackProgress} className="progress-bar bg-success" style={{width: Math.round(progress.toFixed(2))+"%"}}></div>
             </div>
             <div id="controls">
             
                 <button className="btnV" onClick={this.playPause}><i className={PlayPause}></i></button>
                 <div className="time">{remainingTime}</div>
+                <div className="muted" onClick={this.mute}><i className={muted}></i></div>
                 <input type="range" className="custom-range" id="customRange" name="points1" onChange={this.volume}/>
                 <div className="time" onClick={this.fullScreen}><i className="fa fa-expand"></i></div>
             
