@@ -66,9 +66,11 @@ class List extends React.Component {
                 </div>;
         }) : "";
 
+        videos = videos.length > 0 ? videos : (<div><img className="img-fluid cent novideos" src="/storage/novideos.gif" alt="novideos" /><span className="cent notice">No videos uploaded yet...</span></div>);
+
         return (
             <div className="grid-container1">
-               {videos.length > 0 ? videos : (<div><img className="img-fluid cent novideos" src="/storage/novideos.gif" alt="novideos" /><span className="cent notice">No videos uploaded yet...</span></div>)}
+               {videos}
             </div>
         );
     

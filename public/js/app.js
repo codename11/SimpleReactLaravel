@@ -66829,15 +66829,16 @@ function (_React$Component) {
           title: item.user.name
         }, item.user.name))));
       }) : "";
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-container1"
-      }, videos.length > 0 ? videos : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+      videos = videos.length > 0 ? videos : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         className: "img-fluid cent novideos",
         src: "/storage/novideos.gif",
         alt: "novideos"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: "cent notice"
-      }, "No videos uploaded yet...")));
+      }, "No videos uploaded yet..."));
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "grid-container1"
+      }, videos);
     }
   }]);
 

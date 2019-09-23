@@ -41,17 +41,13 @@ class VideoController extends Controller
 
             if ($validator->passes()){
 
-                if($request->hasFile("video")){
-                    
+                if($request->hasFile("video") && $request->hasFile("thumbnail")){
+
                     $filenameWithExt = $request->file("video")->getClientOriginalName();
                     $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                     $extension = $request->file("video")->getClientOriginalExtension();
                     $fileNameToStore = $filename."_".time().".".$extension;
                     $path = $request->file("video")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStore);
-
-                }
-
-                if($request->hasFile("thumbnail")){
 
                     $filenameWithExtThumb = $request->file("thumbnail")->getClientOriginalName();
                     $filenameThumb = pathinfo($filenameWithExtThumb, PATHINFO_FILENAME);
@@ -62,13 +58,6 @@ class VideoController extends Controller
                     $image_resize->resize(320, 240);
 
                     $pathThumb = $request->file("thumbnail")->storeAs("public/".auth()->user()->name."'s Thumbnails", $fileNameToStoreThumb);
-
-                }
-                else{
-                    $fileNameToStore = "nothumbnail.jpg";
-                }
-
-                if($request->hasFile("video") && $request->hasFile("thumbnail")){
 
                     $video = new Videos;
                     $video->name = $fileNameToStore;
