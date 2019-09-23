@@ -37,16 +37,16 @@ class Create extends React.Component {
         let elem = this.videoRef.current;
         if (elem.requestFullscreen){
             elem.requestFullscreen();
-          } 
-          else if (elem.mozRequestFullScreen){ /* Firefox */
+        } 
+        else if (elem.mozRequestFullScreen){ /* Firefox */
             elem.mozRequestFullScreen();
-          } 
-          else if (elem.webkitRequestFullscreen){ /* Chrome, Safari & Opera */
+        } 
+        else if (elem.webkitRequestFullscreen){ /* Chrome, Safari & Opera */
             elem.webkitRequestFullscreen();
-          } 
-          else if (elem.msRequestFullscreen){ /* IE/Edge */
+        } 
+        else if (elem.msRequestFullscreen){ /* IE/Edge */
             elem.msRequestFullscreen();
-          }
+        }
 
     }
 
@@ -55,9 +55,11 @@ class Create extends React.Component {
     }
 
     trackTime(e){
+
         this.setState({
             remaining: e.target.duration - e.target.currentTime,
         });
+
     }
 
     playPause(){
@@ -76,7 +78,11 @@ class Create extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({value: event.target.value});
+
+        this.setState({
+            value: event.target.value
+        });
+        
     }
 
     fileUpload(e) {
@@ -228,8 +234,8 @@ class Create extends React.Component {
     }
 
     render(){
-        
         //console.log(this.state);
+
         const user = this.state.user ? this.state.user : "";
         const temp = this.state.weather.main ? (this.state.weather.main.temp-273.15).toFixed(2) : "";
         

@@ -89,12 +89,14 @@ class VideoController extends Controller
             }
 
             if ($validator->fails()){
+
                 $response = array(
                     "message" => "An error. Validation failed.",
                     "request" => $request->all(),
                 );
                 
                 return response()->json($response);
+                
             }
 
         }
@@ -153,6 +155,7 @@ class VideoController extends Controller
             return response()->json($response);
 
         }
+
     }
 
     /**
