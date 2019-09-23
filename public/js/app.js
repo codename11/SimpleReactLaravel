@@ -66906,8 +66906,7 @@ function (_React$Component) {
       currentTime: 0,
       muted: false,
       volume: 0,
-      width1: 0,
-      width2: 0
+      width: 0
     };
     _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
     _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
@@ -66917,16 +66916,10 @@ function (_React$Component) {
     _this.progressRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.trackProgress = _this.trackProgress.bind(_assertThisInitialized(_this));
     _this.mute = _this.mute.bind(_assertThisInitialized(_this));
-    _this.test = _this.test.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Show, [{
-    key: "test",
-    value: function test(e) {
-      console.log(e.target.style.width);
-    }
-  }, {
     key: "mute",
     value: function mute() {
       this.setState({
@@ -66945,8 +66938,7 @@ function (_React$Component) {
           remaining: this.state.duration - this.state.duration / 100 * rewTime,
           duration: this.state.duration,
           currentTime: this.state.duration / 100 * rewTime,
-          width1: elemWidth / (parentWidth / 100),
-          width2: Math.round(elemWidth / (parentWidth / 100).toFixed(2))
+          width: elemWidth / (parentWidth / 100)
         });
         this.videoRef.current.currentTime = this.state.duration / 100 * rewTime - 10;
       }
@@ -66962,8 +66954,7 @@ function (_React$Component) {
           remaining: this.state.duration - this.state.duration / 100 * _rewTime,
           duration: this.state.duration,
           currentTime: this.state.duration / 100 * _rewTime,
-          width1: childWidth / (myWidth / 100),
-          width2: Math.round(childWidth / (myWidth / 100).toFixed(2))
+          width: childWidth / (myWidth / 100)
         });
         this.videoRef.current.currentTime = this.state.duration / 100 * _rewTime - 10;
       }
@@ -67002,8 +66993,7 @@ function (_React$Component) {
         remaining: e.target.duration - e.target.currentTime,
         duration: e.target.duration,
         currentTime: e.target.currentTime,
-        width1: e.target.currentTime * 100 / e.target.duration,
-        width2: e.target.currentTime / e.target.duration
+        width: e.target.currentTime * 100 / e.target.duration
       });
     }
   }, {
