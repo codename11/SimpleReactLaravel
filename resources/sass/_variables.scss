@@ -25,6 +25,10 @@ $cyan: #6cb2eb;
     background-color: black;
 }
 
+video:hover{
+    cursor: pointer;
+}
+
 video{
     border-radius: 5px;
     width: 100%;
@@ -86,7 +90,7 @@ video{
     padding: 10px;
     justify-content: space-evenly;
     align-content: space-evenly;
-  }
+}
 
 .videoName{
     font-size: 1.4em;
@@ -183,6 +187,7 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
     height: auto;
     border-radius: 5px;
     box-shadow:20px 20px 10px grey;
+    cursor: pointer;
 }
 
 .notice{
@@ -192,6 +197,20 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
     padding: 10px;
     font-family: "Palatino Linotype";
     filter:blur(1px) drop-shadow(8px 8px 10px gray);
+    cursor: pointer;
+    transition: transform 2s;
+    transition: position 2s;
+    transition: left 2s;
+}
+
+@media only screen and (min-width: 769px) {
+
+    .notice:hover{
+        position: fixed;
+        left: 40%;
+        transform:scale(2);
+    }
+
 }
 
 .dashImg {
@@ -206,4 +225,16 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
 .muted{
     font-size: 2em;
     color: white;
+}
+
+.grid-container2 {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 10px;
+    padding: 10px;
+    justify-content: space-between;
+}
+
+.desc{
+   margin: 0px 0px 10px 10px;
 }

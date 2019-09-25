@@ -7,6 +7,10 @@
   background-color: black;
 }
 
+video:hover {
+  cursor: pointer;
+}
+
 video {
   border-radius: 5px;
   width: 100%;
@@ -171,6 +175,7 @@ a:focus {
   height: auto;
   border-radius: 5px;
   box-shadow: 20px 20px 10px grey;
+  cursor: pointer;
 }
 
 .notice {
@@ -181,6 +186,18 @@ a:focus {
   font-family: "Palatino Linotype";
   -webkit-filter: blur(1px) drop-shadow(8px 8px 10px gray);
           filter: blur(1px) drop-shadow(8px 8px 10px gray);
+  cursor: pointer;
+  transition: transform 2s;
+  transition: position 2s;
+  transition: left 2s;
+}
+
+@media only screen and (min-width: 769px) {
+  .notice:hover {
+    position: fixed;
+    left: 40%;
+    transform: scale(2);
+  }
 }
 
 .dashImg {
@@ -195,6 +212,18 @@ a:focus {
 .muted {
   font-size: 2em;
   color: white;
+}
+
+.grid-container2 {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  padding: 10px;
+  justify-content: space-between;
+}
+
+.desc {
+  margin: 0px 0px 10px 10px;
 }
 
 /*!

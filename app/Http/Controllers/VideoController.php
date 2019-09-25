@@ -291,16 +291,35 @@ class VideoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function ajaxDestroy(Request $request)
     {
-        /*if($request->ajax()){
+        
+        if($request->ajax()){
 
             $video = Videos::find($request->videoId);  
-            if($video->thumbnail!="nothumbnail.jpg"){
-                Storage::delete("public/images/".$article->image);
-            }
+            $path = public_path("storage/".auth()->user()->name."'s Thumbnails/".$video->thumbnail);
+            if($video->thumbnail!=="nothumbnail.jpg" && strpos($path,"nothumbnail.jpg")===false){
 
-        }*/
+                unlink($path);
+            
+            }
+            $video->delete();
+
+            $response = array(
+                'status' => 'success',
+                'message' => "Video deleted",
+                "ddd" => $video->thumbnail!=="nothumbnail.jpg" ? "nije" : "jeste",
+                "path" => $path,
+            );
+            return response()->json($response);
+
+        }
+        else{
+            $response = array(
+                'status' => 'fail',
+            );
+            return response()->json($response);
+        }
         
     }
 }

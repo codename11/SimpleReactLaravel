@@ -66258,10 +66258,17 @@ function (_React$Component) {
     _this.trackTime = _this.trackTime.bind(_assertThisInitialized(_this));
     _this.volume = _this.volume.bind(_assertThisInitialized(_this));
     _this.fullScreen = _this.fullScreen.bind(_assertThisInitialized(_this));
+    _this.getCkEditor = _this.getCkEditor.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Create, [{
+    key: "getCkEditor",
+    value: function getCkEditor() {
+      console.log("got ckeditor");
+      CKEDITOR.replace("ckeditor");
+    }
+  }, {
     key: "fullScreen",
     value: function fullScreen() {
       var elem = this.videoRef.current;
@@ -66345,7 +66352,7 @@ function (_React$Component) {
       var forma = e.target;
       var formElements = {};
       formElements.title = forma.elements[0].value;
-      formElements.description = forma.elements[1].value;
+      formElements.description = CKEDITOR.instances.ckeditor.getData();
       formElements.thumbnail = forma.elements[2].files[0];
       formElements.video = forma.elements[3].files[0];
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
@@ -66394,6 +66401,7 @@ function (_React$Component) {
     value: function componentDidMount() {
       var _this3 = this;
 
+      this.getCkEditor();
       $.getJSON('https://ipinfo.io/geo', function (response) {
         var apiKey = "51540f31c56cd698baf3fa00a533d487";
         var location = response.loc.split(",");
@@ -66526,7 +66534,7 @@ function (_React$Component) {
         className: "form-control",
         rows: "5",
         name: "description",
-        id: "description",
+        id: "ckeditor",
         required: true
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "custom-file mb-3"
@@ -66809,6 +66817,11 @@ function (_React$Component) {
         var thumb1 = "/storage/" + item.user.name + "'s Thumbnails/" + item.thumbnail;
         var thumb2 = "/storage/" + "nothumbnail.jpg";
         var thumbnail = item.thumbnail ? thumb1 : thumb2;
+        var desc = item.description && item.description.length > 36 ? item.description.substring(0, 36) : item.description;
+        var readMore = desc.length === 36 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          id: "readMore",
+          href: "list/" + item.id
+        }, "...Find out more") : "";
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "container",
           key: index
@@ -66826,7 +66839,15 @@ function (_React$Component) {
           className: "thumbImg",
           src: thumbnail,
           alt: item.thumbnail
-        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, item.description)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          dangerouslySetInnerHTML: {
+            __html: desc
+          }
+        }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+          style: {
+            color: "#ccccff"
+          }
+        }, readMore)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "card-footer"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
           href: "list/" + item.id,
@@ -66924,10 +66945,38 @@ function (_React$Component) {
     _this.progressRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.trackProgress = _this.trackProgress.bind(_assertThisInitialized(_this));
     _this.mute = _this.mute.bind(_assertThisInitialized(_this));
+    _this["delete"] = _this["delete"].bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Show, [{
+    key: "delete",
+    value: function _delete() {
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      var urlId = window.location.href;
+      var getaVideoId = urlId.lastIndexOf("/");
+      var videoId = urlId.substring(getaVideoId + 1, urlId.length);
+      $.ajax({
+        url: '/deleteAjax/' + videoId,
+        type: 'POST',
+        data: {
+          _token: token,
+          message: "bravo",
+          videoId: videoId
+        },
+        dataType: 'JSON',
+        success: function success(response) {
+          console.log("success");
+          console.log(response);
+          window.location.href = "/list";
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+        }
+      });
+    }
+  }, {
     key: "mute",
     value: function mute() {
       this.setState({
@@ -66938,7 +66987,7 @@ function (_React$Component) {
     key: "trackProgress",
     value: function trackProgress(e) {
       var msClick1 = e.pageX;
-      var surplus = 26;
+      var surplus = 38;
 
       if (e.target.id === "progress-bar") {
         var elemWidth = e.target.offsetWidth;
@@ -67075,7 +67124,8 @@ function (_React$Component) {
         preload: "auto",
         autoPlay: true,
         onTimeUpdate: this.trackTime,
-        muted: this.state.muted
+        muted: this.state.muted,
+        onClick: this.playPause
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
         src: videoUrl,
         type: "video/mp4"
@@ -67129,13 +67179,53 @@ function (_React$Component) {
         className: "card-header"
       }, this.state.video.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-body videoCardBody"
-      }, video), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, video, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        className: "desc",
+        dangerouslySetInnerHTML: {
+          __html: this.state.video.description
+        }
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-footer"
-      }, " Uploaded by ", this.state.user.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      }, "Uploaded by ", this.state.user.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "grid-container2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
         user: this.state.user,
         video: this.state.video,
         token: this.state.token
-      }));
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "btn btn-outline-danger btn-sm",
+        "data-toggle": "modal",
+        "data-target": "#myModalDel"
+      }, "Delete"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal fade",
+        id: "myModalDel"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-dialog modal-sm"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-content"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-header"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", {
+        className: "modal-title"
+      }, "Are you sure you want to delete this video?"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "close",
+        "data-dismiss": "modal"
+      }, "\xD7")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-body"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btn btn-outline-danger btn-sm",
+        onClick: this["delete"]
+      }, "Delete")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-footer"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "btn btn-secondary",
+        "data-dismiss": "modal"
+      }, "Cancel"))))))))));
     }
   }]);
 
@@ -67213,10 +67303,54 @@ function (_React$Component) {
     _this.fileUpload = _this.fileUpload.bind(_assertThisInitialized(_this));
     _this.setStateOnModal = _this.setStateOnModal.bind(_assertThisInitialized(_this));
     _this.textArea = _this.textArea.bind(_assertThisInitialized(_this));
+    _this.formClosePurge = _this.formClosePurge.bind(_assertThisInitialized(_this));
+    _this.modalClose = _this.modalClose.bind(_assertThisInitialized(_this));
+    _this.getCkEditor = _this.getCkEditor.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Modal, [{
+    key: "getCkEditor",
+    value: function getCkEditor() {
+      console.log("got ckeditor");
+      CKEDITOR.replace("ckeditor");
+    }
+  }, {
+    key: "modalClose",
+    value: function modalClose() {
+      this.setState({
+        thumbnail: null
+      });
+    }
+  }, {
+    key: "formClosePurge",
+    value: function formClosePurge(e) {
+      var len = e.target.parentNode.children.length;
+      var formElemArr = [];
+
+      for (var i = 0; i < len; i++) {
+        if (e.target.parentNode.children[i].name) {
+          formElemArr.push(e.target.parentNode.children[i]);
+        }
+
+        if (e.target.parentNode.children[i].children.length > 0) {
+          for (var j = 0; j < e.target.parentNode.children[i].children.length; j++) {
+            if (e.target.parentNode.children[i].children[j].nodeName !== "LABEL") {
+              formElemArr.push(e.target.parentNode.children[i].children[j]);
+            }
+          }
+        }
+      }
+
+      if ($('#myModal').is(':visible')) console.log("yes");
+      this.setState({
+        thumbnail: null
+      });
+      $('#myModal').modal('hide');
+      if (!$('#myModal').is(':visible')) console.log("no");
+      console.log(formElemArr);
+    }
+  }, {
     key: "textArea",
     value: function textArea(e) {
       this.setState({
@@ -67228,6 +67362,7 @@ function (_React$Component) {
   }, {
     key: "setStateOnModal",
     value: function setStateOnModal() {
+      this.getCkEditor();
       this.setState({
         video: this.props.video,
         user: this.props.user,
@@ -67257,6 +67392,7 @@ function (_React$Component) {
         this.setState({
           thumbnail: thumbnail
         });
+        console.log(thumbnail);
       }
     }
   }, {
@@ -67274,7 +67410,7 @@ function (_React$Component) {
       formElements.token = forma.elements[1].value;
       formElements.videoId = forma.elements[2].value;
       formElements.title = forma.elements[3].value;
-      formElements.description = forma.elements[4].value;
+      formElements.description = CKEDITOR.instances.ckeditor.getData();
       formElements.thumbnail = forma.elements[5].files[0];
       formElements.video = forma.elements[6].files[0];
       var myformData = new FormData();
@@ -67330,16 +67466,23 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log(this.state);
+      //console.log(this.state);
+      var thumbHolder = this.state.thumbnail && Object.entries(this.state.thumbnail).length !== 0 ? this.state.thumbnail.fullFileName : this.state.video.thumbnail ? this.state.video.thumbnail : "Choose thumbnail";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "container"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Fading Modal"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Add the \"fade\" class to the modal container if you want the modal to fade in on open and fade out on close."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "container",
+        style: {
+          paddingLeft: "0px"
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
-        className: "btn btn-primary",
+        style: {
+          "float": "left"
+        },
+        className: "btn btn-outline-success btn-sm",
         "data-toggle": "modal",
         "data-target": "#myModal",
         onClick: this.setStateOnModal
-      }, "Open modal"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Update"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal fade",
         id: "myModal"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -67350,7 +67493,7 @@ function (_React$Component) {
         className: "modal-header"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", {
         className: "modal-title"
-      }, "Modal Heading"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      }, "Update video post"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
         className: "close",
         "data-dismiss": "modal"
@@ -67392,7 +67535,7 @@ function (_React$Component) {
         className: "form-control",
         rows: "5",
         name: "description",
-        id: "description",
+        id: "ckeditor",
         onChange: this.textArea,
         required: true,
         value: this.state.video.description
@@ -67404,11 +67547,11 @@ function (_React$Component) {
         id: "thumbnail",
         name: "thumbnail",
         onChange: this.fileUpload,
-        placeholder: this.state.video.thumbnail
+        placeholder: thumbHolder
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "custom-file-label",
         htmlFor: "thumbnail"
-      }, this.state.video.thumbnail ? this.state.video.thumbnail : "Choose thumbnail")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, thumbHolder)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "custom-file mb-3"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "file",
@@ -67424,13 +67567,15 @@ function (_React$Component) {
       }, this.state.video.name ? this.state.video.name : "Choose video")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         className: "btn btn-outline-primary",
         type: "submit",
-        value: "Submit"
+        value: "Submit",
+        onClick: this.formClosePurge
       }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-footer"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
         className: "btn btn-danger",
-        "data-dismiss": "modal"
+        "data-dismiss": "modal",
+        onClick: this.modalClose
       }, "Close"))))));
     }
   }]);

@@ -51,6 +51,9 @@ class List extends React.Component {
             let thumb2 = "/storage/"+"nothumbnail.jpg";
             let thumbnail = item.thumbnail ? thumb1 : thumb2;
 
+            let desc = item.description && item.description.length>36 ? item.description.substring(0, 36) : item.description;
+            let readMore = desc.length===36 ? <a id='readMore' href={"list/"+item.id}>...Find out more</a> : "";
+            
             return <div className="container" key={index}>
 
                     <div className="card">
@@ -59,7 +62,10 @@ class List extends React.Component {
 
                         <div className="card-body">
                             <a href={"list/"+item.id} className="videoName" title={item.name}><img className="thumbImg" src={thumbnail} alt={item.thumbnail} /></a>
-                            <div>{item.description}</div>
+                            
+                            <div dangerouslySetInnerHTML={{__html:desc}}></div>
+                            <span style={{color: "#ccccff"}}>{readMore}</span>
+                            
                         </div>
 
                         <div className="card-footer">

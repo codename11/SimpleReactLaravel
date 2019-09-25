@@ -42,3 +42,5 @@ Route::post('/showAjax','VideoController@ajaxShow');
 //End: Rute za show videa.
 
 Route::post('/uploadUpdate/{id}','VideoController@update');
+
+Route::post('/deleteAjax/{id}','VideoController@ajaxDestroy');

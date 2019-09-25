@@ -21,6 +21,62 @@ class Modal extends React.Component {
         this.fileUpload = this.fileUpload.bind(this);
         this.setStateOnModal = this.setStateOnModal.bind(this);
         this.textArea = this.textArea.bind(this);
+        this.formClosePurge = this.formClosePurge.bind(this);
+        this.modalClose = this.modalClose.bind(this);
+        this.getCkEditor = this.getCkEditor.bind(this);
+    }
+
+    getCkEditor(){
+        console.log("got ckeditor");
+        CKEDITOR.replace("ckeditor");
+    }
+
+    modalClose(){
+
+        this.setState({
+            thumbnail: null,
+        });
+
+    }
+
+    formClosePurge(e){
+
+        let len = e.target.parentNode.children.length;
+        let formElemArr = [];
+        for(let i=0;i<len;i++){
+
+            if(e.target.parentNode.children[i].name){
+
+                formElemArr.push(e.target.parentNode.children[i]);
+
+            }
+
+            if(e.target.parentNode.children[i].children.length>0){
+                
+                for(let j=0;j<e.target.parentNode.children[i].children.length;j++){
+                    
+                    if(e.target.parentNode.children[i].children[j].nodeName!=="LABEL"){
+                        
+                        formElemArr.push(e.target.parentNode.children[i].children[j]);
+
+                    }
+                    
+                }
+                
+            }
+
+        }
+
+        if($('#myModal').is(':visible'))console.log("yes");
+        this.setState({
+            thumbnail: null,
+        });
+
+        $('#myModal').modal('hide');
+        if(!$('#myModal').is(':visible'))console.log("no");
+
+        console.log(formElemArr);
+
     }
 
     textArea(e){
@@ -32,7 +88,7 @@ class Modal extends React.Component {
     }
 
     setStateOnModal(){
-        
+        this.getCkEditor();
         this.setState({
             video: this.props.video,
             user: this.props.user,
@@ -68,7 +124,7 @@ class Modal extends React.Component {
             this.setState({
                 thumbnail: thumbnail,
             });
-
+            console.log(thumbnail);
         }
         
     }
@@ -86,7 +142,7 @@ class Modal extends React.Component {
         formElements.token = forma.elements[1].value;
         formElements.videoId = forma.elements[2].value;
         formElements.title = forma.elements[3].value;
-        formElements.description = forma.elements[4].value;
+        formElements.description = CKEDITOR.instances.ckeditor.getData();
         formElements.thumbnail = forma.elements[5].files[0];
         formElements.video = forma.elements[6].files[0];
 
@@ -149,15 +205,14 @@ class Modal extends React.Component {
 
     render(){
 
-        console.log(this.state);
-
+        //console.log(this.state);
+        const thumbHolder = (this.state.thumbnail && Object.entries(this.state.thumbnail).length !== 0) ? this.state.thumbnail.fullFileName : (this.state.video.thumbnail ? this.state.video.thumbnail : "Choose thumbnail");
+        
         return (
-            <div className="container">
-                <h2>Fading Modal</h2>
-                <p>Add the "fade" class to the modal container if you want the modal to fade in on open and fade out on close.</p>
+            <div className="container" style={{paddingLeft: "0px"}}>
 
-                <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#myModal" onClick={this.setStateOnModal}>
-                    Open modal
+                <button type="button" style={{float: "left"}} className="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#myModal" onClick={this.setStateOnModal}>
+                    Update
                 </button>
 
                 <div className="modal fade" id="myModal">
@@ -165,7 +220,7 @@ class Modal extends React.Component {
                         <div className="modal-content">
                         
                             <div className="modal-header">
-                                <h4 className="modal-title">Modal Heading</h4>
+                                <h4 className="modal-title">Update video post</h4>
                                 <button type="button" className="close" data-dismiss="modal">&times;</button>
                             </div>
                             
@@ -184,12 +239,12 @@ class Modal extends React.Component {
 
                                     <div className="form-group">
                                         <label htmlFor="description">Description:</label>
-                                        <textarea className="form-control" rows="5" name="description" id="description" onChange={this.textArea} required value={this.state.video.description}/>
+                                        <textarea className="form-control" rows="5" name="description" id="ckeditor" onChange={this.textArea} required value={this.state.video.description}/>
                                     </div>
 
                                     <div className="custom-file mb-3">
-                                        <input type="file" className="custom-file-input" id="thumbnail" name="thumbnail" onChange={this.fileUpload} placeholder={this.state.video.thumbnail}/>
-                                        <label className="custom-file-label" htmlFor="thumbnail">{this.state.video.thumbnail ? this.state.video.thumbnail : "Choose thumbnail"}</label>
+                                        <input type="file" className="custom-file-input" id="thumbnail" name="thumbnail" onChange={this.fileUpload} placeholder={thumbHolder}/>
+                                        <label className="custom-file-label" htmlFor="thumbnail">{thumbHolder}</label>
                                     </div>
 
                                     <div className="custom-file mb-3">
@@ -197,14 +252,14 @@ class Modal extends React.Component {
                                         <label className="custom-file-label" htmlFor="video">{this.state.video.name ? this.state.video.name : "Choose video"}</label>
                                     </div>
 
-                                    <input className="btn btn-outline-primary" type="submit" value="Submit" />
+                                    <input className="btn btn-outline-primary" type="submit" value="Submit" onClick={this.formClosePurge}/>
 
                                 </form>
 
                             </div>
                             
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={this.modalClose}>Close</button>
                             </div>
                             
                         </div>

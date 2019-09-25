@@ -29,6 +29,33 @@ class Show extends React.Component {
         this.progressRef = React.createRef();
         this.trackProgress = this.trackProgress.bind(this);
         this.mute = this.mute.bind(this);
+        this.delete = this.delete.bind(this);
+        
+    }
+
+    delete(){
+
+        let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+
+        let urlId = window.location.href;
+        let getaVideoId = urlId.lastIndexOf("/");
+        let videoId = urlId.substring(getaVideoId+1, urlId.length);
+        
+        $.ajax({
+            url: '/deleteAjax/'+videoId,
+            type: 'POST',
+            data: {_token: token, message: "bravo", videoId: videoId},
+            dataType: 'JSON',
+            success: (response) => { 
+                console.log("success");
+                console.log(response);
+                window.location.href = "/list";
+            },
+            error: (response) => {
+                console.log("error");
+                console.log(response);
+            }
+        }); 
         
     }
 
@@ -43,7 +70,7 @@ class Show extends React.Component {
     trackProgress(e){
 
         let msClick1 = e.pageX;
-        let surplus = 26;
+        let surplus = 38;
 
         if(e.target.id==="progress-bar"){
 
@@ -182,7 +209,7 @@ class Show extends React.Component {
 
         let muted = this.state.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
 
-        let video = videoUrl ? <div  className={"videoWrapper"}><video ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted}>
+        let video = videoUrl ? <div  className={"videoWrapper"}><video ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted} onClick={this.playPause}>
             <source src={videoUrl} type="video/mp4"/>
             <source src={videoUrl} type="video/ogg"/>
             Your browser does not support the video tag.
@@ -206,10 +233,55 @@ class Show extends React.Component {
             <div className="container">
                 <div className="card">
                     <div className="card-header">{this.state.video.name}</div>
-                    <div className="card-body videoCardBody">{video}</div>
-                    <div className="card-footer"> Uploaded by {this.state.user.name}</div>
+                    <div className="card-body videoCardBody">
+                        {video}
+
+                        <hr/>
+
+                            <p className="desc" dangerouslySetInnerHTML={{__html:this.state.video.description}}></p>
+
+                    </div>
+                    <div className="card-footer"> 
+                        Uploaded by {this.state.user.name} 
+                        <div className="grid-container2">
+                            
+                            <Modal user={this.state.user} video={this.state.video} token={this.state.token}/>
+                                
+                            <div className="container">
+
+                                <button type="button" className='btn btn-outline-danger btn-sm' data-toggle="modal" data-target="#myModalDel">
+                                    Delete
+                                </button>
+
+                                <div className="modal fade" id="myModalDel">
+                                    <div className="modal-dialog modal-sm">
+                                        <div className="modal-content">
+                                        
+                                            
+                                            <div className="modal-header">
+                                                <h4 className="modal-title">Are you sure you want to delete this video?</h4>
+                                                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                                            </div>
+                                            
+                                            
+                                            <div className="modal-body">
+                                                <button className='btn btn-outline-danger btn-sm' onClick={this.delete}>Delete</button>
+                                            </div>
+                                            
+                                            
+                                            <div className="modal-footer">
+                                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
-                <Modal user={this.state.user} video={this.state.video} token={this.state.token}/>
             </div>
         );
     

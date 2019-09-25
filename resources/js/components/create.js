@@ -30,6 +30,12 @@ class Create extends React.Component {
         this.trackTime = this.trackTime.bind(this);
         this.volume = this.volume.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
+        this.getCkEditor = this.getCkEditor.bind(this);
+    }
+
+    getCkEditor(){
+        console.log("got ckeditor");
+        CKEDITOR.replace("ckeditor");
     }
 
     fullScreen(){
@@ -123,7 +129,7 @@ class Create extends React.Component {
         let forma = e.target;
         let formElements = {};
         formElements.title = forma.elements[0].value;
-        formElements.description = forma.elements[1].value;
+        formElements.description = CKEDITOR.instances.ckeditor.getData();
         formElements.thumbnail = forma.elements[2].files[0];
         formElements.video = forma.elements[3].files[0];
 
@@ -174,7 +180,7 @@ class Create extends React.Component {
     }    
 
     componentDidMount(){
-
+        this.getCkEditor();
         $.getJSON('https://ipinfo.io/geo', (response) => { 
         
             let apiKey ="51540f31c56cd698baf3fa00a533d487";
@@ -285,7 +291,7 @@ class Create extends React.Component {
 
                                     <div className="form-group">
                                         <label htmlFor="description">Description:</label>
-                                        <textarea className="form-control" rows="5" name="description" id="description" required></textarea>
+                                        <textarea className="form-control" rows="5" name="description" id="ckeditor" required></textarea>
                                     </div>
 
                                     <div className="custom-file mb-3">

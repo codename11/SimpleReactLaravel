@@ -88,5 +88,12 @@
             @yield('content')
         </main>
     </div>
+
+<script src="/ckeditor/ckeditor.js"></script>
+<script>
+    if(document.getElementById("ckeditor")){
+        CKEDITOR.replace("ckeditor");
+    }
+</script>
 </body>
 </html>
