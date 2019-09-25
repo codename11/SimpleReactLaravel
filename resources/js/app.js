@@ -15,4 +15,5 @@ require('./bootstrap');
 require('./components/create');
 require('./components/list');
 require('./components/dashboard');
+require('./components/updateModal');
 require('./components/show');

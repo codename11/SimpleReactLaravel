@@ -66126,6 +66126,8 @@ __webpack_require__(/*! ./components/list */ "./resources/js/components/list.js"
 
 __webpack_require__(/*! ./components/dashboard */ "./resources/js/components/dashboard.js");
 
+__webpack_require__(/*! ./components/updateModal */ "./resources/js/components/updateModal.js");
+
 __webpack_require__(/*! ./components/show */ "./resources/js/components/show.js");
 
 /***/ }),
@@ -66804,6 +66806,9 @@ function (_React$Component) {
     value: function render() {
       //console.log(this.state);
       var videos = this.state.videos ? this.state.videos.map(function (item, index) {
+        var thumb1 = "/storage/" + item.user.name + "'s Thumbnails/" + item.thumbnail;
+        var thumb2 = "/storage/" + "nothumbnail.jpg";
+        var thumbnail = item.thumbnail ? thumb1 : thumb2;
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "container",
           key: index
@@ -66819,7 +66824,7 @@ function (_React$Component) {
           title: item.name
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
           className: "thumbImg",
-          src: "/storage/" + item.user.name + "'s Thumbnails/" + (item.thumbnail ? item.thumbnail : "nothumbnail.jpg"),
+          src: thumbnail,
           alt: item.thumbnail
         })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, item.description)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "card-footer"
@@ -66864,6 +66869,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _updateModal_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./updateModal.js */ "./resources/js/components/updateModal.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -66881,6 +66887,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -66906,7 +66913,8 @@ function (_React$Component) {
       currentTime: 0,
       muted: false,
       volume: 0,
-      width: 0
+      width: 0,
+      token: null
     };
     _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
     _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
@@ -66929,34 +66937,35 @@ function (_React$Component) {
   }, {
     key: "trackProgress",
     value: function trackProgress(e) {
+      var msClick1 = e.pageX;
+      var surplus = 26;
+
       if (e.target.id === "progress-bar") {
-        var msClick1 = e.pageX;
         var elemWidth = e.target.offsetWidth;
         var parentWidth = e.target.parentElement.offsetWidth;
         var rewTime = Math.round(msClick1 / (parentWidth / 100).toFixed(2));
         this.setState({
           remaining: this.state.duration - this.state.duration / 100 * rewTime,
           duration: this.state.duration,
-          currentTime: this.state.duration / 100 * rewTime,
+          currentTime: this.state.duration / 100 * rewTime - surplus,
           width: elemWidth / (parentWidth / 100)
         });
-        this.videoRef.current.currentTime = this.state.duration / 100 * rewTime - 10;
+        this.videoRef.current.currentTime = this.state.duration / 100 * rewTime - surplus;
       }
 
       if (e.target.id === "progress") {
-        var _msClick = e.pageX;
         var childWidth = e.target.childNodes[1].offsetWidth;
         var myWidth = e.target.offsetWidth;
 
-        var _rewTime = Math.round(_msClick / (myWidth / 100).toFixed(2));
+        var _rewTime = Math.round(msClick1 / (myWidth / 100).toFixed(2));
 
         this.setState({
           remaining: this.state.duration - this.state.duration / 100 * _rewTime,
           duration: this.state.duration,
-          currentTime: this.state.duration / 100 * _rewTime,
+          currentTime: this.state.duration / 100 * _rewTime - surplus,
           width: childWidth / (myWidth / 100)
         });
-        this.videoRef.current.currentTime = this.state.duration / 100 * _rewTime - 10;
+        this.videoRef.current.currentTime = this.state.duration / 100 * _rewTime - surplus;
       }
     }
   }, {
@@ -67015,6 +67024,9 @@ function (_React$Component) {
       var _this2 = this;
 
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      this.setState({
+        token: token
+      });
       var urlId = window.location.href;
       var getaVideoIdId = urlId.lastIndexOf("/");
       var videoId = urlId.substring(getaVideoIdId + 1, urlId.length);
@@ -67028,8 +67040,7 @@ function (_React$Component) {
         },
         dataType: 'JSON',
         success: function success(response) {
-          console.log("success");
-          console.log(response);
+          console.log("success"); //console.log(response);
 
           _this2.setState({
             video: response.video,
@@ -67120,7 +67131,11 @@ function (_React$Component) {
         className: "card-body videoCardBody"
       }, video), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-footer"
-      }, " Uploaded by ", this.state.user.name)));
+      }, " Uploaded by ", this.state.user.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        user: this.state.user,
+        video: this.state.video,
+        token: this.state.token
+      }));
     }
   }]);
 
@@ -67130,6 +67145,300 @@ function (_React$Component) {
 if (document.getElementById('show')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Show, null), document.getElementById('show'));
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/updateModal.js":
+/*!************************************************!*\
+  !*** ./resources/js/components/updateModal.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var Modal =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Modal, _React$Component);
+
+  function Modal(props) {
+    var _this;
+
+    _classCallCheck(this, Modal);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Modal).call(this, props));
+    _this.state = {
+      user: {},
+      clip: {},
+      thumbnail: {},
+      fullFileName: "",
+      video: {},
+      message: "",
+      token: null
+    }; //this.videoRef = React.createRef();
+
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.fileUpload = _this.fileUpload.bind(_assertThisInitialized(_this));
+    _this.setStateOnModal = _this.setStateOnModal.bind(_assertThisInitialized(_this));
+    _this.textArea = _this.textArea.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Modal, [{
+    key: "textArea",
+    value: function textArea(e) {
+      this.setState({
+        video: _objectSpread({}, this.state.video, {
+          description: e.target.value
+        })
+      });
+    }
+  }, {
+    key: "setStateOnModal",
+    value: function setStateOnModal() {
+      this.setState({
+        video: this.props.video,
+        user: this.props.user,
+        token: this.props.token
+      });
+    }
+  }, {
+    key: "fileUpload",
+    value: function fileUpload(e) {
+      if (e.target.id === "video") {
+        var clip = {};
+        clip.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.clip.filePlaceholder;
+        clip.fileUrl = e.target.value ? e.target.value : this.state.clip.filePlaceholder;
+        clip.fileName = e.target.value.split("\\").pop().split(".")[0];
+        clip.fileExt = e.target.value.split("\\").pop().split(".")[1];
+        this.setState({
+          clip: clip
+        });
+      }
+
+      if (e.target.id === "thumbnail") {
+        var thumbnail = {};
+        thumbnail.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.thumbnail.filePlaceholder;
+        thumbnail.fileUrl = e.target.value ? e.target.value : this.state.thumbnail.filePlaceholder;
+        thumbnail.fileName = e.target.value.split("\\").pop().split(".")[0];
+        thumbnail.fileExt = e.target.value.split("\\").pop().split(".")[1];
+        this.setState({
+          thumbnail: thumbnail
+        });
+      }
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this2 = this;
+
+      e.preventDefault();
+      var urlId = window.location.href;
+      var getaVideoId = urlId.lastIndexOf("/");
+      var videoId = urlId.substring(getaVideoId + 1, urlId.length);
+      var forma = e.target;
+      var formElements = {};
+      formElements.method = forma.elements[0].value;
+      formElements.token = forma.elements[1].value;
+      formElements.videoId = forma.elements[2].value;
+      formElements.title = forma.elements[3].value;
+      formElements.description = forma.elements[4].value;
+      formElements.thumbnail = forma.elements[5].files[0];
+      formElements.video = forma.elements[6].files[0];
+      var myformData = new FormData();
+      myformData.append('method', formElements.method);
+      myformData.append('_token', formElements.token);
+      myformData.append('videoId', formElements.videoId);
+      myformData.append('title', formElements.title);
+      myformData.append('description', formElements.description);
+      myformData.append('thumbnail', formElements.thumbnail);
+      myformData.append('video', formElements.video);
+      myformData.append('message', "bravo");
+      $.ajax({
+        url: '/uploadUpdate/' + videoId,
+        enctype: 'multipart/form-data',
+        type: 'POST',
+        data: myformData,
+        dataType: 'JSON',
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function success(response) {
+          console.log("success");
+          console.log(response);
+          /*this.setState({
+              video: response.video,
+              user: response.user,
+              message: response.message,
+          });*/
+
+          formElements.title = null;
+          formElements.description = null;
+          formElements.video = null;
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+
+          _this2.setState({
+            message: response.message
+          });
+        }
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.setState({
+        video: this.props.video,
+        user: this.props.user,
+        token: this.props.token
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      console.log(this.state);
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Fading Modal"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Add the \"fade\" class to the modal container if you want the modal to fade in on open and fade out on close."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "btn btn-primary",
+        "data-toggle": "modal",
+        "data-target": "#myModal",
+        onClick: this.setStateOnModal
+      }, "Open modal"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal fade",
+        id: "myModal"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-dialog"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-content"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-header"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", {
+        className: "modal-title"
+      }, "Modal Heading"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "close",
+        "data-dismiss": "modal"
+      }, "\xD7")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-body"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        onSubmit: this.handleSubmit,
+        encType: "multipart/form-data"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "hidden",
+        name: "_method",
+        value: "PUT"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "hidden",
+        name: "_token",
+        defaultValue: this.state.token
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        id: "videoId",
+        type: "hidden",
+        name: "videoId",
+        defaultValue: this.state.video.id
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "title"
+      }, "Title:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        maxLength: "24",
+        className: "form-control",
+        name: "title",
+        id: "title",
+        required: true,
+        defaultValue: this.state.video.title
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "description"
+      }, "Description:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
+        className: "form-control",
+        rows: "5",
+        name: "description",
+        id: "description",
+        onChange: this.textArea,
+        required: true,
+        value: this.state.video.description
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "custom-file mb-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        className: "custom-file-input",
+        id: "thumbnail",
+        name: "thumbnail",
+        onChange: this.fileUpload,
+        placeholder: this.state.video.thumbnail
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "custom-file-label",
+        htmlFor: "thumbnail"
+      }, this.state.video.thumbnail ? this.state.video.thumbnail : "Choose thumbnail")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "custom-file mb-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        className: "custom-file-input",
+        id: "video",
+        name: "video",
+        onChange: this.fileUpload,
+        placeholder: this.state.video.name,
+        disabled: true
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "custom-file-label",
+        htmlFor: "video"
+      }, this.state.video.name ? this.state.video.name : "Choose video")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        className: "btn btn-outline-primary",
+        type: "submit",
+        value: "Submit"
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-footer"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "btn btn-danger",
+        "data-dismiss": "modal"
+      }, "Close"))))));
+    }
+  }]);
+
+  return Modal;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["default"] = (Modal);
 
 /***/ }),
 

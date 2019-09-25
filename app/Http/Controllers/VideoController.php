@@ -178,7 +178,111 @@ class VideoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if($request->ajax()){
+
+            $video = Videos::find($request->videoId);  
+            
+            $validator = \Validator::make($request->all(), [
+                "title" => "required|min:6|max:24",
+                "description" => "required|min:6|max:255",
+            ]);
+
+            if ($validator->passes()){
+
+                $filenameWithExt = null;
+                $filename = null;
+                $extension = null;
+                $fileNameToStore = null;
+                $path = null;
+
+                if($request->hasFile("video")){
+
+                    $filenameWithExt = $request->file("video")->getClientOriginalName();
+                    $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+                    $extension = $request->file("video")->getClientOriginalExtension();
+                    $fileNameToStore = $filename."_".time().".".$extension;
+                    $path = $request->file("video")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStore);
+                    
+                    $video->name = $fileNameToStore;
+
+                }
+
+                $filenameWithExtThumb = null;
+                $filenameThumb = null;
+                $extensionThumb = null;
+                $fileNameToStoreThumb = null;
+                $image_resize = null;
+                $pathThumb = null;
+
+                if($request->hasFile("thumbnail")){
+                    
+                    $filenameWithExtThumb = $request->file("thumbnail")->getClientOriginalName();
+                    $filenameThumb = pathinfo($filenameWithExtThumb, PATHINFO_FILENAME);
+                    $extensionThumb = $request->file("thumbnail")->getClientOriginalExtension();
+                    $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
+
+                    $image_resize = Image::make($request->file("thumbnail")->getRealPath());              
+                    $image_resize->resize(320, 240);
+                    
+                    $pathThumb = $image_resize->save(public_path("storage/".auth()->user()->name."'s Thumbnails/".$fileNameToStoreThumb));
+                    
+                    if($video->thumbnail!=="../nothumbnail.jpg"){
+                        
+                        unlink(public_path("storage/".auth()->user()->name."'s Thumbnails/".$video->thumbnail));
+                        $video->thumbnail = $fileNameToStoreThumb;
+
+                    }
+
+                    if($video->thumbnail==="../nothumbnail.jpg"){
+                        
+                        $video->thumbnail = $fileNameToStoreThumb;
+                        
+                    }
+                
+                }
+                else{
+
+                    if($video->thumbnail!=="../nothumbnail.jpg"){
+                        
+                        unlink(public_path("storage/".auth()->user()->name."'s Thumbnails/".$video->thumbnail));
+                        $video->thumbnail = "../nothumbnail.jpg";
+
+                    }
+
+                    if($video->thumbnail==="../nothumbnail.jpg"){
+                        
+                        $video->thumbnail = "../nothumbnail.jpg";
+                        
+                    }
+
+                }
+
+                $video->title = $request->input("title");
+                $video->description = $request->input("description");
+                $video->save();
+                
+                $response = array(
+                    "message" => "A success! File uploaded!",
+                    "video" => $video,
+                    "user" => auth()->user(),
+                );
+                
+                return response()->json($response);
+
+            }
+
+            if ($validator->fails()){
+
+                $response = array(
+                    "request" => $request->all(),
+                    "video" => $video,
+                    "message" => "An error. Validation failed.",
+                );
+
+            }
+
+        }
+
     }
 
     /**
@@ -189,6 +293,14 @@ class VideoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        /*if($request->ajax()){
+
+            $video = Videos::find($request->videoId);  
+            if($video->thumbnail!="nothumbnail.jpg"){
+                Storage::delete("public/images/".$article->image);
+            }
+
+        }*/
+        
     }
 }

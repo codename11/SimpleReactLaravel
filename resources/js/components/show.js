@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Modal from './updateModal.js';
 
 class Show extends React.Component {
     
@@ -17,6 +18,7 @@ class Show extends React.Component {
             muted: false,
             volume: 0,
             width: 0,
+            token: null,
 
         };
         this.playPause = this.playPause.bind(this);
@@ -40,9 +42,11 @@ class Show extends React.Component {
 
     trackProgress(e){
 
+        let msClick1 = e.pageX;
+        let surplus = 26;
+
         if(e.target.id==="progress-bar"){
 
-            let msClick1 = e.pageX;
             let elemWidth = e.target.offsetWidth; 
             let parentWidth = e.target.parentElement.offsetWidth;
             let rewTime = Math.round(msClick1/(parentWidth/100).toFixed(2));
@@ -50,16 +54,15 @@ class Show extends React.Component {
             this.setState({
                 remaining: this.state.duration - ((this.state.duration/100)*rewTime),
                 duration: this.state.duration,
-                currentTime: ((this.state.duration/100)*rewTime),
+                currentTime: ((this.state.duration/100)*rewTime)-surplus,
                 width: (elemWidth/(parentWidth/100)),
             });
-            this.videoRef.current.currentTime = ((this.state.duration/100)*rewTime)-10;
+            this.videoRef.current.currentTime = ((this.state.duration/100)*rewTime)-surplus;
 
         }
 
         if(e.target.id==="progress"){
 
-            let msClick1 = e.pageX;
             let childWidth = e.target.childNodes[1].offsetWidth; 
             let myWidth = e.target.offsetWidth;
             let rewTime = Math.round(msClick1/(myWidth/100).toFixed(2));
@@ -67,10 +70,10 @@ class Show extends React.Component {
             this.setState({
                 remaining: this.state.duration - ((this.state.duration/100)*rewTime),
                 duration: this.state.duration,
-                currentTime: ((this.state.duration/100)*rewTime),
+                currentTime: ((this.state.duration/100)*rewTime)-surplus,
                 width: (childWidth/(myWidth/100)),
             });
-            this.videoRef.current.currentTime = ((this.state.duration/100)*rewTime)-10;
+            this.videoRef.current.currentTime = ((this.state.duration/100)*rewTime)-surplus;
 
         }
         
@@ -132,6 +135,10 @@ class Show extends React.Component {
         
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
         
+        this.setState({
+            token: token,
+        });
+
         let urlId = window.location.href;
         let getaVideoIdId = urlId.lastIndexOf("/");
         let videoId = urlId.substring(getaVideoIdId+1, urlId.length);
@@ -143,7 +150,7 @@ class Show extends React.Component {
             dataType: 'JSON',
             success: (response) => { 
                 console.log("success");
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     video: response.video,
                     user: response.user,
@@ -202,6 +209,7 @@ class Show extends React.Component {
                     <div className="card-body videoCardBody">{video}</div>
                     <div className="card-footer"> Uploaded by {this.state.user.name}</div>
                 </div>
+                <Modal user={this.state.user} video={this.state.video} token={this.state.token}/>
             </div>
         );
     
