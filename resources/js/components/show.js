@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Modal from './updateModal.js';
+import UpdateModal from './updateModal.js';
+import DeleteModal from './deleteModal.js';
 
 class Show extends React.Component {
     
@@ -245,39 +246,9 @@ class Show extends React.Component {
                         Uploaded by {this.state.user.name} 
                         <div className="grid-container2">
                             
-                            <Modal user={this.state.user} video={this.state.video} token={this.state.token}/>
+                            <UpdateModal user={this.state.user} video={this.state.video} token={this.state.token}/>
                                 
-                            <div className="container">
-
-                                <button type="button" className='btn btn-outline-danger btn-sm' data-toggle="modal" data-target="#myModalDel">
-                                    Delete
-                                </button>
-
-                                <div className="modal fade" id="myModalDel">
-                                    <div className="modal-dialog modal-sm">
-                                        <div className="modal-content">
-                                        
-                                            
-                                            <div className="modal-header">
-                                                <h4 className="modal-title">Are you sure you want to delete this video?</h4>
-                                                <button type="button" className="close" data-dismiss="modal">&times;</button>
-                                            </div>
-                                            
-                                            
-                                            <div className="modal-body">
-                                                <button className='btn btn-outline-danger btn-sm' onClick={this.delete}>Delete</button>
-                                            </div>
-                                            
-                                            
-                                            <div className="modal-footer">
-                                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
+                            <DeleteModal delete={this.delete}/>
 
                         </div>
                     </div>

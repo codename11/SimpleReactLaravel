@@ -1,7 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-class Modal extends React.Component {
+class UpdateModal extends React.Component {
     
     constructor(props) {
 
@@ -273,4 +272,4 @@ class Modal extends React.Component {
 
 }
 
-export default Modal;
+export default UpdateModal;
