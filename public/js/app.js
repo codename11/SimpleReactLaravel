@@ -66997,6 +66997,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _deleteModal_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./deleteModal.js */ "./resources/js/components/deleteModal.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -67051,10 +67057,119 @@ function (_React$Component) {
     _this.trackProgress = _this.trackProgress.bind(_assertThisInitialized(_this));
     _this.mute = _this.mute.bind(_assertThisInitialized(_this));
     _this["delete"] = _this["delete"].bind(_assertThisInitialized(_this));
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.textArea = _this.textArea.bind(_assertThisInitialized(_this));
+    _this.formClosePurge = _this.formClosePurge.bind(_assertThisInitialized(_this));
+    _this.modalClose = _this.modalClose.bind(_assertThisInitialized(_this));
     return _this;
-  }
+  } //Handles update
+
 
   _createClass(Show, [{
+    key: "modalClose",
+    value: function modalClose() {
+      this.setState({
+        thumbnail: null
+      });
+    }
+  }, {
+    key: "formClosePurge",
+    value: function formClosePurge() {
+      var forma = document.getElementById("updateForm");
+      var len = forma.children.length;
+      var formElemArr = [];
+
+      for (var i = 0; i < len; i++) {
+        if (forma.children[i].name) {
+          formElemArr.push(forma.children[i]);
+        }
+
+        if (forma.children[i].children.length > 0) {
+          for (var j = 0; j < forma.children[i].children.length; j++) {
+            if (forma.children[i].children[j].nodeName !== "LABEL") {
+              formElemArr.push(forma.children[i].children[j]);
+            }
+          }
+        }
+      }
+
+      if ($('#myModal').is(':visible')) console.log("yes");
+      this.setState({
+        thumbnail: null
+      });
+      $('#myModal').modal('hide');
+      if (!$('#myModal').is(':visible')) console.log("no");
+    }
+  }, {
+    key: "textArea",
+    value: function textArea(e) {
+      this.setState({
+        video: _objectSpread({}, this.state.video, {
+          description: e.target.value
+        })
+      });
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit() {
+      var _this2 = this;
+
+      var urlId = window.location.href;
+      var getaVideoId = urlId.lastIndexOf("/");
+      var videoId = urlId.substring(getaVideoId + 1, urlId.length);
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      var forma = document.getElementById("updateForm");
+      var formElements = {};
+      formElements.method = forma.elements[0].value;
+      formElements.token = forma.elements[1].value;
+      formElements.videoId = forma.elements[2].value;
+      formElements.title = forma.elements[3].value;
+      formElements.description = CKEDITOR.instances.ckeditor.getData();
+      formElements.thumbnail = forma.elements[5].files[0];
+      formElements.video = forma.elements[6].files[0];
+      var myformData = new FormData();
+      myformData.append('method', formElements.method);
+      myformData.append('_token', token);
+      myformData.append('videoId', formElements.videoId);
+      myformData.append('title', formElements.title);
+      myformData.append('description', formElements.description);
+      myformData.append('thumbnail', formElements.thumbnail);
+      myformData.append('video', formElements.video);
+      myformData.append('message', "bravo");
+      $.ajax({
+        url: '/uploadUpdate/' + videoId,
+        enctype: 'multipart/form-data',
+        type: 'POST',
+        data: myformData,
+        dataType: 'JSON',
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function success(response) {
+          console.log("success"); //console.log(response);
+
+          _this2.setState({
+            video: response.video,
+            user: response.user,
+            message: response.message
+          });
+
+          formElements.title = null;
+          formElements.description = null;
+          formElements.video = null;
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+
+          _this2.setState({
+            message: response.message
+          });
+        }
+      });
+    } //
+
+  }, {
     key: "delete",
     value: function _delete() {
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
@@ -67175,7 +67290,7 @@ function (_React$Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
+      var _this3 = this;
 
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       this.setState({
@@ -67196,7 +67311,7 @@ function (_React$Component) {
         success: function success(response) {
           console.log("success"); //console.log(response);
 
-          _this2.setState({
+          _this3.setState({
             video: response.video,
             user: response.user
           });
@@ -67294,6 +67409,10 @@ function (_React$Component) {
       }, "Uploaded by ", this.state.user.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container2"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        modalClose: this.modalClose,
+        formClosePurge: this.formClosePurge,
+        textArea: this.textArea,
+        handleSubmit: this.handleSubmit,
         user: this.state.user,
         video: this.state.video,
         token: this.state.token
@@ -67325,12 +67444,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -67361,22 +67474,13 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(UpdateModal).call(this, props));
     _this.state = {
-      user: {},
-      clip: {},
       thumbnail: {},
       fullFileName: "",
-      video: {},
       message: "",
       token: null
-    }; //this.videoRef = React.createRef();
-
-    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
-    _this.fileUpload = _this.fileUpload.bind(_assertThisInitialized(_this));
-    _this.setStateOnModal = _this.setStateOnModal.bind(_assertThisInitialized(_this));
-    _this.textArea = _this.textArea.bind(_assertThisInitialized(_this));
-    _this.formClosePurge = _this.formClosePurge.bind(_assertThisInitialized(_this));
-    _this.modalClose = _this.modalClose.bind(_assertThisInitialized(_this));
+    };
     _this.getCkEditor = _this.getCkEditor.bind(_assertThisInitialized(_this));
+    _this.setStateOnModal = _this.setStateOnModal.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -67384,51 +67488,13 @@ function (_React$Component) {
     key: "getCkEditor",
     value: function getCkEditor() {
       console.log("got ckeditor");
-      CKEDITOR.replace("ckeditor");
-    }
-  }, {
-    key: "modalClose",
-    value: function modalClose() {
-      this.setState({
-        thumbnail: null
-      });
-    }
-  }, {
-    key: "formClosePurge",
-    value: function formClosePurge(e) {
-      var len = e.target.parentNode.children.length;
-      var formElemArr = [];
+      var editor = CKEDITOR.instances["ckeditor"];
 
-      for (var i = 0; i < len; i++) {
-        if (e.target.parentNode.children[i].name) {
-          formElemArr.push(e.target.parentNode.children[i]);
-        }
-
-        if (e.target.parentNode.children[i].children.length > 0) {
-          for (var j = 0; j < e.target.parentNode.children[i].children.length; j++) {
-            if (e.target.parentNode.children[i].children[j].nodeName !== "LABEL") {
-              formElemArr.push(e.target.parentNode.children[i].children[j]);
-            }
-          }
-        }
+      if (editor) {
+        editor.destroy(true);
       }
 
-      if ($('#myModal').is(':visible')) console.log("yes");
-      this.setState({
-        thumbnail: null
-      });
-      $('#myModal').modal('hide');
-      if (!$('#myModal').is(':visible')) console.log("no");
-      console.log(formElemArr);
-    }
-  }, {
-    key: "textArea",
-    value: function textArea(e) {
-      this.setState({
-        video: _objectSpread({}, this.state.video, {
-          description: e.target.value
-        })
-      });
+      CKEDITOR.replace("ckeditor");
     }
   }, {
     key: "setStateOnModal",
@@ -67441,104 +67507,13 @@ function (_React$Component) {
       });
     }
   }, {
-    key: "fileUpload",
-    value: function fileUpload(e) {
-      if (e.target.id === "video") {
-        var clip = {};
-        clip.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.clip.filePlaceholder;
-        clip.fileUrl = e.target.value ? e.target.value : this.state.clip.filePlaceholder;
-        clip.fileName = e.target.value.split("\\").pop().split(".")[0];
-        clip.fileExt = e.target.value.split("\\").pop().split(".")[1];
-        this.setState({
-          clip: clip
-        });
-      }
-
-      if (e.target.id === "thumbnail") {
-        var thumbnail = {};
-        thumbnail.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.thumbnail.filePlaceholder;
-        thumbnail.fileUrl = e.target.value ? e.target.value : this.state.thumbnail.filePlaceholder;
-        thumbnail.fileName = e.target.value.split("\\").pop().split(".")[0];
-        thumbnail.fileExt = e.target.value.split("\\").pop().split(".")[1];
-        this.setState({
-          thumbnail: thumbnail
-        });
-        console.log(thumbnail);
-      }
-    }
-  }, {
-    key: "handleSubmit",
-    value: function handleSubmit(e) {
-      var _this2 = this;
-
-      e.preventDefault();
-      var urlId = window.location.href;
-      var getaVideoId = urlId.lastIndexOf("/");
-      var videoId = urlId.substring(getaVideoId + 1, urlId.length);
-      var forma = e.target;
-      var formElements = {};
-      formElements.method = forma.elements[0].value;
-      formElements.token = forma.elements[1].value;
-      formElements.videoId = forma.elements[2].value;
-      formElements.title = forma.elements[3].value;
-      formElements.description = CKEDITOR.instances.ckeditor.getData();
-      formElements.thumbnail = forma.elements[5].files[0];
-      formElements.video = forma.elements[6].files[0];
-      var myformData = new FormData();
-      myformData.append('method', formElements.method);
-      myformData.append('_token', formElements.token);
-      myformData.append('videoId', formElements.videoId);
-      myformData.append('title', formElements.title);
-      myformData.append('description', formElements.description);
-      myformData.append('thumbnail', formElements.thumbnail);
-      myformData.append('video', formElements.video);
-      myformData.append('message', "bravo");
-      $.ajax({
-        url: '/uploadUpdate/' + videoId,
-        enctype: 'multipart/form-data',
-        type: 'POST',
-        data: myformData,
-        dataType: 'JSON',
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function success(response) {
-          console.log("success");
-          console.log(response);
-          /*this.setState({
-              video: response.video,
-              user: response.user,
-              message: response.message,
-          });*/
-
-          formElements.title = null;
-          formElements.description = null;
-          formElements.video = null;
-        },
-        error: function error(response) {
-          console.log("error");
-          console.log(response);
-
-          _this2.setState({
-            message: response.message
-          });
-        }
-      });
-    }
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.setState({
-        video: this.props.video,
-        user: this.props.user,
-        token: this.props.token
-      });
-    }
-  }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       //console.log(this.state);
-      var thumbHolder = this.state.thumbnail && Object.entries(this.state.thumbnail).length !== 0 ? this.state.thumbnail.fullFileName : this.state.video.thumbnail ? this.state.video.thumbnail : "Choose thumbnail";
+      var thumbHolder = this.props.video.thumbnail && Object.entries(this.props.video.thumbnail).length !== 0 ? this.props.video.thumbnail : this.props.video.thumbnail ? this.props.video.thumbnail : "Choose thumbnail";
+      var description = this.state && this.props.video && this.props.video.description ? this.props.video.description : "";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container",
         style: {
@@ -67571,7 +67546,8 @@ function (_React$Component) {
       }, "\xD7")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-body"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
-        onSubmit: this.handleSubmit,
+        id: "updateForm",
+        method: "POST",
         encType: "multipart/form-data"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "hidden",
@@ -67580,12 +67556,12 @@ function (_React$Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "hidden",
         name: "_token",
-        defaultValue: this.state.token
+        defaultValue: this.props.token
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         id: "videoId",
         type: "hidden",
         name: "videoId",
-        defaultValue: this.state.video.id
+        defaultValue: this.props.video.id
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -67597,7 +67573,7 @@ function (_React$Component) {
         name: "title",
         id: "title",
         required: true,
-        defaultValue: this.state.video.title
+        defaultValue: this.props.video.title
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -67607,9 +67583,9 @@ function (_React$Component) {
         rows: "5",
         name: "description",
         id: "ckeditor",
-        onChange: this.textArea,
+        onChange: this.props.textArea,
         required: true,
-        value: this.state.video.description
+        value: description ? description : ""
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "custom-file mb-3"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -67617,7 +67593,6 @@ function (_React$Component) {
         className: "custom-file-input",
         id: "thumbnail",
         name: "thumbnail",
-        onChange: this.fileUpload,
         placeholder: thumbHolder
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "custom-file-label",
@@ -67629,24 +67604,31 @@ function (_React$Component) {
         className: "custom-file-input",
         id: "video",
         name: "video",
-        onChange: this.fileUpload,
-        placeholder: this.state.video.name,
+        placeholder: this.props.video.name,
         disabled: true
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "custom-file-label",
         htmlFor: "video"
-      }, this.state.video.name ? this.state.video.name : "Choose video")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        className: "btn btn-outline-primary",
-        type: "submit",
-        value: "Submit",
-        onClick: this.formClosePurge
-      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, this.props.video.name ? this.props.video.name : "Choose video")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-footer"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btn btn-outline-primary",
+        style: {
+          position: "absolute",
+          left: "0px",
+          marginLeft: "1rem"
+        },
+        onClick: function onClick() {
+          _this2.props.handleSubmit();
+
+          _this2.props.formClosePurge();
+        },
+        "data-dismiss": "modal"
+      }, "Update"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
         className: "btn btn-danger",
         "data-dismiss": "modal",
-        onClick: this.modalClose
+        onClick: this.props.modalClose
       }, "Close"))))));
     }
   }]);

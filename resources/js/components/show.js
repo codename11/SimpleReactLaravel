@@ -31,9 +31,136 @@ class Show extends React.Component {
         this.trackProgress = this.trackProgress.bind(this);
         this.mute = this.mute.bind(this);
         this.delete = this.delete.bind(this);
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.textArea = this.textArea.bind(this);
+        this.formClosePurge = this.formClosePurge.bind(this);
+        this.modalClose = this.modalClose.bind(this);
+
+    }
+
+//Handles update
+    modalClose(){
+
+        this.setState({
+            thumbnail: null,
+        });
+
+    }
+
+    formClosePurge(){
+
+        let forma = document.getElementById("updateForm");
+        let len = forma.children.length;
+        let formElemArr = [];
+        for(let i=0;i<len;i++){
+
+            if(forma.children[i].name){
+
+                formElemArr.push(forma.children[i]);
+
+            }
+
+            if(forma.children[i].children.length>0){
+                
+                for(let j=0;j<forma.children[i].children.length;j++){
+                    
+                    if(forma.children[i].children[j].nodeName!=="LABEL"){
+                        
+                        formElemArr.push(forma.children[i].children[j]);
+
+                    }
+                    
+                }
+                
+            }
+
+        }
+
+        if($('#myModal').is(':visible'))console.log("yes");
+        this.setState({
+            thumbnail: null,
+        });
+
+        $('#myModal').modal('hide');
+        if(!$('#myModal').is(':visible'))console.log("no");
+
+    }
+
+    textArea(e){
+        
+        this.setState({
+            video: {...this.state.video, description: e.target.value},
+        });
         
     }
 
+    handleSubmit() {
+        
+        let urlId = window.location.href;
+        let getaVideoId = urlId.lastIndexOf("/");
+        let videoId = urlId.substring(getaVideoId+1, urlId.length);
+
+        let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+        
+        let forma = document.getElementById("updateForm");
+        let formElements = {};
+        formElements.method = forma.elements[0].value;
+        formElements.token = forma.elements[1].value;
+        formElements.videoId = forma.elements[2].value;
+        formElements.title = forma.elements[3].value;
+        formElements.description = CKEDITOR.instances.ckeditor.getData();
+        formElements.thumbnail = forma.elements[5].files[0];
+        formElements.video = forma.elements[6].files[0];
+
+        let myformData = new FormData();
+        myformData.append('method', formElements.method);
+        myformData.append('_token', token);
+        myformData.append('videoId', formElements.videoId);
+        myformData.append('title', formElements.title);
+        myformData.append('description', formElements.description);
+        myformData.append('thumbnail', formElements.thumbnail);
+        myformData.append('video', formElements.video);
+        myformData.append('message', "bravo");
+        
+        $.ajax({
+            url: '/uploadUpdate/'+videoId,
+            enctype: 'multipart/form-data',
+            type: 'POST',
+            data: myformData,
+            dataType: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: (response) => { 
+
+                console.log("success");
+                //console.log(response);
+                this.setState({
+                    video: response.video,
+                    user: response.user,
+                    message: response.message,
+                });
+
+                formElements.title = null;
+                formElements.description = null;
+                formElements.video = null;
+                
+            },
+            error: (response) => {
+
+                console.log("error");
+                console.log(response);
+                this.setState({
+                    message: response.message,
+                });
+
+            }
+
+        });
+
+    }
+//
     delete(){
 
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
@@ -229,7 +356,7 @@ class Show extends React.Component {
             
             </div>
         </div> : "";
-
+        
         return (
             <div className="container">
                 <div className="card">
@@ -246,7 +373,7 @@ class Show extends React.Component {
                         Uploaded by {this.state.user.name} 
                         <div className="grid-container2">
                             
-                            <UpdateModal user={this.state.user} video={this.state.video} token={this.state.token}/>
+                            <UpdateModal modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
                                 
                             <DeleteModal delete={this.delete}/>
 

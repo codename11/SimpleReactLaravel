@@ -176,7 +176,7 @@ class VideoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function ajaxUpdate(Request $request)
     {
         if($request->ajax()){
 
@@ -244,8 +244,8 @@ class VideoController extends Controller
 
                     if($video->thumbnail!=="../nothumbnail.jpg"){
                         
-                        unlink(public_path("storage/".auth()->user()->name."'s Thumbnails/".$video->thumbnail));
-                        $video->thumbnail = "../nothumbnail.jpg";
+                        //unlink(public_path("storage/".auth()->user()->name."'s Thumbnails/".$video->thumbnail));
+                        //$video->thumbnail = "../nothumbnail.jpg";
 
                     }
 
