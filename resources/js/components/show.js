@@ -20,6 +20,9 @@ class Show extends React.Component {
             volume: 0,
             width: 0,
             token: null,
+            permissions: null,
+            next: null,
+            prev: null,
 
         };
         this.playPause = this.playPause.bind(this);
@@ -309,6 +312,9 @@ class Show extends React.Component {
                 this.setState({
                     video: response.video,
                     user: response.user,
+                    permissions: response.permissions,
+                    next: response.next,
+                    prev: response.prev,
                 }); 
                 
             },
@@ -356,11 +362,25 @@ class Show extends React.Component {
             
             </div>
         </div> : "";
-        
+
+        let UpdateAndDelete = this.state.permissions ? <div className="grid-container2">
+                <UpdateModal modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
+                <DeleteModal delete={this.delete}/>
+            </div> : "";
+
         return (
             <div className="container">
                 <div className="card">
-                    <div className="card-header">{this.state.video.name}</div>
+                    <div className="card-header">
+
+                        <a href='/list' className='btn goback'><i className="fas fa-angle-double-left"></i></a>
+                        <div className='nextPrev'>
+                            <a href={"/list/"+this.state.prev} className='btn prev'><i className='fas fa-arrow-left'></i></a>
+                            <a href={"/list/"+this.state.next} className='btn next'><i className='fas fa-arrow-right'></i></a>
+                        </div>
+                        {this.state.video.name}
+
+                    </div>
                     <div className="card-body videoCardBody">
                         {video}
 
@@ -371,13 +391,9 @@ class Show extends React.Component {
                     </div>
                     <div className="card-footer"> 
                         Uploaded by {this.state.user.name} 
-                        <div className="grid-container2">
-                            
-                            <UpdateModal modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
-                                
-                            <DeleteModal delete={this.delete}/>
-
-                        </div>
+                        
+                        {UpdateAndDelete}
+                        
                     </div>
                 </div>
             </div>

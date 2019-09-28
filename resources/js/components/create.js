@@ -245,30 +245,6 @@ class Create extends React.Component {
         const user = this.state.user ? this.state.user : "";
         const temp = this.state.weather.main ? (this.state.weather.main.temp-273.15).toFixed(2) : "";
         
-        let PlayPause = this.state.switch ? "fa fa-pause-circle" : "fa fa-play-circle";
-        
-        let minutes = Math.floor(this.state.remaining/60);
-        minutes = (""+minutes).length===1 ? "0"+minutes : minutes;//Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
-        let seconds = Math.floor(this.state.remaining%60);
-        seconds = (""+seconds).length===1 ? "0"+seconds : seconds;//Same as mins, but for seconds.
-        let remainingTime = minutes+" : "+seconds;
-
-        let videoUrl = this.state.video && this.state.video.name ? "/storage/"+this.state.user.name+"'s Videos/"+this.state.video.name : null;
-        let video = videoUrl ? <div  className={"videoWrapper"}><video  ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime}>
-            <source src={videoUrl} type="video/mp4"/>
-            <source src={videoUrl} type="video/ogg"/>
-            Your browser does not support the video tag.
-            </video>
-            <div id="controls">
-                
-                <button className="btnV" onClick={this.playPause}><i className={PlayPause}></i></button>
-                <div className="time">{remainingTime}</div>
-                <input type="range" className="custom-range" id="customRange" name="points1" onChange={this.volume}/>
-                <div className="time" onClick={this.fullScreen}><i className="fa fa-expand"></i></div>
-            
-            </div>
-        </div> : "";
-        
         let message = this.state.message ? ((this.state.message.indexOf("success") > -1) ? <div className={"alert alert-success"}>{this.state.message}</div> : <div className={"alert alert-warning"}>{this.state.message}</div>) : "";
         
         return (
@@ -306,8 +282,6 @@ class Create extends React.Component {
 
                                     <input className="btn btn-outline-primary" type="submit" value="Submit" />
                                 </form>
-                                
-                                {video}
 
                             </div>
                             <div className="card-footer">Go at it. Upload an video!</div>

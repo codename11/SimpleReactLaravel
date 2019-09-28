@@ -66452,49 +66452,6 @@ function (_React$Component) {
       //console.log(this.state);
       var user = this.state.user ? this.state.user : "";
       var temp = this.state.weather.main ? (this.state.weather.main.temp - 273.15).toFixed(2) : "";
-      var PlayPause = this.state["switch"] ? "fa fa-pause-circle" : "fa fa-play-circle";
-      var minutes = Math.floor(this.state.remaining / 60);
-      minutes = ("" + minutes).length === 1 ? "0" + minutes : minutes; //Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
-
-      var seconds = Math.floor(this.state.remaining % 60);
-      seconds = ("" + seconds).length === 1 ? "0" + seconds : seconds; //Same as mins, but for seconds.
-
-      var remainingTime = minutes + " : " + seconds;
-      var videoUrl = this.state.video && this.state.video.name ? "/storage/" + this.state.user.name + "'s Videos/" + this.state.video.name : null;
-      var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "videoWrapper"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("video", {
-        ref: this.videoRef,
-        preload: "auto",
-        autoPlay: true,
-        onTimeUpdate: this.trackTime
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
-        src: videoUrl,
-        type: "video/mp4"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
-        src: videoUrl,
-        type: "video/ogg"
-      }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        id: "controls"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-        className: "btnV",
-        onClick: this.playPause
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: PlayPause
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "time"
-      }, remainingTime), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        type: "range",
-        className: "custom-range",
-        id: "customRange",
-        name: "points1",
-        onChange: this.volume
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "time",
-        onClick: this.fullScreen
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "fa fa-expand"
-      })))) : "";
       var message = this.state.message ? this.state.message.indexOf("success") > -1 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "alert alert-success"
       }, this.state.message) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -66564,7 +66521,7 @@ function (_React$Component) {
         className: "btn btn-outline-primary",
         type: "submit",
         value: "Submit"
-      })), video), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-footer"
       }, "Go at it. Upload an video!")))));
     }
@@ -66920,8 +66877,8 @@ function (_React$Component) {
         var thumb1 = "/storage/" + item.user.name + "'s Thumbnails/" + item.thumbnail;
         var thumb2 = "/storage/" + "nothumbnail.jpg";
         var thumbnail = item.thumbnail ? thumb1 : thumb2;
-        var desc = item.description && item.description.length > 36 ? item.description.substring(0, 36) : item.description;
-        var readMore = desc.length === 36 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        var desc = item.description && item.description.length > 56 ? item.description.substring(0, 56) : item.description;
+        var readMore = desc.length === 56 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
           id: "readMore",
           href: "list/" + item.id
         }, "...Find out more") : "";
@@ -66945,11 +66902,10 @@ function (_React$Component) {
         })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           dangerouslySetInnerHTML: {
             __html: desc
-          }
+          },
+          className: "descReadMore"
         }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-          style: {
-            color: "#ccccff"
-          }
+          className: "linkReadMore descReadMore"
         }, readMore)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "card-footer"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
@@ -67046,7 +67002,10 @@ function (_React$Component) {
       muted: false,
       volume: 0,
       width: 0,
-      token: null
+      token: null,
+      permissions: null,
+      next: null,
+      prev: null
     };
     _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
     _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
@@ -67313,7 +67272,10 @@ function (_React$Component) {
 
           _this3.setState({
             video: response.video,
-            user: response.user
+            user: response.user,
+            permissions: response.permissions,
+            next: response.next,
+            prev: response.prev
           });
         },
         error: function error(response) {
@@ -67391,22 +67353,7 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         className: "fa fa-expand"
       })))) : "";
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "container"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-header"
-      }, this.state.video.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-body videoCardBody"
-      }, video, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-        className: "desc",
-        dangerouslySetInnerHTML: {
-          __html: this.state.video.description
-        }
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-footer"
-      }, "Uploaded by ", this.state.user.name, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      var UpdateAndDelete = this.state.permissions ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container2"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
         modalClose: this.modalClose,
@@ -67418,7 +67365,40 @@ function (_React$Component) {
         token: this.state.token
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_deleteModal_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
         "delete": this["delete"]
-      })))));
+      })) : "";
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-header"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "/list",
+        className: "btn goback"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fas fa-angle-double-left"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "nextPrev"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "/list/" + this.state.prev,
+        className: "btn prev"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fas fa-arrow-left"
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "/list/" + this.state.next,
+        className: "btn next"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fas fa-arrow-right"
+      }))), this.state.video.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-body videoCardBody"
+      }, video, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        className: "desc",
+        dangerouslySetInnerHTML: {
+          __html: this.state.video.description
+        }
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "card-footer"
+      }, "Uploaded by ", this.state.user.name, UpdateAndDelete)));
     }
   }]);
 

@@ -169,11 +169,6 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
     margin-bottom: 30px;
 }
 
-.thumbImg{
-    width: 240px !important;
-    height: auto;
-}
-
 .cent{
     position: absolute;
     left: 50%;
@@ -237,4 +232,37 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
 
 .desc{
    margin: 0px 0px 10px 10px;
+}
+
+.descReadMore{
+    display: inline-block;
+    height: 0px;
+}
+
+.linkReadMore{
+    color: #ccccff;
+}
+
+.nextPrev{
+    float:right;
+}
+
+.prev, .next, .goback{
+    font-size: 1.5em !important;
+    color: black;
+    -webkit-transition: color 1s !important;
+    transition: color 1s !important;
+    font-family: "Palatino Linotype" !important;
+}
+
+.prev:hover{
+    color: #c3e6cb !important; 
+}
+
+.next:hover{
+    color: #b8daff !important;
+}
+
+.goback:hover{
+    color: #ffeeba !important;
 }

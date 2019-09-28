@@ -55,7 +55,7 @@ class VideoController extends Controller
                     $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
 
                     $image_resize = Image::make($request->file("thumbnail")->getRealPath());              
-                    $image_resize->resize(320, 240);
+                    $image_resize->fit(320, 240);
 
                     $pathThumb = $request->file("thumbnail")->storeAs("public/".auth()->user()->name."'s Thumbnails", $fileNameToStoreThumb);
 
@@ -142,14 +142,22 @@ class VideoController extends Controller
 
             $video = Videos::find($request->videoId);
             $user = User::find($video->user_id);
-            
+            $permissions = auth()->user()->id===$user->id;
+
             $url = 'public/'.$user->name."'s Videos/".$video->name;
             $size = ("".((Storage::size($url))/1024)/1024);
+            
+            $prev = $video->prev($video);
+            $next = $video->next($video);
+
             $response = array(
                 "video" => $video,
                 "user" => $user,
                 "size" => (float)substr($size,0,4),
                 "url" => $url,
+                "permissions" => $permissions,
+                "prev" => $prev,
+                "next" => $next,
             );
             
             return response()->json($response);
@@ -222,7 +230,7 @@ class VideoController extends Controller
                     $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
 
                     $image_resize = Image::make($request->file("thumbnail")->getRealPath());              
-                    $image_resize->resize(320, 240);
+                    $image_resize->fit(320, 240);
                     
                     $pathThumb = $image_resize->save(public_path("storage/".auth()->user()->name."'s Thumbnails/".$fileNameToStoreThumb));
                     
@@ -260,11 +268,16 @@ class VideoController extends Controller
                 $video->title = $request->input("title");
                 $video->description = $request->input("description");
                 $video->save();
+
+                $prev = $video->prev($video);
+                $next = $video->next($video);
                 
                 $response = array(
                     "message" => "A success! File uploaded!",
                     "video" => $video,
                     "user" => auth()->user(),
+                    "prev" => $prev,
+                    "next" => $next,
                 );
                 
                 return response()->json($response);
