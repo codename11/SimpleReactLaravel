@@ -55,7 +55,7 @@ class VideoController extends Controller
                     $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
 
                     $image_resize = Image::make($request->file("thumbnail")->getRealPath());              
-                    $image_resize->fit(320, 240);
+                    $image_resize->resize(320, 240);
 
                     $pathThumb = $request->file("thumbnail")->storeAs("public/".auth()->user()->name."'s Thumbnails", $fileNameToStoreThumb);
 
@@ -113,10 +113,13 @@ class VideoController extends Controller
 
         if($request->ajax()){
 
-            $videos = Videos::with("user")->get();
+            //$users = DB::table('users')->skip(10)->take(5)->get();
+            $offset = $request->offset*6;
+            $videos = Videos::with("user")->skip($offset)->take(6)->get();
 
             $response = array(
                 "videos" => $videos,
+                "request" => $request->all(),
             );
             
             return response()->json($response);
@@ -230,7 +233,7 @@ class VideoController extends Controller
                     $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
 
                     $image_resize = Image::make($request->file("thumbnail")->getRealPath());              
-                    $image_resize->fit(320, 240);
+                    $image_resize->resize(320, 240);
                     
                     $pathThumb = $image_resize->save(public_path("storage/".auth()->user()->name."'s Thumbnails/".$fileNameToStoreThumb));
                     

@@ -66813,9 +66813,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -66836,15 +66836,30 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(List).call(this, props));
     _this.state = {
-      videos: ""
+      videos: "",
+      offset: 0
     };
+    _this.listVideos = _this.listVideos.bind(_assertThisInitialized(_this));
+    _this.offsetIncrement = _this.offsetIncrement.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(List, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
+    key: "offsetIncrement",
+    value: function offsetIncrement(e) {
       var _this2 = this;
+
+      e.preventDefault();
+      this.setState({
+        offset: this.state.offset + 1
+      }, function () {
+        _this2.listVideos();
+      });
+    }
+  }, {
+    key: "listVideos",
+    value: function listVideos() {
+      var _this3 = this;
 
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       $.ajax({
@@ -66852,22 +66867,36 @@ function (_React$Component) {
         type: 'POST',
         data: {
           _token: token,
-          message: "bravo"
+          message: "bravo",
+          offset: this.state.offset
         },
         dataType: 'JSON',
         success: function success(response) {
           console.log("success");
           console.log(response);
 
-          _this2.setState({
-            videos: response.videos
-          });
+          if (_this3.state.offset === 0) {
+            _this3.setState({
+              videos: response.videos
+            });
+          }
+
+          if (_this3.state.offset > 0) {
+            _this3.setState({
+              videos: _this3.state.videos.concat(response.videos)
+            });
+          }
         },
         error: function error(response) {
           console.log("error");
           console.log(response);
         }
       });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.listVideos();
     }
   }, {
     key: "render",
@@ -66883,10 +66912,8 @@ function (_React$Component) {
           href: "list/" + item.id
         }, "...Find out more") : "";
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "container",
+          className: "card",
           key: index
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "card"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "card-header videoTitle"
         }, item.title), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -66912,7 +66939,7 @@ function (_React$Component) {
           href: "list/" + item.id,
           className: "channell",
           title: item.user.name
-        }, item.user.name))));
+        }, item.user.name)));
       }) : "";
       videos = videos.length > 0 ? videos : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         className: "img-fluid cent novideos",
@@ -66921,9 +66948,13 @@ function (_React$Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: "cent notice"
       }, "No videos uploaded yet..."));
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container1"
-      }, videos);
+      }, videos), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "#",
+        className: "btn btn-outline-info showMore",
+        onClick: this.offsetIncrement
+      }, "Show more..."));
     }
   }]);
 

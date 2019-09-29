@@ -84,12 +84,23 @@ video{
 }
 
 .grid-container1 {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
+    /*display: grid;*/
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    align-content: space-evenly;
+    text-align: center;
+    /*grid-template-columns: auto auto auto auto auto auto;
     grid-gap: 10px;
     padding: 10px;
     justify-content: space-evenly;
-    align-content: space-evenly;
+    align-content: space-evenly;*/
+}
+
+.grid-container1 > div {
+    width: 293px;
+    padding: 10px;
+    margin: 10px auto 10px 10px;
 }
 
 .videoName{
@@ -264,5 +275,14 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
 }
 
 .goback:hover{
+    color: #ffeeba !important;
+}
+
+.showMore{
+    margin-left: 20px;
+    font-family: "Palatino Linotype" !important;
+}
+
+.showMore:hover{
     color: #ffeeba !important;
 }

@@ -8,27 +8,51 @@ class List extends React.Component {
         super(props);
         this.state = {
             videos: "",
+            offset: 0,
         };
-
+        this.listVideos = this.listVideos.bind(this);
+        this.offsetIncrement = this.offsetIncrement.bind(this);
     }
 
-    componentDidMount(){
+    offsetIncrement(e){
+
+        e.preventDefault();
+        this.setState({
+            offset: this.state.offset+1,
+        }, () => {this.listVideos()});
+        
+    }
+
+    listVideos(){
         
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
 
         $.ajax({
             url: '/listData',
             type: 'POST',
-            data: {_token: token , message: "bravo"},
+            data: {_token: token , message: "bravo", offset: this.state.offset},
             dataType: 'JSON',
     
             success: (response) => { 
 
                 console.log("success");
                 console.log(response);
-                this.setState({
-                    videos: response.videos,
-                });
+
+                if(this.state.offset===0){
+
+                    this.setState({
+                        videos: response.videos,
+                    });
+
+                }
+
+                if(this.state.offset>0){
+
+                    this.setState({
+                        videos: this.state.videos.concat(response.videos),
+                    });
+
+                }
     
             },
             error: (response) => {
@@ -42,9 +66,15 @@ class List extends React.Component {
 
     }
 
+    componentDidMount(){
+        
+        this.listVideos();
+
+    }
+
     render(){
         //console.log(this.state);
-
+        
         let videos = this.state.videos ? this.state.videos.map((item, index) => {
         
             let thumb1 = "/storage/"+item.user.name+"'s Thumbnails/"+item.thumbnail;
@@ -54,9 +84,7 @@ class List extends React.Component {
             let desc = item.description && item.description.length>56 ? item.description.substring(0, 56) : item.description;
             let readMore = desc.length===56 ? <a id='readMore' href={"list/"+item.id}>...Find out more</a> : "";
             
-            return <div className="container" key={index}>
-
-                    <div className="card">
+            return  <div className="card" key={index}>
 
                         <div className="card-header videoTitle">{item.title}</div>
 
@@ -74,14 +102,18 @@ class List extends React.Component {
 
                     </div>
 
-                </div>;
+                ;
         }) : "";
 
         videos = videos.length > 0 ? videos : (<div><img className="img-fluid cent novideos" src="/storage/novideos.gif" alt="novideos" /><span className="cent notice">No videos uploaded yet...</span></div>);
 
         return (
-            <div className="grid-container1">
-               {videos}
+            <div>
+                <div className="grid-container1">
+                    {videos}
+                
+                </div>
+                <a href="#"  className='btn btn-outline-info showMore' onClick={this.offsetIncrement}>Show more...</a>
             </div>
         );
     
