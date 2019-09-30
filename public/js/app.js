@@ -67197,7 +67197,7 @@ function (_React$Component) {
     key: "trackProgress",
     value: function trackProgress(e) {
       var msClick1 = e.pageX;
-      var surplus = 38;
+      var surplus = 18;
 
       if (e.target.id === "progress-bar") {
         var elemWidth = e.target.offsetWidth;

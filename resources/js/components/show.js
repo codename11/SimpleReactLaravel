@@ -201,7 +201,7 @@ class Show extends React.Component {
     trackProgress(e){
 
         let msClick1 = e.pageX;
-        let surplus = 38;
+        let surplus = 18;
 
         if(e.target.id==="progress-bar"){
 
