@@ -67036,7 +67036,8 @@ function (_React$Component) {
       token: null,
       permissions: null,
       next: null,
-      prev: null
+      prev: null,
+      surplus: null
     };
     _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
     _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
@@ -67196,35 +67197,34 @@ function (_React$Component) {
   }, {
     key: "trackProgress",
     value: function trackProgress(e) {
-      var msClick1 = e.pageX;
-      var surplus = 18;
-
-      if (e.target.id === "progress-bar") {
-        var elemWidth = e.target.offsetWidth;
-        var parentWidth = e.target.parentElement.offsetWidth;
-        var rewTime = Math.round(msClick1 / (parentWidth / 100).toFixed(2));
-        this.setState({
-          remaining: this.state.duration - this.state.duration / 100 * rewTime,
-          duration: this.state.duration,
-          currentTime: this.state.duration / 100 * rewTime - surplus,
-          width: elemWidth / (parentWidth / 100)
-        });
-        this.videoRef.current.currentTime = this.state.duration / 100 * rewTime - surplus;
-      }
+      var msClick = e.nativeEvent.offsetX;
+      var parentWidth = 0;
+      var OnePercentOfparentWidth = 0;
+      var OnePercentOfmsClick = 0;
+      var videoDuration = 0;
+      var OnePercentOfvideoDuration = 0;
+      var rew = 0;
 
       if (e.target.id === "progress") {
-        var childWidth = e.target.childNodes[1].offsetWidth;
-        var myWidth = e.target.offsetWidth;
+        parent = e.target;
+        parentWidth = parent.offsetWidth;
+        OnePercentOfparentWidth = parentWidth / 100;
+        OnePercentOfmsClick = msClick / OnePercentOfparentWidth;
+        videoDuration = this.videoRef.current.duration;
+        OnePercentOfvideoDuration = videoDuration / 100;
+        rew = OnePercentOfvideoDuration * OnePercentOfmsClick;
+        this.videoRef.current.currentTime = rew;
+      }
 
-        var _rewTime = Math.round(msClick1 / (myWidth / 100).toFixed(2));
-
-        this.setState({
-          remaining: this.state.duration - this.state.duration / 100 * _rewTime,
-          duration: this.state.duration,
-          currentTime: this.state.duration / 100 * _rewTime - surplus,
-          width: childWidth / (myWidth / 100)
-        });
-        this.videoRef.current.currentTime = this.state.duration / 100 * _rewTime - surplus;
+      if (e.target.parentNode.id === "progress") {
+        parent = e.target.parentNode;
+        parentWidth = parent.offsetWidth;
+        OnePercentOfparentWidth = parentWidth / 100;
+        OnePercentOfmsClick = msClick / OnePercentOfparentWidth;
+        videoDuration = this.videoRef.current.duration;
+        OnePercentOfvideoDuration = videoDuration / 100;
+        rew = OnePercentOfvideoDuration * OnePercentOfmsClick;
+        this.videoRef.current.currentTime = rew;
       }
     }
   }, {
@@ -67319,7 +67319,6 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       //console.log(this.state);
-      var progress = this.state.currentTime * 100 / this.state.duration;
       var PlayPause = this.state["switch"] ? "fa fa-pause-circle" : "fa fa-play-circle";
       var minutes = Math.floor(this.state.remaining / 60);
       minutes = ("" + minutes).length === 1 ? "0" + minutes : minutes; //Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
@@ -67333,6 +67332,7 @@ function (_React$Component) {
       var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "videoWrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("video", {
+        id: "video",
         ref: this.videoRef,
         preload: "auto",
         autoPlay: true,
@@ -67350,13 +67350,14 @@ function (_React$Component) {
         onClick: this.trackProgress,
         className: "progress text-center"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "progress-bar-num",
         className: "progress-bar-num"
-      }, Math.round(progress.toFixed(2)) + "%"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, Math.round(this.state.width.toFixed(2)) + "%"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "progress-bar",
         onClick: this.trackProgress,
         className: "progress-bar bg-success",
         style: {
-          width: Math.round(progress.toFixed(2)) + "%"
+          width: Math.round(this.state.width.toFixed(2)) + "%"
         }
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "controls"

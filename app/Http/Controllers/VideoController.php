@@ -113,7 +113,6 @@ class VideoController extends Controller
 
         if($request->ajax()){
 
-            //$users = DB::table('users')->skip(10)->take(5)->get();
             $offset = $request->offset*6;
             $videos = Videos::with("user")->skip($offset)->take(6)->get();
 

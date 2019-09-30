@@ -23,6 +23,7 @@ class Show extends React.Component {
             permissions: null,
             next: null,
             prev: null,
+            surplus: null,
 
         };
         this.playPause = this.playPause.bind(this);
@@ -200,41 +201,43 @@ class Show extends React.Component {
 
     trackProgress(e){
 
-        let msClick1 = e.pageX;
-        let surplus = 18;
+        let msClick = e.nativeEvent.offsetX;
 
-        if(e.target.id==="progress-bar"){
-
-            let elemWidth = e.target.offsetWidth; 
-            let parentWidth = e.target.parentElement.offsetWidth;
-            let rewTime = Math.round(msClick1/(parentWidth/100).toFixed(2));
-
-            this.setState({
-                remaining: this.state.duration - ((this.state.duration/100)*rewTime),
-                duration: this.state.duration,
-                currentTime: ((this.state.duration/100)*rewTime)-surplus,
-                width: (elemWidth/(parentWidth/100)),
-            });
-            this.videoRef.current.currentTime = ((this.state.duration/100)*rewTime)-surplus;
-
-        }
+        let parentWidth = 0;
+        let OnePercentOfparentWidth = 0;
+        let OnePercentOfmsClick = 0;
+        let videoDuration = 0;
+        let OnePercentOfvideoDuration = 0;
+        let rew = 0;
 
         if(e.target.id==="progress"){
-
-            let childWidth = e.target.childNodes[1].offsetWidth; 
-            let myWidth = e.target.offsetWidth;
-            let rewTime = Math.round(msClick1/(myWidth/100).toFixed(2));
-
-            this.setState({
-                remaining: this.state.duration - ((this.state.duration/100)*rewTime),
-                duration: this.state.duration,
-                currentTime: ((this.state.duration/100)*rewTime)-surplus,
-                width: (childWidth/(myWidth/100)),
-            });
-            this.videoRef.current.currentTime = ((this.state.duration/100)*rewTime)-surplus;
+            
+            parent = e.target;
+            parentWidth = parent.offsetWidth;
+            OnePercentOfparentWidth = parentWidth/100;
+            OnePercentOfmsClick = msClick/OnePercentOfparentWidth;
+            videoDuration = this.videoRef.current.duration;
+            OnePercentOfvideoDuration = videoDuration/100;
+            
+            rew = OnePercentOfvideoDuration*OnePercentOfmsClick;
+            this.videoRef.current.currentTime = rew;
 
         }
-        
+
+        if(e.target.parentNode.id==="progress"){
+            
+            parent = e.target.parentNode;
+            parentWidth = parent.offsetWidth;
+            OnePercentOfparentWidth = parentWidth/100;
+            OnePercentOfmsClick = msClick/OnePercentOfparentWidth;
+            videoDuration = this.videoRef.current.duration;
+            OnePercentOfvideoDuration = videoDuration/100;
+
+            rew = OnePercentOfvideoDuration*OnePercentOfmsClick;
+            this.videoRef.current.currentTime = rew;
+            
+        }
+
     }
 
     fullScreen(){
@@ -266,12 +269,14 @@ class Show extends React.Component {
     }
 
     trackTime(e){
+
         this.setState({
             remaining: e.target.duration - e.target.currentTime,
             duration: e.target.duration,
             currentTime: e.target.currentTime,
             width: e.target.currentTime*100/e.target.duration,
         });
+
     }
 
     playPause(){
@@ -328,8 +333,6 @@ class Show extends React.Component {
 
     render(){
         //console.log(this.state);
-        
-        let progress = this.state.currentTime*100/this.state.duration;
 
         let PlayPause = this.state.switch ? "fa fa-pause-circle" : "fa fa-play-circle";
 
@@ -343,14 +346,14 @@ class Show extends React.Component {
 
         let muted = this.state.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
 
-        let video = videoUrl ? <div  className={"videoWrapper"}><video ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted} onClick={this.playPause}>
+        let video = videoUrl ? <div  className={"videoWrapper"}><video id="video" ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted} onClick={this.playPause}>
             <source src={videoUrl} type="video/mp4"/>
             <source src={videoUrl} type="video/ogg"/>
             Your browser does not support the video tag.
             </video>
             <div id="progress" onClick={this.trackProgress} className="progress text-center">
-                <div className="progress-bar-num">{Math.round(progress.toFixed(2))+"%"}</div>
-                <div id="progress-bar" onClick={this.trackProgress} className="progress-bar bg-success" style={{width: Math.round(progress.toFixed(2))+"%"}}></div>
+                <div id="progress-bar-num" className="progress-bar-num">{Math.round(this.state.width.toFixed(2))+"%"}</div>
+                <div id="progress-bar" onClick={this.trackProgress} className="progress-bar bg-success" style={{width: Math.round(this.state.width.toFixed(2))+"%"}}></div>
             </div>
             <div id="controls">
             
