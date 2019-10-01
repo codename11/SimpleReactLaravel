@@ -76,7 +76,6 @@ You must chose title, description and thumbnail for your video.
 
 If you chose to list video, you'll be presented list of six video per page row. If you want to see more of them(if any), click `Show more` text to load more(if any).
 ![List videos](4.png)
-Format: ![List videos](url)
 
 ## Technologies used:
 
