@@ -113,7 +113,7 @@ class List extends React.Component {
                     {videos}
                 
                 </div>
-                <a href="#"  className='btn btn-outline-info showMore' onClick={this.offsetIncrement}>Show more...</a>
+                <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a>
             </div>
         );
     
