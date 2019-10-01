@@ -1,9 +1,9 @@
-#Video Media Player
+# Video Media Player
 
-##Getting Started
+## Getting Started:
 Put this into root of your server. I used xammp, but there is no trouble to make it work with lamp stack.
 
-##Prerequisites
+## Prerequisites:
 You'll need a xampp installation, composer installed and nmp package manager. 
 To disable exploitation and to emulate live conditions go to c:\windows\system32\drivers\etc 
 and modify file named hosts. In it add following lines (at the bottom):
@@ -37,7 +37,7 @@ For instructions for using React in Laravel(alongside with Ajax) use this [resou
 
 No third party libraries have been used.
 
-##Installing
+## Installing:
 
 Install(in tis order):
 
@@ -58,7 +58,7 @@ DB_PASSWORD=""
 10. In terminal, type: `npm run watch` to compile React and sass files.
 11. If you done all correctly, type in browser `reactapp.test`.
 
-##Usage
+## Usage:
 
 After starting application, you'll be presented with this image:
 ![Welcome screen](1.png)
@@ -81,7 +81,7 @@ If you chose to list video, you'll be presented list of six video per page row. 
 ![List videos](4.png)
 Format: ![List videos](url)
 
-##Technologies used:
+## Technologies used:
 
 1. React
 2. Ajax
