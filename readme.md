@@ -40,7 +40,7 @@ No third party libraries have been used.
 
 ## Installing:
 
-Install(in tis order):
+Install(in this order):
 
 1. xampp(server environment)
 2. composer(Laravel package manger)
@@ -84,6 +84,9 @@ If you chose to list video, you'll be presented list of six video per page row. 
 2. Ajax
 3. Laravel
 4. Javascript
+5. Sass
+6. Css
+7. Html
 
 ### My email:
 veljkos82@gmail.com
