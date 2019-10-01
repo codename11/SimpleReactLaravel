@@ -14,6 +14,7 @@ First means it's going to be served locally and second is name of project.
 
 Second(server configuration), go to `c:\xampp\apache\conf\extra\` and open httpd-vhosts file.
 In it, at the bottom, add these lines:
+
 1. 
 ```
 <VirtualHost *:80>
