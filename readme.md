@@ -5,14 +5,14 @@ Put this into root of your server. I used xammp, but there is no trouble to make
 
 ## Prerequisites:
 You'll need a xampp installation, composer installed and nmp package manager. 
-To disable exploitation and to emulate live conditions go to c:\windows\system32\drivers\etc 
+To disable exploitation and to emulate live conditions go to `c:\windows\system32\drivers\etc `
 and modify file named hosts. In it add following lines (at the bottom):
 
 1. 127.0.0.1 localhost 
 2. 127.0.0.1 reactapp.test
 First means it's going to be served locally and second is name of project.
 
-Second(server configuration), go to c:\xampp\apache\conf\extra\ and open httpd-vhosts file.
+Second(server configuration), go to `c:\xampp\apache\conf\extra\` and open httpd-vhosts file.
 In it, at the bottom, add these lines:
 1. 
 ```
@@ -62,18 +62,15 @@ DB_PASSWORD=""
 
 After starting application, you'll be presented with this image:
 ![Welcome screen](1.png)
-Format: ![Welcome screen](url)
 
 You either sign in or register if not done so. You may even chose avatar.
 
 After login, you'll see dashboard where you can see your user name, current temperature at your location and upload button which will lead you to upload page. As seen in this image:
 ![Upload screen](2.png)
-Format: ![Upload screen](url)
 
 After login, you're presented to either see the list of all videos or upload yours.
 If you choose to upload yours, you'll bee see this image if you chose option to create videos from menu:
 ![Upload screen](3.png)
-Format: ![Upload screen](url)
 
 You must chose title, description and thumbnail for your video.
 
