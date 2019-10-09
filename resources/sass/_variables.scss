@@ -312,3 +312,16 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
 #show{
     margin-bottom: 70px;
 }
+
+.subWrapper{
+    position: relative;
+}
+
+.subTitles{
+    z-index: 999;
+    font-size: 2em;
+    color: magenta; 
+    position: absolute; 
+    bottom: 0px; 
+    left: 40%;
+}

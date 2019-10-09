@@ -139,7 +139,7 @@ class Show extends React.Component {
             success: (response) => { 
 
                 console.log("success");
-                //console.log(response);
+                console.log(response);
                 this.setState({
                     video: response.video,
                     user: response.user,
@@ -313,7 +313,7 @@ class Show extends React.Component {
             dataType: 'JSON',
             success: (response) => { 
                 console.log("success");
-                //console.log(response);
+                console.log(response);
                 this.setState({
                     video: response.video,
                     user: response.user,
@@ -346,11 +346,16 @@ class Show extends React.Component {
 
         let muted = this.state.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
 
-        let video = videoUrl ? <div  className={"videoWrapper"}><video id="video" ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted} onClick={this.playPause}>
-            <source src={videoUrl} type="video/mp4"/>
-            <source src={videoUrl} type="video/ogg"/>
-            Your browser does not support the video tag.
-            </video>
+        let video = videoUrl ? <div  className={"videoWrapper"}>
+            <div className="subWrapper">
+                <video id="video" ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted} onClick={this.playPause}>
+                <source src={videoUrl} type="video/mp4"/>
+                <source src={videoUrl} type="video/ogg"/>
+                Your browser does not support the video tag.
+                </video>
+                <div className="subTitles">BlahBlah</div>
+            </div>
+
             <div id="progress" onClick={this.trackProgress} className="progress text-center">
                 <div id="progress-bar-num" className="progress-bar-num">{Math.round(this.state.width.toFixed(2))+"%"}</div>
                 <div id="progress-bar" onClick={this.trackProgress} className="progress-bar bg-success" style={{width: Math.round(this.state.width.toFixed(2))+"%"}}></div>
@@ -386,7 +391,7 @@ class Show extends React.Component {
                     </div>
                     <div className="card-body videoCardBody">
                         {video}
-
+                        
                         <hr/>
 
                             <p className="desc" dangerouslySetInnerHTML={{__html:this.state.video.description}}></p>

@@ -67137,7 +67137,8 @@ function (_React$Component) {
         contentType: false,
         processData: false,
         success: function success(response) {
-          console.log("success"); //console.log(response);
+          console.log("success");
+          console.log(response);
 
           _this2.setState({
             video: response.video,
@@ -67299,7 +67300,8 @@ function (_React$Component) {
         },
         dataType: 'JSON',
         success: function success(response) {
-          console.log("success"); //console.log(response);
+          console.log("success");
+          console.log(response);
 
           _this3.setState({
             video: response.video,
@@ -67331,6 +67333,8 @@ function (_React$Component) {
       var muted = this.state.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
       var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "videoWrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "subWrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("video", {
         id: "video",
         ref: this.videoRef,
@@ -67346,6 +67350,8 @@ function (_React$Component) {
         src: videoUrl,
         type: "video/ogg"
       }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "subTitles"
+      }, "BlahBlah")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "progress",
         onClick: this.trackProgress,
         className: "progress text-center"

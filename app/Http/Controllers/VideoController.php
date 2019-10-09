@@ -152,6 +152,10 @@ class VideoController extends Controller
             $prev = $video->prev($video);
             $next = $video->next($video);
 
+            $textFile = "The Walking Dead S08E10-The Lost and the Plunderers.srt";
+            $path = public_path("storage/".$textFile);
+            $subtitle = iconv(mb_detect_encoding(File::get($path), mb_detect_order(), true), "UTF-8", File::get($path));
+
             $response = array(
                 "video" => $video,
                 "user" => $user,
@@ -160,6 +164,7 @@ class VideoController extends Controller
                 "permissions" => $permissions,
                 "prev" => $prev,
                 "next" => $next,
+                "subtitle" => $subtitle,
             );
             
             return response()->json($response);

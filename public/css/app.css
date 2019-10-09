@@ -314,6 +314,19 @@ a:focus {
   margin-bottom: 70px;
 }
 
+.subWrapper {
+  position: relative;
+}
+
+.subTitles {
+  z-index: 999;
+  font-size: 2em;
+  color: magenta;
+  position: absolute;
+  bottom: 0px;
+  left: 40%;
+}
+
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
