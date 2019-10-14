@@ -24,6 +24,7 @@ class Show extends React.Component {
             next: null,
             prev: null,
             surplus: null,
+            subtitles: null,
 
         };
         this.playPause = this.playPause.bind(this);
@@ -320,6 +321,7 @@ class Show extends React.Component {
                     permissions: response.permissions,
                     next: response.next,
                     prev: response.prev,
+                    subtitles: response.subtitles,
                 }); 
                 
             },
@@ -332,7 +334,7 @@ class Show extends React.Component {
     }
 
     render(){
-        //console.log(this.state);
+        console.log(this.state);
 
         let PlayPause = this.state.switch ? "fa fa-pause-circle" : "fa fa-play-circle";
 
@@ -346,6 +348,12 @@ class Show extends React.Component {
 
         let muted = this.state.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
 
+        let subtitles = this.state.subtitles ? this.state.subtitles.map((item, i)=>{
+
+            return <option key={i} value={item.id}>{item.name}</option>
+
+        }) : null;
+
         let video = videoUrl ? <div  className={"videoWrapper"}>
             <div className="subWrapper">
                 <video id="video" ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted} onClick={this.playPause}>
@@ -353,7 +361,7 @@ class Show extends React.Component {
                 <source src={videoUrl} type="video/ogg"/>
                 Your browser does not support the video tag.
                 </video>
-                <div className="subTitles">BlahBlah</div>
+                <div className="subTitles">subTitles</div>
             </div>
 
             <div id="progress" onClick={this.trackProgress} className="progress text-center">
@@ -367,12 +375,17 @@ class Show extends React.Component {
                 <div className="muted" onClick={this.mute}><i className={muted}></i></div>
                 <input type="range" className="custom-range" id="customRange" name="points1" onChange={this.volume}/>
                 <div className="time" onClick={this.fullScreen}><i className="fa fa-expand"></i></div>
+                <div id="subSelect" className="form-group">
+                    <select className="form-control" id="subs">
+                        {subtitles}
+                    </select>
+                </div>
             
             </div>
         </div> : "";
 
         let UpdateAndDelete = this.state.permissions ? <div className="grid-container2">
-                <UpdateModal modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
+                
                 <DeleteModal delete={this.delete}/>
             </div> : "";
 

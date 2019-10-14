@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Videos;
+use App\Subtitles;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
@@ -37,28 +38,45 @@ class VideoController extends Controller
                 "title" => "required|min:6|max:24",
                 "thumbnail" => 'required|mimes:jpg,jpeg,png,bmp|max:1999',
                 "description" => "required|min:6|max:255",
+                
             ]);
 
             if ($validator->passes()){
 
-                if($request->hasFile("video") && $request->hasFile("thumbnail")){
+                if($request->hasFile("video") && $request->hasFile("thumbnail") && $request->hasFile("subtitle")){
 
                     $filenameWithExt = $request->file("video")->getClientOriginalName();
                     $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                     $extension = $request->file("video")->getClientOriginalExtension();
                     $fileNameToStore = $filename."_".time().".".$extension;
                     $path = $request->file("video")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStore);
-
+                    /*
                     $filenameWithExtThumb = $request->file("thumbnail")->getClientOriginalName();
                     $filenameThumb = pathinfo($filenameWithExtThumb, PATHINFO_FILENAME);
                     $extensionThumb = $request->file("thumbnail")->getClientOriginalExtension();
                     $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
 
-                    $image_resize = Image::make($request->file("thumbnail")->getRealPath());              
-                    $image_resize->resize(320, 240);
+                    $image_resize = \Image::make($request->file("thumbnail")->getRealPath());              
+                    $image_resize->fit(100, 100);
 
                     $pathThumb = $request->file("thumbnail")->storeAs("public/".auth()->user()->name."'s Thumbnails", $fileNameToStoreThumb);
-
+                    */
+                    /*This resizing works.*/
+                    $filenameWithExtThumb = $request->file("thumbnail")->getClientOriginalName();
+                    $filenameThumb = pathinfo($filenameWithExtThumb, PATHINFO_FILENAME);
+                    $extensionThumb = $request->file("thumbnail")->getClientOriginalExtension();
+                    $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
+                
+                    $img = \Image::make($request->file("thumbnail"));
+                    $pathThumb = str_replace("/","\\",addcslashes(public_path('storage/'.auth()->user()->name."'s Thumbnails/".$fileNameToStoreThumb),"\f\r\n\t"));
+                    $img->resize(240, 240)->save($pathThumb);
+                    
+                    $filenameWithExtSub = $request->file("subtitle")->getClientOriginalName();
+                    $filenameSub = pathinfo($filenameWithExtSub, PATHINFO_FILENAME);
+                    $extensionSub = $request->file("subtitle")->getClientOriginalExtension();
+                    $fileNameToStoreSub = $filenameSub."_".time().".".$extensionSub;
+                    $pathSub = $request->file("subtitle")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStoreSub);
+                    
                     $video = new Videos;
                     $video->name = $fileNameToStore;
                     $video->user_id = auth()->user()->id;
@@ -66,14 +84,22 @@ class VideoController extends Controller
                     $video->thumbnail = $fileNameToStoreThumb;
                     $video->description = $request->input("description");
                     $video->save();
+
+                    $subtitle = new Subtitles;
+                    $subtitle->name = $fileNameToStoreSub;
+                    $subtitle->user_id = auth()->user()->id;
+                    $subtitle->video_id = $video->id;
+                    $subtitle->save();
+ 
                     $response = array(
                         "message" => "A success! File uploaded!",
                         "video" => $video,
+                        "subtitle" => $subtitle,
                         "user" => auth()->user(),
                     );
                     
                     return response()->json($response);
-
+                    
                 }
                 else{
 
@@ -151,10 +177,17 @@ class VideoController extends Controller
             
             $prev = $video->prev($video);
             $next = $video->next($video);
+            
+            $subtitles = $video->subtitle()->get();
 
-            $textFile = "The Walking Dead S08E10-The Lost and the Plunderers.srt";
-            $path = public_path("storage/".$textFile);
-            $subtitle = iconv(mb_detect_encoding(File::get($path), mb_detect_order(), true), "UTF-8", File::get($path));
+            $temp = "";
+            for($i=0;$i<count($subtitles);$i++){
+
+                $path = public_path("storage/".auth()->user()->name."'s Videos/".$subtitles[$i]->name);
+                $temp = iconv(mb_detect_encoding(File::get($path), mb_detect_order(), true), "UTF-8", File::get($path));
+                $subtitles[$i]->text = $temp;
+
+            }
 
             $response = array(
                 "video" => $video,
@@ -164,7 +197,7 @@ class VideoController extends Controller
                 "permissions" => $permissions,
                 "prev" => $prev,
                 "next" => $next,
-                "subtitle" => $subtitle,
+                "subtitles" => $subtitles,
             );
             
             return response()->json($response);

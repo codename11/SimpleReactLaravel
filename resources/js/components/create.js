@@ -20,6 +20,7 @@ class Create extends React.Component {
             message: "",
             switch: false,
             remaining: null,
+            subtitle: {},
 
         };
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -120,6 +121,20 @@ class Create extends React.Component {
             });
 
         }
+
+        if(e.target.id==="subtitle"){
+            
+            let subtitle = {};
+            subtitle.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.subtitle.filePlaceholder;
+            subtitle.fileUrl = e.target.value ? e.target.value : this.state.subtitle.filePlaceholder;
+            subtitle.fileName = (e.target.value.split("\\").pop()).split(".")[0];
+            subtitle.fileExt = (e.target.value.split("\\").pop()).split(".")[1];
+
+            this.setState({
+                subtitle: subtitle,
+            });
+
+        }
         
     }
     
@@ -132,13 +147,15 @@ class Create extends React.Component {
         formElements.description = CKEDITOR.instances.ckeditor.getData();
         formElements.thumbnail = forma.elements[2].files[0];
         formElements.video = forma.elements[3].files[0];
-
+        formElements.subtitle = forma.elements[4].files[0];
+        
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
         let myformData = new FormData();
         myformData.append('title', formElements.title);
         myformData.append('description', formElements.description);
         myformData.append('thumbnail', formElements.thumbnail);
         myformData.append('video', formElements.video);
+        myformData.append('subtitle', formElements.subtitle);
         myformData.append('_token', token);
         myformData.append('message', "bravo");
         
@@ -278,6 +295,11 @@ class Create extends React.Component {
                                     <div className="custom-file mb-3">
                                         <input type="file" className="custom-file-input" id="video" name="video" onChange={this.fileUpload} required/>
                                         <label className="custom-file-label" htmlFor="video">{this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose video"}</label>
+                                    </div>
+
+                                    <div className="custom-file mb-3">
+                                        <input type="file" className="custom-file-input" id="subtitle" name="subtitle" onChange={this.fileUpload}/>
+                                        <label className="custom-file-label" htmlFor="subtitle">{this.state.subtitle.fullFileName ? this.state.subtitle.fullFileName : "Choose subtitle(.srt)"}</label>
                                     </div>
 
                                     <input className="btn btn-outline-primary" type="submit" value="Submit" />

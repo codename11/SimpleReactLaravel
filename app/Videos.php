@@ -18,6 +18,10 @@ class Videos extends Model
         return $this->belongsTo("App\User",'user_id');
     }
 
+    public function subtitle(){
+        return $this->hasMany("App\Subtitles",'video_id',"id");
+    }
+
     public function prev($video)
     {
         if($video->orderBy('id', 'ASC')->where('id', '>', $video->id)->first()){

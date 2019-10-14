@@ -86,6 +86,11 @@ class UpdateModal extends React.Component {
                                         <label className="custom-file-label" htmlFor="video">{this.props.video.name ? this.props.video.name : "Choose video"}</label>
                                     </div>
 
+                                    <div className="custom-file mb-3">
+                                        <input type="file" className="custom-file-input" id="subtitle" name="subtitle" onChange={this.fileUpload}/>
+                                        <label className="custom-file-label" htmlFor="subtitle">{this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose subtitle(.srt)"}</label>
+                                    </div>
+
                                 </form>
 
                             </div>

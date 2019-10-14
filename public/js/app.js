@@ -66248,7 +66248,8 @@ function (_React$Component) {
       video: null,
       message: "",
       "switch": false,
-      remaining: null
+      remaining: null,
+      subtitle: {}
     };
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.fileUpload = _this.fileUpload.bind(_assertThisInitialized(_this));
@@ -66342,6 +66343,17 @@ function (_React$Component) {
           thumbnail: thumbnail
         });
       }
+
+      if (e.target.id === "subtitle") {
+        var subtitle = {};
+        subtitle.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.subtitle.filePlaceholder;
+        subtitle.fileUrl = e.target.value ? e.target.value : this.state.subtitle.filePlaceholder;
+        subtitle.fileName = e.target.value.split("\\").pop().split(".")[0];
+        subtitle.fileExt = e.target.value.split("\\").pop().split(".")[1];
+        this.setState({
+          subtitle: subtitle
+        });
+      }
     }
   }, {
     key: "handleSubmit",
@@ -66355,12 +66367,14 @@ function (_React$Component) {
       formElements.description = CKEDITOR.instances.ckeditor.getData();
       formElements.thumbnail = forma.elements[2].files[0];
       formElements.video = forma.elements[3].files[0];
+      formElements.subtitle = forma.elements[4].files[0];
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       var myformData = new FormData();
       myformData.append('title', formElements.title);
       myformData.append('description', formElements.description);
       myformData.append('thumbnail', formElements.thumbnail);
       myformData.append('video', formElements.video);
+      myformData.append('subtitle', formElements.subtitle);
       myformData.append('_token', token);
       myformData.append('message', "bravo");
       $.ajax({
@@ -66517,7 +66531,18 @@ function (_React$Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "custom-file-label",
         htmlFor: "video"
-      }, this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose video")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      }, this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose video")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "custom-file mb-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        className: "custom-file-input",
+        id: "subtitle",
+        name: "subtitle",
+        onChange: this.fileUpload
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "custom-file-label",
+        htmlFor: "subtitle"
+      }, this.state.subtitle.fullFileName ? this.state.subtitle.fullFileName : "Choose subtitle(.srt)")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         className: "btn btn-outline-primary",
         type: "submit",
         value: "Submit"
@@ -67037,7 +67062,8 @@ function (_React$Component) {
       permissions: null,
       next: null,
       prev: null,
-      surplus: null
+      surplus: null,
+      subtitles: null
     };
     _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
     _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
@@ -67308,7 +67334,8 @@ function (_React$Component) {
             user: response.user,
             permissions: response.permissions,
             next: response.next,
-            prev: response.prev
+            prev: response.prev,
+            subtitles: response.subtitles
           });
         },
         error: function error(response) {
@@ -67320,7 +67347,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      //console.log(this.state);
+      console.log(this.state);
       var PlayPause = this.state["switch"] ? "fa fa-pause-circle" : "fa fa-play-circle";
       var minutes = Math.floor(this.state.remaining / 60);
       minutes = ("" + minutes).length === 1 ? "0" + minutes : minutes; //Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
@@ -67331,6 +67358,12 @@ function (_React$Component) {
       var remainingTime = minutes + " : " + seconds;
       var videoUrl = this.state.video && this.state.video.name ? "/storage/" + this.state.user.name + "'s Videos/" + this.state.video.name : null;
       var muted = this.state.muted ? "fas fa-volume-mute" : "fas fa-volume-up";
+      var subtitles = this.state.subtitles ? this.state.subtitles.map(function (item, i) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+          key: i,
+          value: item.id
+        }, item.name);
+      }) : null;
       var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "videoWrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -67351,7 +67384,7 @@ function (_React$Component) {
         type: "video/ogg"
       }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "subTitles"
-      }, "BlahBlah")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "subTitles")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "progress",
         onClick: this.trackProgress,
         className: "progress text-center"
@@ -67390,18 +67423,16 @@ function (_React$Component) {
         onClick: this.fullScreen
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         className: "fa fa-expand"
-      })))) : "";
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "subSelect",
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+        className: "form-control",
+        id: "subs"
+      }, subtitles)))) : "";
       var UpdateAndDelete = this.state.permissions ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container2"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        modalClose: this.modalClose,
-        formClosePurge: this.formClosePurge,
-        textArea: this.textArea,
-        handleSubmit: this.handleSubmit,
-        user: this.state.user,
-        video: this.state.video,
-        token: this.state.token
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_deleteModal_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_deleteModal_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
         "delete": this["delete"]
       })) : "";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -67627,7 +67658,18 @@ function (_React$Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "custom-file-label",
         htmlFor: "video"
-      }, this.props.video.name ? this.props.video.name : "Choose video")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, this.props.video.name ? this.props.video.name : "Choose video")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "custom-file mb-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        className: "custom-file-input",
+        id: "subtitle",
+        name: "subtitle",
+        onChange: this.fileUpload
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "custom-file-label",
+        htmlFor: "subtitle"
+      }, this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose subtitle(.srt)")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-footer"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         className: "btn btn-outline-primary",
