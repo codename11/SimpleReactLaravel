@@ -66036,6 +66036,403 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/subtitle/lib/index.js":
+/*!********************************************!*\
+  !*** ./node_modules/subtitle/lib/index.js ***!
+  \********************************************/
+/*! exports provided: toMS, toSrtTime, toVttTime, parse, stringify, stringifyVtt, resync, parseTimestamps */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _toMS__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toMS */ "./node_modules/subtitle/lib/toMS.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "toMS", function() { return _toMS__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+/* harmony import */ var _toSrtTime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./toSrtTime */ "./node_modules/subtitle/lib/toSrtTime.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "toSrtTime", function() { return _toSrtTime__WEBPACK_IMPORTED_MODULE_1__["default"]; });
+
+/* harmony import */ var _toVttTime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./toVttTime */ "./node_modules/subtitle/lib/toVttTime.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "toVttTime", function() { return _toVttTime__WEBPACK_IMPORTED_MODULE_2__["default"]; });
+
+/* harmony import */ var _parse__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./parse */ "./node_modules/subtitle/lib/parse.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "parse", function() { return _parse__WEBPACK_IMPORTED_MODULE_3__["default"]; });
+
+/* harmony import */ var _stringify__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./stringify */ "./node_modules/subtitle/lib/stringify.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "stringify", function() { return _stringify__WEBPACK_IMPORTED_MODULE_4__["default"]; });
+
+/* harmony import */ var _stringifyVtt__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./stringifyVtt */ "./node_modules/subtitle/lib/stringifyVtt.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "stringifyVtt", function() { return _stringifyVtt__WEBPACK_IMPORTED_MODULE_5__["default"]; });
+
+/* harmony import */ var _resync__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./resync */ "./node_modules/subtitle/lib/resync.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "resync", function() { return _resync__WEBPACK_IMPORTED_MODULE_6__["default"]; });
+
+/* harmony import */ var _parseTimestamps__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./parseTimestamps */ "./node_modules/subtitle/lib/parseTimestamps.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "parseTimestamps", function() { return _parseTimestamps__WEBPACK_IMPORTED_MODULE_7__["default"]; });
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/subtitle/lib/parse.js":
+/*!********************************************!*\
+  !*** ./node_modules/subtitle/lib/parse.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return parse; });
+/* harmony import */ var _parseTimestamps__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./parseTimestamps */ "./node_modules/subtitle/lib/parseTimestamps.js");
+/**
+ * Module dependencies.
+ */
+
+
+
+/**
+ * Parse a SRT or WebVTT string.
+ * @param {String} srtOrVtt
+ * @return {Array} subtitles
+ */
+
+function parse (srtOrVtt) {
+  if (!srtOrVtt) return []
+
+  const source = srtOrVtt
+    .trim()
+    .concat('\n')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/^WEBVTT.*\n(?:.*: .*\n)*\n/, '')
+    .split('\n')
+
+  return source.reduce((captions, row, index) => {
+    const caption = captions[captions.length - 1]
+
+    if (!caption.index) {
+      if (/^\d+$/.test(row)) {
+        caption.index = parseInt(row, 10)
+        return captions
+      }
+    }
+
+    if (!caption.hasOwnProperty('start')) {
+      const timestamp = Object(_parseTimestamps__WEBPACK_IMPORTED_MODULE_0__["default"])(row)
+      if (timestamp) {
+        Object.assign(caption, timestamp)
+      } else if (captions.length > 1) {
+        captions[captions.length - 2].text += '\n' + row
+      }
+      return captions
+    }
+
+    if (row === '') {
+      delete caption.index
+      if (index !== source.length - 1) {
+        captions.push({})
+      }
+    } else {
+      caption.text = caption.text
+        ? caption.text + '\n' + row
+        : row
+    }
+
+    return captions
+  }, [{}])
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/subtitle/lib/parseTimestamps.js":
+/*!******************************************************!*\
+  !*** ./node_modules/subtitle/lib/parseTimestamps.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return parseTimestamps; });
+/* harmony import */ var _toMS__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toMS */ "./node_modules/subtitle/lib/toMS.js");
+/**
+ * Module dependencies.
+ */
+
+
+
+/**
+ * Timestamp regex
+ * @type {RegExp}
+ */
+
+const RE = /^((?:\d{2,}:)?\d{2}:\d{2}[,.]\d{3}) --> ((?:\d{2,}:)?\d{2}:\d{2}[,.]\d{3})(?: (.*))?$/
+
+/**
+ * parseTimestamps
+ * @param value
+ * @returns {{start: Number, end: Number}}
+ */
+
+function parseTimestamps (value) {
+  const match = RE.exec(value)
+  if (match) {
+    const cue = {
+      start: Object(_toMS__WEBPACK_IMPORTED_MODULE_0__["default"])(match[1]),
+      end: Object(_toMS__WEBPACK_IMPORTED_MODULE_0__["default"])(match[2])
+    }
+    if (match[3]) {
+      cue.settings = match[3]
+    }
+    return cue
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/subtitle/lib/resync.js":
+/*!*********************************************!*\
+  !*** ./node_modules/subtitle/lib/resync.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return resync; });
+/* harmony import */ var _toMS__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toMS */ "./node_modules/subtitle/lib/toMS.js");
+/**
+ * Module dependencies.
+ */
+
+
+
+/**
+ * Resync the given subtitles.
+ * @param captions
+ * @param time
+ * @returns {Array|*}
+ */
+
+function resync (captions, time) {
+  return captions.map(caption => {
+    const start = Object(_toMS__WEBPACK_IMPORTED_MODULE_0__["default"])(caption.start) + time
+    const end = Object(_toMS__WEBPACK_IMPORTED_MODULE_0__["default"])(caption.end) + time
+
+    return Object.assign({}, caption, {
+      start,
+      end
+    })
+  })
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/subtitle/lib/stringify.js":
+/*!************************************************!*\
+  !*** ./node_modules/subtitle/lib/stringify.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return stringify; });
+/* harmony import */ var _toSrtTime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toSrtTime */ "./node_modules/subtitle/lib/toSrtTime.js");
+/**
+ * Module dependencies.
+ */
+
+
+
+/**
+ * Stringify the given array of captions.
+ * @param {Array} captions
+ * @return {String} srt
+ */
+
+function stringify (captions) {
+  return captions.map((caption, index) => {
+    return (index > 0 ? '\n' : '') + [
+      index + 1,
+      `${Object(_toSrtTime__WEBPACK_IMPORTED_MODULE_0__["default"])(caption.start)} --> ${Object(_toSrtTime__WEBPACK_IMPORTED_MODULE_0__["default"])(caption.end)}`,
+      caption.text
+    ].join('\n')
+  }).join('\n') + '\n'
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/subtitle/lib/stringifyVtt.js":
+/*!***************************************************!*\
+  !*** ./node_modules/subtitle/lib/stringifyVtt.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return stringifyVtt; });
+/* harmony import */ var _toVttTime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toVttTime */ "./node_modules/subtitle/lib/toVttTime.js");
+/**
+ * Module dependencies.
+ */
+
+
+
+/**
+ * Stringify the given array of captions to WebVTT format.
+ * @param {Array} captions
+ * @return {String} webVtt
+ */
+
+function stringifyVtt (captions) {
+  return 'WEBVTT\n\n' + captions.map((caption, index) => {
+    return (index > 0 ? '\n' : '') + [
+      index + 1,
+      `${Object(_toVttTime__WEBPACK_IMPORTED_MODULE_0__["default"])(caption.start)} --> ${Object(_toVttTime__WEBPACK_IMPORTED_MODULE_0__["default"])(caption.end)}${caption.settings ? ' ' + caption.settings : ''}`,
+      caption.text
+    ].join('\n')
+  }).join('\n') + '\n'
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/subtitle/lib/toMS.js":
+/*!*******************************************!*\
+  !*** ./node_modules/subtitle/lib/toMS.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return toMS; });
+/**
+ * Return the given SRT timestamp as milleseconds.
+ * @param {string|number} timestamp
+ * @returns {number} milliseconds
+ */
+
+function toMS (timestamp) {
+  if (!isNaN(timestamp)) {
+    return timestamp
+  }
+
+  const match = timestamp.match(/^(?:(\d{2,}):)?(\d{2}):(\d{2})[,.](\d{3})$/)
+
+  if (!match) {
+    throw new Error('Invalid SRT or VTT time format: "' + timestamp + '"')
+  }
+
+  const hours = match[1] ? parseInt(match[1], 10) * 3600000 : 0
+  const minutes = parseInt(match[2], 10) * 60000
+  const seconds = parseInt(match[3], 10) * 1000
+  const milliseconds = parseInt(match[4], 10)
+
+  return hours + minutes + seconds + milliseconds
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/subtitle/lib/toSrtTime.js":
+/*!************************************************!*\
+  !*** ./node_modules/subtitle/lib/toSrtTime.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return toSrtTime; });
+/* harmony import */ var zero_fill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! zero-fill */ "./node_modules/zero-fill/index.js");
+/* harmony import */ var zero_fill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(zero_fill__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * Module dependencies.
+ */
+
+
+
+/**
+ * Return the given milliseconds as SRT timestamp.
+ * @param timestamp
+ * @returns {string}
+ */
+
+function toSrtTime (timestamp) {
+  if (isNaN(timestamp)) {
+    return timestamp
+  }
+
+  const date = new Date(0, 0, 0, 0, 0, 0, timestamp)
+
+  const hours = zero_fill__WEBPACK_IMPORTED_MODULE_0___default()(2, date.getHours())
+  const minutes = zero_fill__WEBPACK_IMPORTED_MODULE_0___default()(2, date.getMinutes())
+  const seconds = zero_fill__WEBPACK_IMPORTED_MODULE_0___default()(2, date.getSeconds())
+  const ms = timestamp - ((hours * 3600000) + (minutes * 60000) + (seconds * 1000))
+
+  return `${hours}:${minutes}:${seconds},${zero_fill__WEBPACK_IMPORTED_MODULE_0___default()(3, ms)}`
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/subtitle/lib/toVttTime.js":
+/*!************************************************!*\
+  !*** ./node_modules/subtitle/lib/toVttTime.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return toVttTime; });
+/* harmony import */ var zero_fill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! zero-fill */ "./node_modules/zero-fill/index.js");
+/* harmony import */ var zero_fill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(zero_fill__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * Module dependencies.
+ */
+
+
+
+/**
+ * Return the given milliseconds as WebVTT timestamp.
+ * @param timestamp
+ * @returns {string}
+ */
+
+function toVttTime (timestamp) {
+  if (isNaN(timestamp)) {
+    return timestamp
+  }
+
+  const date = new Date(0, 0, 0, 0, 0, 0, timestamp)
+
+  const hours = zero_fill__WEBPACK_IMPORTED_MODULE_0___default()(2, date.getHours())
+  const minutes = zero_fill__WEBPACK_IMPORTED_MODULE_0___default()(2, date.getMinutes())
+  const seconds = zero_fill__WEBPACK_IMPORTED_MODULE_0___default()(2, date.getSeconds())
+  const ms = timestamp - ((hours * 3600000) + (minutes * 60000) + (seconds * 1000))
+
+  return `${hours}:${minutes}:${seconds}.${zero_fill__WEBPACK_IMPORTED_MODULE_0___default()(3, ms)}`
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/webpack/buildin/global.js":
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
@@ -66096,6 +66493,35 @@ module.exports = function(module) {
 	}
 	return module;
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/zero-fill/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/zero-fill/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Given a number, return a zero-filled string.
+ * From http://stackoverflow.com/questions/1267283/
+ * @param  {number} width
+ * @param  {number} number
+ * @return {string}
+ */
+module.exports = function zeroFill (width, number, pad) {
+  if (number === undefined) {
+    return function (number, pad) {
+      return zeroFill(width, number, pad)
+    }
+  }
+  if (pad === undefined) pad = '0'
+  width -= number.toString().length
+  if (width > 0) return new Array(width + (/\./.test(number) ? 2 : 1)).join(pad) + number
+  return number + ''
+}
 
 
 /***/ }),
@@ -67007,6 +67433,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _updateModal_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./updateModal.js */ "./resources/js/components/updateModal.js");
 /* harmony import */ var _deleteModal_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./deleteModal.js */ "./resources/js/components/deleteModal.js");
+/* harmony import */ var _subtitles_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./subtitles.js */ "./resources/js/components/subtitles.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -67036,6 +67463,18 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
+var Subtitle = __webpack_require__(/*! subtitle */ "./node_modules/subtitle/lib/index.js");
+
+var _require = __webpack_require__(/*! subtitle */ "./node_modules/subtitle/lib/index.js"),
+    parse = _require.parse,
+    stringify = _require.stringify,
+    stringifyVtt = _require.stringifyVtt,
+    resync = _require.resync,
+    toMS = _require.toMS,
+    toSrtTime = _require.toSrtTime,
+    toVttTime = _require.toVttTime;
+
 var Show =
 /*#__PURE__*/
 function (_React$Component) {
@@ -67063,7 +67502,9 @@ function (_React$Component) {
       next: null,
       prev: null,
       surplus: null,
-      subtitles: null
+      subtitles: null,
+      currentSubs: null,
+      subs: null
     };
     _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
     _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
@@ -67078,11 +67519,45 @@ function (_React$Component) {
     _this.textArea = _this.textArea.bind(_assertThisInitialized(_this));
     _this.formClosePurge = _this.formClosePurge.bind(_assertThisInitialized(_this));
     _this.modalClose = _this.modalClose.bind(_assertThisInitialized(_this));
+    _this.currentSubs = _this.currentSubs.bind(_assertThisInitialized(_this));
+    _this.subLine = _this.subLine.bind(_assertThisInitialized(_this));
     return _this;
-  } //Handles update
-
+  }
 
   _createClass(Show, [{
+    key: "subLine",
+    value: function subLine() {
+      var _this2 = this;
+
+      var s1 = this.state.subtitles.map(function (item, i) {
+        if (item.id === Number(_this2.state.currentSubs.value)) {
+          return item.text;
+        }
+      });
+      s1 = s1[0];
+      var s2 = parse(s1);
+      this.setState({
+        subs: s2
+      });
+    }
+  }, {
+    key: "currentSubs",
+    value: function currentSubs(e) {
+      if (e.target.value) {
+        this.setState({
+          currentSubs: {
+            value: e.target.value,
+            name: e.target.options[e.target.selectedIndex].text
+          }
+        }, this.subLine);
+      } else {
+        this.setState({
+          currentSubs: null
+        });
+      }
+    } //Handles update
+
+  }, {
     key: "modalClose",
     value: function modalClose() {
       this.setState({
@@ -67129,7 +67604,7 @@ function (_React$Component) {
   }, {
     key: "handleSubmit",
     value: function handleSubmit() {
-      var _this2 = this;
+      var _this3 = this;
 
       var urlId = window.location.href;
       var getaVideoId = urlId.lastIndexOf("/");
@@ -67166,7 +67641,7 @@ function (_React$Component) {
           console.log("success");
           console.log(response);
 
-          _this2.setState({
+          _this3.setState({
             video: response.video,
             user: response.user,
             message: response.message
@@ -67180,7 +67655,7 @@ function (_React$Component) {
           console.log("error");
           console.log(response);
 
-          _this2.setState({
+          _this3.setState({
             message: response.message
           });
         }
@@ -67307,7 +67782,7 @@ function (_React$Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this3 = this;
+      var _this4 = this;
 
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       this.setState({
@@ -67326,10 +67801,9 @@ function (_React$Component) {
         },
         dataType: 'JSON',
         success: function success(response) {
-          console.log("success");
-          console.log(response);
+          console.log("success"); //console.log(response);
 
-          _this3.setState({
+          _this4.setState({
             video: response.video,
             user: response.user,
             permissions: response.permissions,
@@ -67347,7 +67821,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      console.log(this.state);
+      //console.log(this.state.subs);
       var PlayPause = this.state["switch"] ? "fa fa-pause-circle" : "fa fa-play-circle";
       var minutes = Math.floor(this.state.remaining / 60);
       minutes = ("" + minutes).length === 1 ? "0" + minutes : minutes; //Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
@@ -67364,6 +67838,16 @@ function (_React$Component) {
           value: item.id
         }, item.name);
       }) : null;
+      /*Stuck here*/
+
+      var currTime = this.state.currentTime * 1000;
+      var subLine = currTime < 904 ? "blah" : "trt";
+      console.log("****");
+      console.log(this.state.currentTime * 1000);
+      console.log(this.state.subs ? this.state.subs.start : "");
+      console.log(subLine);
+      console.log(this.state.subs ? this.state.subs.end : "");
+      console.log("****");
       var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "videoWrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -67384,7 +67868,11 @@ function (_React$Component) {
         type: "video/ogg"
       }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "subTitles"
-      }, "subTitles")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "subTitles"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_subtitles_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        subtitles: this.state.subtitles,
+        currentTime: this.state.currentTime,
+        currentSubs: this.state.currentSubs
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "progress",
         onClick: this.trackProgress,
         className: "progress text-center"
@@ -67428,12 +67916,23 @@ function (_React$Component) {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
         className: "form-control",
-        id: "subs"
-      }, subtitles)))) : "";
+        id: "subs",
+        onChange: this.currentSubs
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        value: ""
+      }, "Choose subtitles"), subtitles)))) : "";
       var UpdateAndDelete = this.state.permissions ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container2"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_deleteModal_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
         "delete": this["delete"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        modalClose: this.modalClose,
+        formClosePurge: this.formClosePurge,
+        textArea: this.textArea,
+        handleSubmit: this.handleSubmit,
+        user: this.state.user,
+        video: this.state.video,
+        token: this.state.token
       })) : "";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container"
@@ -67477,6 +67976,77 @@ function (_React$Component) {
 if (document.getElementById('show')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Show, null), document.getElementById('show'));
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/subtitles.js":
+/*!**********************************************!*\
+  !*** ./resources/js/components/subtitles.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+var Subtitles =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Subtitles, _React$Component);
+
+  function Subtitles(props) {
+    var _this;
+
+    _classCallCheck(this, Subtitles);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Subtitles).call(this, props));
+    _this.state = {}; //this.listVideos = this.listVideos.bind(this);
+
+    return _this;
+  }
+
+  _createClass(Subtitles, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {}
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: {
+          color: "magenta"
+        }
+      });
+    }
+  }]);
+
+  return Subtitles;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["default"] = (Subtitles);
 
 /***/ }),
 
@@ -67556,6 +68126,42 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "fileUpload",
+    value: function fileUpload(e) {
+      if (e.target.id === "video") {
+        var clip = {};
+        clip.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.clip.filePlaceholder;
+        clip.fileUrl = e.target.value ? e.target.value : this.state.clip.filePlaceholder;
+        clip.fileName = e.target.value.split("\\").pop().split(".")[0];
+        clip.fileExt = e.target.value.split("\\").pop().split(".")[1];
+        this.setState({
+          clip: clip
+        });
+      }
+
+      if (e.target.id === "thumbnail") {
+        var thumbnail = {};
+        thumbnail.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.thumbnail.filePlaceholder;
+        thumbnail.fileUrl = e.target.value ? e.target.value : this.state.thumbnail.filePlaceholder;
+        thumbnail.fileName = e.target.value.split("\\").pop().split(".")[0];
+        thumbnail.fileExt = e.target.value.split("\\").pop().split(".")[1];
+        this.setState({
+          thumbnail: thumbnail
+        });
+      }
+
+      if (e.target.id === "subtitle") {
+        var subtitle = {};
+        subtitle.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.subtitle.filePlaceholder;
+        subtitle.fileUrl = e.target.value ? e.target.value : this.state.subtitle.filePlaceholder;
+        subtitle.fileName = e.target.value.split("\\").pop().split(".")[0];
+        subtitle.fileExt = e.target.value.split("\\").pop().split(".")[1];
+        this.setState({
+          subtitle: subtitle
+        });
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this2 = this;
@@ -67581,7 +68187,7 @@ function (_React$Component) {
         className: "modal fade",
         id: "myModal"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "modal-dialog"
+        className: "modal-dialog full_modal-dialog"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-content"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -67669,7 +68275,7 @@ function (_React$Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "custom-file-label",
         htmlFor: "subtitle"
-      }, this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose subtitle(.srt)")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, this.state.clip && this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose subtitle(.srt)")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-footer"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         className: "btn btn-outline-primary",

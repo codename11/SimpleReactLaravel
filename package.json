@@ -25,6 +25,7 @@
         "sass-loader": "^7.1.0"
     },
     "dependencies": {
-        "get-video-duration": "^1.0.3"
+        "get-video-duration": "^1.0.3",
+        "subtitle": "^2.0.3"
     }
 }

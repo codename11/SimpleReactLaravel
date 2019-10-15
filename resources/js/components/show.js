@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import UpdateModal from './updateModal.js';
 import DeleteModal from './deleteModal.js';
+import Subtitles from './subtitles.js';
+
+const Subtitle = require('subtitle')
+const { parse, stringify, stringifyVtt, resync, toMS, toSrtTime, toVttTime } = require('subtitle')
 
 class Show extends React.Component {
     
@@ -25,6 +29,8 @@ class Show extends React.Component {
             prev: null,
             surplus: null,
             subtitles: null,
+            currentSubs: null,
+            subs: null,
 
         };
         this.playPause = this.playPause.bind(this);
@@ -41,6 +47,49 @@ class Show extends React.Component {
         this.textArea = this.textArea.bind(this);
         this.formClosePurge = this.formClosePurge.bind(this);
         this.modalClose = this.modalClose.bind(this);
+
+        this.currentSubs = this.currentSubs.bind(this);
+        this.subLine = this.subLine.bind(this);
+
+    }
+
+    subLine(){
+
+        let s1 = this.state.subtitles.map((item,i) =>{
+
+            if(item.id===Number(this.state.currentSubs.value)){
+                return item.text;
+            }
+
+        });
+        s1 = s1[0];
+        let s2 = parse(s1);
+
+        this.setState({
+            subs: s2,
+        });
+
+    }
+
+    currentSubs(e){
+
+        if(e.target.value){
+
+            this.setState({
+                currentSubs: {
+                    value: e.target.value,
+                    name: e.target.options[e.target.selectedIndex].text,
+                },
+            },this.subLine);
+
+        }
+        else{
+
+            this.setState({
+                currentSubs: null,
+            });
+
+        }
 
     }
 
@@ -314,7 +363,7 @@ class Show extends React.Component {
             dataType: 'JSON',
             success: (response) => { 
                 console.log("success");
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     video: response.video,
                     user: response.user,
@@ -334,7 +383,7 @@ class Show extends React.Component {
     }
 
     render(){
-        console.log(this.state);
+        //console.log(this.state.subs);
 
         let PlayPause = this.state.switch ? "fa fa-pause-circle" : "fa fa-play-circle";
 
@@ -353,6 +402,17 @@ class Show extends React.Component {
             return <option key={i} value={item.id}>{item.name}</option>
 
         }) : null;
+        
+        /*Stuck here*/
+        let currTime = (this.state.currentTime*1000);
+
+        let subLine = (currTime<904) ? "blah" : "trt";
+        console.log("****");
+        console.log((this.state.currentTime*1000));
+        console.log(this.state.subs ? this.state.subs.start : "");
+        console.log(subLine);
+        console.log(this.state.subs ? this.state.subs.end : "");
+        console.log("****");
 
         let video = videoUrl ? <div  className={"videoWrapper"}>
             <div className="subWrapper">
@@ -362,6 +422,7 @@ class Show extends React.Component {
                 Your browser does not support the video tag.
                 </video>
                 <div className="subTitles">subTitles</div>
+                <Subtitles subtitles={this.state.subtitles} currentTime={this.state.currentTime} currentSubs={this.state.currentSubs}/>
             </div>
 
             <div id="progress" onClick={this.trackProgress} className="progress text-center">
@@ -376,7 +437,8 @@ class Show extends React.Component {
                 <input type="range" className="custom-range" id="customRange" name="points1" onChange={this.volume}/>
                 <div className="time" onClick={this.fullScreen}><i className="fa fa-expand"></i></div>
                 <div id="subSelect" className="form-group">
-                    <select className="form-control" id="subs">
+                    <select className="form-control" id="subs" onChange={this.currentSubs}>
+                        <option value="">Choose subtitles</option>
                         {subtitles}
                     </select>
                 </div>
@@ -387,6 +449,8 @@ class Show extends React.Component {
         let UpdateAndDelete = this.state.permissions ? <div className="grid-container2">
                 
                 <DeleteModal delete={this.delete}/>
+                <UpdateModal modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
+            
             </div> : "";
 
         return (

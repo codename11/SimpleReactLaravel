@@ -36,6 +36,52 @@ class UpdateModal extends React.Component {
 
     }
 
+    fileUpload(e) {
+
+        if(e.target.id==="video"){
+            
+            let clip = {};
+            clip.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.clip.filePlaceholder;
+            clip.fileUrl = e.target.value ? e.target.value : this.state.clip.filePlaceholder;
+            clip.fileName = (e.target.value.split("\\").pop()).split(".")[0];
+            clip.fileExt = (e.target.value.split("\\").pop()).split(".")[1];
+
+            this.setState({
+                clip: clip,
+            });
+
+        }
+
+        if(e.target.id==="thumbnail"){
+            
+            let thumbnail = {};
+            thumbnail.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.thumbnail.filePlaceholder;
+            thumbnail.fileUrl = e.target.value ? e.target.value : this.state.thumbnail.filePlaceholder;
+            thumbnail.fileName = (e.target.value.split("\\").pop()).split(".")[0];
+            thumbnail.fileExt = (e.target.value.split("\\").pop()).split(".")[1];
+
+            this.setState({
+                thumbnail: thumbnail,
+            });
+
+        }
+
+        if(e.target.id==="subtitle"){
+            
+            let subtitle = {};
+            subtitle.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.subtitle.filePlaceholder;
+            subtitle.fileUrl = e.target.value ? e.target.value : this.state.subtitle.filePlaceholder;
+            subtitle.fileName = (e.target.value.split("\\").pop()).split(".")[0];
+            subtitle.fileExt = (e.target.value.split("\\").pop()).split(".")[1];
+
+            this.setState({
+                subtitle: subtitle,
+            });
+
+        }
+        
+    }
+
     render(){
 
         //console.log(this.state);
@@ -50,7 +96,7 @@ class UpdateModal extends React.Component {
                 </button>
 
                 <div className="modal fade" id="myModal">
-                    <div className="modal-dialog">
+                    <div className="modal-dialog full_modal-dialog">
                         <div className="modal-content">
                         
                             <div className="modal-header">
@@ -88,7 +134,7 @@ class UpdateModal extends React.Component {
 
                                     <div className="custom-file mb-3">
                                         <input type="file" className="custom-file-input" id="subtitle" name="subtitle" onChange={this.fileUpload}/>
-                                        <label className="custom-file-label" htmlFor="subtitle">{this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose subtitle(.srt)"}</label>
+                                        <label className="custom-file-label" htmlFor="subtitle">{this.state.clip && this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose subtitle(.srt)"}</label>
                                     </div>
 
                                 </form>
