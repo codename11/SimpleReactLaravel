@@ -67475,6 +67475,8 @@ var _require = __webpack_require__(/*! subtitle */ "./node_modules/subtitle/lib/
     toSrtTime = _require.toSrtTime,
     toVttTime = _require.toVttTime;
 
+var subTimer = null;
+
 var Show =
 /*#__PURE__*/
 function (_React$Component) {
@@ -67504,7 +67506,9 @@ function (_React$Component) {
       surplus: null,
       subtitles: null,
       currentSubs: null,
-      subs: null
+      subs: null,
+      line: null,
+      firstSub: null
     };
     _this.playPause = _this.playPause.bind(_assertThisInitialized(_this));
     _this.videoRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
@@ -67585,12 +67589,12 @@ function (_React$Component) {
         }
       }
 
-      if ($('#myModal').is(':visible')) console.log("yes");
+      if ($('#myModal').is(':visible')) console.log("modal is visible.");
       this.setState({
         thumbnail: null
       });
       $('#myModal').modal('hide');
-      if (!$('#myModal').is(':visible')) console.log("no");
+      if (!$('#myModal').is(':visible')) console.log("modal is not visible.");
     }
   }, {
     key: "textArea",
@@ -67765,6 +67769,33 @@ function (_React$Component) {
         currentTime: e.target.currentTime,
         width: e.target.currentTime * 100 / e.target.duration
       });
+      var currTime = this.state.currentTime * 1000; //In ms.
+
+      var inc = 0;
+
+      if (this.state.subs) {
+        var subDur = 0;
+
+        while (inc < this.state.subs.length) {
+          subDur = this.state.subs[inc].end - this.state.subs[inc].start;
+          var start = this.state.subs[inc].start;
+          var end = this.state.subs[inc].end;
+
+          if (currTime <= end && currTime >= start) {
+            this.setState({
+              line: this.state.subs[inc].text
+            });
+          }
+
+          if (currTime >= end) {
+            this.setState({
+              line: ""
+            });
+          }
+
+          inc++;
+        }
+      }
     }
   }, {
     key: "playPause",
@@ -67801,7 +67832,8 @@ function (_React$Component) {
         },
         dataType: 'JSON',
         success: function success(response) {
-          console.log("success"); //console.log(response);
+          console.log("success");
+          console.log(response);
 
           _this4.setState({
             video: response.video,
@@ -67838,16 +67870,6 @@ function (_React$Component) {
           value: item.id
         }, item.name);
       }) : null;
-      /*Stuck here*/
-
-      var currTime = this.state.currentTime * 1000;
-      var subLine = currTime < 904 ? "blah" : "trt";
-      console.log("****");
-      console.log(this.state.currentTime * 1000);
-      console.log(this.state.subs ? this.state.subs.start : "");
-      console.log(subLine);
-      console.log(this.state.subs ? this.state.subs.end : "");
-      console.log("****");
       var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "videoWrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -67866,12 +67888,12 @@ function (_React$Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
         src: videoUrl,
         type: "video/ogg"
-      }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "subTitles"
-      }, "subTitles"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_subtitles_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      }), "Your browser does not support the video tag."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_subtitles_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        klasa: "subTitles",
         subtitles: this.state.subtitles,
         currentTime: this.state.currentTime,
-        currentSubs: this.state.currentSubs
+        currentSubs: this.state.currentSubs,
+        subLine: this.state.line
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "progress",
         onClick: this.trackProgress,
@@ -67926,6 +67948,7 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_deleteModal_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
         "delete": this["delete"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        firstSub: this.state.subtitles[0],
         modalClose: this.modalClose,
         formClosePurge: this.formClosePurge,
         textArea: this.textArea,
@@ -68019,25 +68042,18 @@ function (_React$Component) {
   _inherits(Subtitles, _React$Component);
 
   function Subtitles(props) {
-    var _this;
-
     _classCallCheck(this, Subtitles);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Subtitles).call(this, props));
-    _this.state = {}; //this.listVideos = this.listVideos.bind(this);
-
-    return _this;
+    return _possibleConstructorReturn(this, _getPrototypeOf(Subtitles).call(this, props));
   }
 
   _createClass(Subtitles, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {}
-  }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        style: {
-          color: "magenta"
+        className: this.props.klasa,
+        dangerouslySetInnerHTML: {
+          __html: this.props.subLine
         }
       });
     }
@@ -68096,7 +68112,8 @@ function (_React$Component) {
       thumbnail: {},
       fullFileName: "",
       message: "",
-      token: null
+      token: null,
+      subtitle: null
     };
     _this.getCkEditor = _this.getCkEditor.bind(_assertThisInitialized(_this));
     _this.setStateOnModal = _this.setStateOnModal.bind(_assertThisInitialized(_this));
@@ -68150,7 +68167,7 @@ function (_React$Component) {
         });
       }
 
-      if (e.target.id === "subtitle") {
+      if (e.target.id === "subtitle" && this.props.currentSubs) {
         var subtitle = {};
         subtitle.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.subtitle.filePlaceholder;
         subtitle.fileUrl = e.target.value ? e.target.value : this.state.subtitle.filePlaceholder;
@@ -68166,9 +68183,9 @@ function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      //console.log(this.state);
       var thumbHolder = this.props.video.thumbnail && Object.entries(this.props.video.thumbnail).length !== 0 ? this.props.video.thumbnail : this.props.video.thumbnail ? this.props.video.thumbnail : "Choose thumbnail";
       var description = this.state && this.props.video && this.props.video.description ? this.props.video.description : "";
+      var subtitle = this.props.firstSub ? this.props.firstSub.name : "Choose subtitle(.srt)";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container",
         style: {
@@ -68271,11 +68288,13 @@ function (_React$Component) {
         className: "custom-file-input",
         id: "subtitle",
         name: "subtitle",
-        onChange: this.fileUpload
+        onChange: this.fileUpload,
+        placeholder: subtitle,
+        disabled: true
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "custom-file-label",
         htmlFor: "subtitle"
-      }, this.state.clip && this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose subtitle(.srt)")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, subtitle)))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-footer"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         className: "btn btn-outline-primary",

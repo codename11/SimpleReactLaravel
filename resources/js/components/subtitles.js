@@ -6,23 +6,14 @@ class Subtitles extends React.Component {
     constructor(props) {
 
         super(props);
-        this.state = {
-
-        };
-        //this.listVideos = this.listVideos.bind(this);
-    }
-
-    componentDidMount(){
-        
-        
 
     }
 
     render(){
-
+        
         return (
-            <div style={{color: "magenta"}}>
-               
+            <div className={this.props.klasa} dangerouslySetInnerHTML={{ __html: this.props.subLine }}>
+                
             </div>
         );
     

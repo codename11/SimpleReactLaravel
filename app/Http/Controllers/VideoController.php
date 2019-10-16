@@ -50,17 +50,7 @@ class VideoController extends Controller
                     $extension = $request->file("video")->getClientOriginalExtension();
                     $fileNameToStore = $filename."_".time().".".$extension;
                     $path = $request->file("video")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStore);
-                    /*
-                    $filenameWithExtThumb = $request->file("thumbnail")->getClientOriginalName();
-                    $filenameThumb = pathinfo($filenameWithExtThumb, PATHINFO_FILENAME);
-                    $extensionThumb = $request->file("thumbnail")->getClientOriginalExtension();
-                    $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
 
-                    $image_resize = \Image::make($request->file("thumbnail")->getRealPath());              
-                    $image_resize->fit(100, 100);
-
-                    $pathThumb = $request->file("thumbnail")->storeAs("public/".auth()->user()->name."'s Thumbnails", $fileNameToStoreThumb);
-                    */
                     /*This resizing works.*/
                     $filenameWithExtThumb = $request->file("thumbnail")->getClientOriginalName();
                     $filenameThumb = pathinfo($filenameWithExtThumb, PATHINFO_FILENAME);
@@ -268,11 +258,10 @@ class VideoController extends Controller
                     $filenameThumb = pathinfo($filenameWithExtThumb, PATHINFO_FILENAME);
                     $extensionThumb = $request->file("thumbnail")->getClientOriginalExtension();
                     $fileNameToStoreThumb = $filenameThumb."_".time().".".$extensionThumb;
-
-                    $image_resize = Image::make($request->file("thumbnail")->getRealPath());              
-                    $image_resize->resize(320, 240);
-                    
-                    $pathThumb = $image_resize->save(public_path("storage/".auth()->user()->name."'s Thumbnails/".$fileNameToStoreThumb));
+                
+                    $img = \Image::make($request->file("thumbnail"));
+                    $pathThumb = str_replace("/","\\",addcslashes(public_path('storage/'.auth()->user()->name."'s Thumbnails/".$fileNameToStoreThumb),"\f\r\n\t"));
+                    $img->resize(240, 240)->save($pathThumb);
                     
                     if($video->thumbnail!=="../nothumbnail.jpg"){
                         
@@ -311,6 +300,28 @@ class VideoController extends Controller
 
                 $prev = $video->prev($video);
                 $next = $video->next($video);
+
+                $filenameWithExtSub = null;
+                $filenameSub = null;
+                $extensionSub = null;
+                $fileNameToStoreSub = null;
+                $pathSub = null;
+
+                if($request->hasFile("subtitle")){
+
+                    $filenameWithExtSub = $request->file("subtitle")->getClientOriginalName();
+                    $filenameSub = pathinfo($filenameWithExtSub, PATHINFO_FILENAME);
+                    $extensionSub = $request->file("subtitle")->getClientOriginalExtension();
+                    $fileNameToStoreSub = $filenameSub."_".time().".".$extensionSub;
+                    $pathSub = $request->file("subtitle")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStoreSub);
+
+                    $subtitle = new Subtitles;
+                    $subtitle->name = $fileNameToStoreSub;
+                    $subtitle->user_id = auth()->user()->id;
+                    $subtitle->video_id = $video->id;
+                    $subtitle->save();
+
+                }
                 
                 $response = array(
                     "message" => "A success! File uploaded!",
@@ -350,19 +361,30 @@ class VideoController extends Controller
         if($request->ajax()){
 
             $video = Videos::find($request->videoId);  
-            $path = public_path("storage/".auth()->user()->name."'s Thumbnails/".$video->thumbnail);
+            $path = "storage/".auth()->user()->name."'s Thumbnails/".$video->thumbnail;
             if($video->thumbnail!=="nothumbnail.jpg" && strpos($path,"nothumbnail.jpg")===false){
 
-                unlink($path);
+                File::delete($path);
             
             }
-            $video->delete();
 
+            $subtitles = $video->subtitle()->get();
+            $subPath = "storage/".auth()->user()->name."'s Videos/";
+            for($i=0;$i<count($subtitles);$i++){
+
+                File::delete($subPath.$subtitles[$i]->name);
+                
+            }
+
+            File::delete($subPath.$video->name);
+            $video->delete();
+            
             $response = array(
                 'status' => 'success',
                 'message' => "Video deleted",
-                "ddd" => $video->thumbnail!=="nothumbnail.jpg" ? "nije" : "jeste",
                 "path" => $path,
+                "video" => $video,
+                //"subtitles" => $subtitles,
             );
             return response()->json($response);
 

@@ -7,6 +7,8 @@ import Subtitles from './subtitles.js';
 const Subtitle = require('subtitle')
 const { parse, stringify, stringifyVtt, resync, toMS, toSrtTime, toVttTime } = require('subtitle')
 
+let subTimer = null;
+
 class Show extends React.Component {
     
     constructor(props) {
@@ -31,6 +33,8 @@ class Show extends React.Component {
             subtitles: null,
             currentSubs: null,
             subs: null,
+            line: null,
+            firstSub: null,
 
         };
         this.playPause = this.playPause.bind(this);
@@ -131,13 +135,13 @@ class Show extends React.Component {
 
         }
 
-        if($('#myModal').is(':visible'))console.log("yes");
+        if($('#myModal').is(':visible'))console.log("modal is visible.");
         this.setState({
             thumbnail: null,
         });
 
         $('#myModal').modal('hide');
-        if(!$('#myModal').is(':visible'))console.log("no");
+        if(!$('#myModal').is(':visible'))console.log("modal is not visible.");
 
     }
 
@@ -327,6 +331,40 @@ class Show extends React.Component {
             width: e.target.currentTime*100/e.target.duration,
         });
 
+        let currTime = (this.state.currentTime*1000);//In ms.
+        let inc = 0;
+
+        if(this.state.subs){
+
+            let subDur = 0;
+    
+            while(inc<this.state.subs.length){
+                subDur = this.state.subs[inc].end-this.state.subs[inc].start;
+                
+                let start = this.state.subs[inc].start;
+                let end = this.state.subs[inc].end;
+
+                if(currTime<=end && currTime>=start){
+                    
+                    this.setState({
+                        line: this.state.subs[inc].text,
+                    });
+
+                }
+
+                if(currTime>=end){
+
+                    this.setState({
+                        line: "",
+                    });
+
+                }
+
+                inc++;
+            }
+                
+        }
+
     }
 
     playPause(){
@@ -363,7 +401,7 @@ class Show extends React.Component {
             dataType: 'JSON',
             success: (response) => { 
                 console.log("success");
-                //console.log(response);
+                console.log(response);
                 this.setState({
                     video: response.video,
                     user: response.user,
@@ -384,7 +422,7 @@ class Show extends React.Component {
 
     render(){
         //console.log(this.state.subs);
-
+        
         let PlayPause = this.state.switch ? "fa fa-pause-circle" : "fa fa-play-circle";
 
         let minutes = Math.floor(this.state.remaining/60);
@@ -402,17 +440,6 @@ class Show extends React.Component {
             return <option key={i} value={item.id}>{item.name}</option>
 
         }) : null;
-        
-        /*Stuck here*/
-        let currTime = (this.state.currentTime*1000);
-
-        let subLine = (currTime<904) ? "blah" : "trt";
-        console.log("****");
-        console.log((this.state.currentTime*1000));
-        console.log(this.state.subs ? this.state.subs.start : "");
-        console.log(subLine);
-        console.log(this.state.subs ? this.state.subs.end : "");
-        console.log("****");
 
         let video = videoUrl ? <div  className={"videoWrapper"}>
             <div className="subWrapper">
@@ -421,8 +448,7 @@ class Show extends React.Component {
                 <source src={videoUrl} type="video/ogg"/>
                 Your browser does not support the video tag.
                 </video>
-                <div className="subTitles">subTitles</div>
-                <Subtitles subtitles={this.state.subtitles} currentTime={this.state.currentTime} currentSubs={this.state.currentSubs}/>
+                <Subtitles klasa="subTitles" subtitles={this.state.subtitles} currentTime={this.state.currentTime} currentSubs={this.state.currentSubs} subLine={this.state.line} />
             </div>
 
             <div id="progress" onClick={this.trackProgress} className="progress text-center">
@@ -449,7 +475,7 @@ class Show extends React.Component {
         let UpdateAndDelete = this.state.permissions ? <div className="grid-container2">
                 
                 <DeleteModal delete={this.delete}/>
-                <UpdateModal modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
+                <UpdateModal firstSub={this.state.subtitles[0]} modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
             
             </div> : "";
 

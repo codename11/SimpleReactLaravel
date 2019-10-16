@@ -10,7 +10,7 @@ class UpdateModal extends React.Component {
             fullFileName: "",
             message: "",
             token: null,
-
+            subtitle: null,
         };
         this.getCkEditor = this.getCkEditor.bind(this);
         this.setStateOnModal = this.setStateOnModal.bind(this);
@@ -37,7 +37,7 @@ class UpdateModal extends React.Component {
     }
 
     fileUpload(e) {
-
+        
         if(e.target.id==="video"){
             
             let clip = {};
@@ -66,7 +66,7 @@ class UpdateModal extends React.Component {
 
         }
 
-        if(e.target.id==="subtitle"){
+        if(e.target.id==="subtitle" && this.props.currentSubs){
             
             let subtitle = {};
             subtitle.fullFileName = e.target.value ? e.target.value.split("\\").pop() : this.state.subtitle.filePlaceholder;
@@ -84,9 +84,9 @@ class UpdateModal extends React.Component {
 
     render(){
 
-        //console.log(this.state);
         const thumbHolder = (this.props.video.thumbnail && Object.entries(this.props.video.thumbnail).length !== 0) ? this.props.video.thumbnail : (this.props.video.thumbnail ? this.props.video.thumbnail : "Choose thumbnail");
         const description = (this.state && this.props.video && this.props.video.description) ? this.props.video.description : "";
+        const subtitle = this.props.firstSub ? this.props.firstSub.name : "Choose subtitle(.srt)";
 
         return (
             <div className="container" style={{paddingLeft: "0px"}}>
@@ -133,8 +133,8 @@ class UpdateModal extends React.Component {
                                     </div>
 
                                     <div className="custom-file mb-3">
-                                        <input type="file" className="custom-file-input" id="subtitle" name="subtitle" onChange={this.fileUpload}/>
-                                        <label className="custom-file-label" htmlFor="subtitle">{this.state.clip && this.state.clip.fullFileName ? this.state.clip.fullFileName : "Choose subtitle(.srt)"}</label>
+                                        <input type="file" className="custom-file-input" id="subtitle" name="subtitle" onChange={this.fileUpload} placeholder={subtitle} disabled/>
+                                        <label className="custom-file-label" htmlFor="subtitle">{subtitle}</label>
                                     </div>
 
                                 </form>
