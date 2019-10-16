@@ -78,6 +78,20 @@ You must chose title, description and thumbnail for your video.
 If you chose to list video, you'll be presented list of six video per page row. If you want to see more of them(if any), click `Show more` text to load more(if any).
 ![List videos](4.png)
 
+**Updated**
+
+Added delete and update and subtitle option.
+
+To delete just press red delete button, after whom, modal will pop out with confirmation window.
+![Delete video](6.png)
+
+Similar is for update. Except you can update title, description and choose another thumbnail.
+![Update video](5.png)
+
+To choose different subtitle(need to add this), click on select-option dropdown.
+![Choose subtitle](7.png)
+By default, no subtitle is chosen.
+
 ## Technologies used:
 
 1. React
