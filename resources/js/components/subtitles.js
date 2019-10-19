@@ -12,7 +12,7 @@ class Subtitles extends React.Component {
     render(){
         
         return (
-            <div className={this.props.klasa} dangerouslySetInnerHTML={{ __html: this.props.subLine }}>
+            <div className={this.props.klasa} dangerouslySetInnerHTML={{ __html: this.props.subLine }} style={this.props.style}>
                 
             </div>
         );

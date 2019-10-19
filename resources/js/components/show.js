@@ -55,6 +55,18 @@ class Show extends React.Component {
         this.currentSubs = this.currentSubs.bind(this);
         this.subLine = this.subLine.bind(this);
 
+        this.wrapRef = React.createRef();
+
+        this.ifEscapeIsPressed = this.ifEscapeIsPressed.bind(this);
+        this.switch = this.switch.bind(this);
+    }
+
+    switch(){
+
+        this.setState({
+            switch: !this.state.switch
+        },this.playPause());
+        
     }
 
     subLine(){
@@ -91,6 +103,7 @@ class Show extends React.Component {
 
             this.setState({
                 currentSubs: null,
+                subs: null,
             });
 
         }
@@ -297,19 +310,23 @@ class Show extends React.Component {
     fullScreen(){
 
         let elem = this.videoRef.current;
-        if(elem.requestFullscreen){
-            elem.requestFullscreen();
+        let elem1 = this.wrapRef.current;
+
+        if(elem1.requestFullscreen){
+            elem1.requestFullscreen();
         } 
-        else if(elem.mozRequestFullScreen){ /* Firefox */
-            elem.mozRequestFullScreen();
+        else if(elem1.mozRequestFullScreen){
+            elem1.mozRequestFullScreen();
         } 
-        else if(elem.webkitRequestFullscreen){ /* Chrome, Safari & Opera */
-            elem.webkitRequestFullscreen();
+        else if(elem1.webkitRequestFullscreen){
+            elem1.webkitRequestFullscreen();
         } 
-        else if (elem.msRequestFullscreen){ /* IE/Edge */
-            elem.msRequestFullscreen();
+        else if (elem1.msRequestFullscreen){
+            elem1.msRequestFullscreen();
         }
 
+        elem.controls = true;
+        
     }
 
     volume(e){
@@ -369,20 +386,46 @@ class Show extends React.Component {
 
     playPause(){
 
-        this.setState({
-            switch: !this.state.switch
-        });
-        
-        if(this.videoRef.current.paused){
-            this.videoRef.current.play();
-        }
-        else{
+        if(this.state.switch === false){
             this.videoRef.current.pause();
         }
 
+        if(this.state.switch === true){
+            this.videoRef.current.play();
+        }
+        
+    }
+
+    ifEscapeIsPressed(){
+        let elem = this.videoRef.current;
+        elem.controls = false;
     }
 
     componentDidMount(){
+
+        document.addEventListener("keyup", (e) => {
+
+            if(e.key===" "){
+                
+                this.switch();
+
+            }
+            
+        });
+
+        document.addEventListener("fullscreenchange", (e) => {
+
+            if(document.webkitIsFullScreen === false){
+                this.ifEscapeIsPressed();
+            }
+            else if(document.mozFullScreen === false){
+                this.ifEscapeIsPressed();
+            }
+            else if(document.msFullscreenElement === false){
+                this.ifEscapeIsPressed();
+            }
+
+        });
         
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
         
@@ -421,8 +464,8 @@ class Show extends React.Component {
     }
 
     render(){
-        //console.log(this.state.subs);
-        
+        //console.log(this.state);
+
         let PlayPause = this.state.switch ? "fa fa-pause-circle" : "fa fa-play-circle";
 
         let minutes = Math.floor(this.state.remaining/60);
@@ -441,9 +484,9 @@ class Show extends React.Component {
 
         }) : null;
 
-        let video = videoUrl ? <div  className={"videoWrapper"}>
+        let video = videoUrl ? <div ref={this.wrapRef}  className={"videoWrapper"}>
             <div className="subWrapper">
-                <video id="video" ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted} onClick={this.playPause}>
+                <video id="video" ref={this.videoRef} preload="auto" autoPlay onTimeUpdate={this.trackTime} muted={this.state.muted} onClick={this.switch}>
                 <source src={videoUrl} type="video/mp4"/>
                 <source src={videoUrl} type="video/ogg"/>
                 Your browser does not support the video tag.
@@ -457,7 +500,7 @@ class Show extends React.Component {
             </div>
             <div id="controls">
             
-                <button className="btnV" onClick={this.playPause}><i className={PlayPause}></i></button>
+                <button className="btnV" onClick={this.switch}><i className={PlayPause}></i></button>
                 <div className="time">{remainingTime}</div>
                 <div className="muted" onClick={this.mute}><i className={muted}></i></div>
                 <input type="range" className="custom-range" id="customRange" name="points1" onChange={this.volume}/>

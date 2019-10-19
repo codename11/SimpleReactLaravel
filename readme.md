@@ -1,4 +1,4 @@
-# Video Media Player
+# Video Media Player / Home theater
 
 ## Getting Started:
 Put this into root of your server. I used xammp, but there is no trouble to make it work with lamp stack.

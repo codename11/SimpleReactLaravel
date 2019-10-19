@@ -67525,10 +67525,20 @@ function (_React$Component) {
     _this.modalClose = _this.modalClose.bind(_assertThisInitialized(_this));
     _this.currentSubs = _this.currentSubs.bind(_assertThisInitialized(_this));
     _this.subLine = _this.subLine.bind(_assertThisInitialized(_this));
+    _this.wrapRef = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
+    _this.ifEscapeIsPressed = _this.ifEscapeIsPressed.bind(_assertThisInitialized(_this));
+    _this["switch"] = _this["switch"].bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Show, [{
+    key: "switch",
+    value: function _switch() {
+      this.setState({
+        "switch": !this.state["switch"]
+      }, this.playPause());
+    }
+  }, {
     key: "subLine",
     value: function subLine() {
       var _this2 = this;
@@ -67556,7 +67566,8 @@ function (_React$Component) {
         }, this.subLine);
       } else {
         this.setState({
-          currentSubs: null
+          currentSubs: null,
+          subs: null
         });
       }
     } //Handles update
@@ -67737,19 +67748,19 @@ function (_React$Component) {
     key: "fullScreen",
     value: function fullScreen() {
       var elem = this.videoRef.current;
+      var elem1 = this.wrapRef.current;
 
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-      } else if (elem.mozRequestFullScreen) {
-        /* Firefox */
-        elem.mozRequestFullScreen();
-      } else if (elem.webkitRequestFullscreen) {
-        /* Chrome, Safari & Opera */
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        /* IE/Edge */
-        elem.msRequestFullscreen();
+      if (elem1.requestFullscreen) {
+        elem1.requestFullscreen();
+      } else if (elem1.mozRequestFullScreen) {
+        elem1.mozRequestFullScreen();
+      } else if (elem1.webkitRequestFullscreen) {
+        elem1.webkitRequestFullscreen();
+      } else if (elem1.msRequestFullscreen) {
+        elem1.msRequestFullscreen();
       }
+
+      elem.controls = true;
     }
   }, {
     key: "volume",
@@ -67800,21 +67811,39 @@ function (_React$Component) {
   }, {
     key: "playPause",
     value: function playPause() {
-      this.setState({
-        "switch": !this.state["switch"]
-      });
-
-      if (this.videoRef.current.paused) {
-        this.videoRef.current.play();
-      } else {
+      if (this.state["switch"] === false) {
         this.videoRef.current.pause();
       }
+
+      if (this.state["switch"] === true) {
+        this.videoRef.current.play();
+      }
+    }
+  }, {
+    key: "ifEscapeIsPressed",
+    value: function ifEscapeIsPressed() {
+      var elem = this.videoRef.current;
+      elem.controls = false;
     }
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
       var _this4 = this;
 
+      document.addEventListener("keyup", function (e) {
+        if (e.key === " ") {
+          _this4["switch"]();
+        }
+      });
+      document.addEventListener("fullscreenchange", function (e) {
+        if (document.webkitIsFullScreen === false) {
+          _this4.ifEscapeIsPressed();
+        } else if (document.mozFullScreen === false) {
+          _this4.ifEscapeIsPressed();
+        } else if (document.msFullscreenElement === false) {
+          _this4.ifEscapeIsPressed();
+        }
+      });
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       this.setState({
         token: token
@@ -67853,7 +67882,7 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      //console.log(this.state.subs);
+      //console.log(this.state);
       var PlayPause = this.state["switch"] ? "fa fa-pause-circle" : "fa fa-play-circle";
       var minutes = Math.floor(this.state.remaining / 60);
       minutes = ("" + minutes).length === 1 ? "0" + minutes : minutes; //Checks if mins are one digit by turning it into string that now beasues length, if length is 1(single digit), if it is, then adds zero in front of it.
@@ -67871,6 +67900,7 @@ function (_React$Component) {
         }, item.name);
       }) : null;
       var video = videoUrl ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        ref: this.wrapRef,
         className: "videoWrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "subWrapper"
@@ -67881,7 +67911,7 @@ function (_React$Component) {
         autoPlay: true,
         onTimeUpdate: this.trackTime,
         muted: this.state.muted,
-        onClick: this.playPause
+        onClick: this["switch"]
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("source", {
         src: videoUrl,
         type: "video/mp4"
@@ -67912,7 +67942,7 @@ function (_React$Component) {
         id: "controls"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         className: "btnV",
-        onClick: this.playPause
+        onClick: this["switch"]
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         className: PlayPause
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -68054,7 +68084,8 @@ function (_React$Component) {
         className: this.props.klasa,
         dangerouslySetInnerHTML: {
           __html: this.props.subLine
-        }
+        },
+        style: this.props.style
       });
     }
   }]);
