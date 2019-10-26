@@ -42,6 +42,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/create">Create Videos</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/addSub">Add Subtitle</a>
+                        </li>
                         @endauth
                     </ul>
 

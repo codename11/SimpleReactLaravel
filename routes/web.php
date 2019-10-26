@@ -41,6 +41,17 @@ Route::get('/list/{id}', 'VideoController@show');
 Route::post('/showAjax','VideoController@ajaxShow');
 //End: Rute za show videa.
 
+//Begin: Rute za update videa.
 Route::post('/uploadUpdate/{id}','VideoController@ajaxUpdate');
+//End: Rute za update videa.
 
+//Begin: Rute za delete videa.
 Route::post('/deleteAjax/{id}','VideoController@ajaxDestroy');
+//End: Rute za delete videa.
+
+//Begin: Rute za dodavanje titlova.
+Route::get('/addSub','VideoController@addSub');
+Route::post('/addSubAjax','VideoController@addSubAjax');
+
+Route::post('/addSubToVideo','VideoController@addSubToVideo');
+//End: Rute za dodavanje titlova.

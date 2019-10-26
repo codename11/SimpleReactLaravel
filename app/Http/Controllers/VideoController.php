@@ -397,4 +397,85 @@ class VideoController extends Controller
         }
         
     }
+
+    public function addsub(Request $request){
+
+        return view('addsub');
+
+    }
+
+    public function addSubAjax(Request $request){
+
+        if($request->ajax()){
+
+            $videos = Videos::with("user")->get();
+
+            $response = array(
+                "videos" => $videos,
+                "request" => $request->all(),
+            );
+            
+            return response()->json($response);
+
+        }
+
+    }
+
+    public function addSubToVideo(Request $request){
+
+        if($request->ajax()){
+            
+            $validator = \Validator::make($request->all(), [
+                "videoId" => 'required',
+                "subtitle" => "required",
+            ]);
+
+            $video = Videos::find((int)$request->videoId);  
+
+            if ($validator->passes()){
+
+                if($request->has("videoId") && $request->hasFile("subtitle")){
+                
+                    $filenameWithExtSub = $request->file("subtitle")->getClientOriginalName();
+                    $filenameSub = pathinfo($filenameWithExtSub, PATHINFO_FILENAME);
+                    $extensionSub = $request->file("subtitle")->getClientOriginalExtension();
+                    $fileNameToStoreSub = $filenameSub."_".time().".".$extensionSub;
+                    $pathSub = $request->file("subtitle")->storeAs("public/".auth()->user()->name."'s Videos", $fileNameToStoreSub);
+
+                    $subtitle = new Subtitles;
+                    $subtitle->name = $fileNameToStoreSub;
+                    $subtitle->user_id = auth()->user()->id;
+                    $subtitle->video_id = $video->id;
+                    $subtitle->save();
+
+                    $response = array(
+                        "request" => $request->all(),
+                    );
+                    
+                    return response()->json($response);
+
+                }
+                else{
+                    $response = array(
+                        "error" => "Doesn't have all.",
+                        "request" => $request->all(),
+                    );
+                    
+                    return response()->json($response);
+                }
+
+            }
+            else{
+                $response = array(
+                    "error" => "Validation didn't passed.",
+                    "request" => $request->all(),
+                );
+                
+                return response()->json($response);
+            }
+
+        }
+
+    }
+
 }

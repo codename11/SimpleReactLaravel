@@ -72,13 +72,20 @@ class Show extends React.Component {
     subLine(){
 
         let s1 = this.state.subtitles.map((item,i) =>{
-
+            
             if(item.id===Number(this.state.currentSubs.value)){
+                
                 return item.text;
             }
 
         });
-        s1 = s1[0];
+
+        let filtered = s1.filter(function (el) {
+            return el != undefined;
+        });
+
+        s1 = filtered[0];
+
         let s2 = parse(s1);
 
         this.setState({
@@ -90,7 +97,7 @@ class Show extends React.Component {
     currentSubs(e){
 
         if(e.target.value){
-
+            
             this.setState({
                 currentSubs: {
                     value: e.target.value,
@@ -352,7 +359,7 @@ class Show extends React.Component {
         let inc = 0;
 
         if(this.state.subs){
-
+            
             let subDur = 0;
     
             while(inc<this.state.subs.length){
