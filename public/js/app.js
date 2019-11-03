@@ -67493,12 +67493,15 @@ function (_React$Component) {
 
   _createClass(List, [{
     key: "scrollToBottom",
-    value: function scrollToBottom(par) {
-      window.scrollTo({
-        left: 0,
-        top: par && par === 0 ? 9999 : 999999,
-        behavior: "smooth"
-      });
+    value: function scrollToBottom() {
+      setTimeout(function () {
+        //Needed to add this, because Chrome is so fast that it doesn't execute scrolling fast enough on click.
+        window.scrollTo({
+          left: 0,
+          top: 999999,
+          behavior: "smooth"
+        });
+      }, 10);
     }
   }, {
     key: "offsetIncrement",
@@ -67535,17 +67538,15 @@ function (_React$Component) {
             _this3.setState({
               videos: response.videos
             });
-
-            _this3.scrollToBottom(_this3.state.offset);
           }
 
           if (_this3.state.offset > 0) {
             _this3.setState({
               videos: _this3.state.videos.concat(response.videos)
             });
-
-            _this3.scrollToBottom(_this3.state.offset);
           }
+
+          _this3.scrollToBottom();
         },
         error: function error(response) {
           console.log("error");

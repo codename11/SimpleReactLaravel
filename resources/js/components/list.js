@@ -15,9 +15,11 @@ class List extends React.Component {
         this.scrollToBottom = this.scrollToBottom.bind(this);
     }
 
-    scrollToBottom(par){
-
-        window.scrollTo({left: 0, top: (par && par===0 ? 9999 : 999999), behavior: "smooth"});
+    scrollToBottom(){
+        
+        setTimeout(() => {//Needed to add this, because Chrome is so fast that it doesn't execute scrolling fast enough on click.
+            window.scrollTo({left: 0, top: 999999, behavior: "smooth"});
+        },10);
 
     }
 
@@ -52,7 +54,6 @@ class List extends React.Component {
                     this.setState({
                         videos: response.videos,
                     });
-                    this.scrollToBottom(this.state.offset);
 
                 }
 
@@ -61,9 +62,10 @@ class List extends React.Component {
                     this.setState({
                         videos: this.state.videos.concat(response.videos),
                     });
-                    this.scrollToBottom(this.state.offset);
-
+                   
                 }
+
+                this.scrollToBottom();
     
             },
             error: (response) => {
