@@ -67487,10 +67487,20 @@ function (_React$Component) {
     };
     _this.listVideos = _this.listVideos.bind(_assertThisInitialized(_this));
     _this.offsetIncrement = _this.offsetIncrement.bind(_assertThisInitialized(_this));
+    _this.scrollToBottom = _this.scrollToBottom.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(List, [{
+    key: "scrollToBottom",
+    value: function scrollToBottom(par) {
+      window.scrollTo({
+        left: 0,
+        top: par && par === 0 ? 9999 : 999999,
+        behavior: "smooth"
+      });
+    }
+  }, {
     key: "offsetIncrement",
     value: function offsetIncrement(e) {
       var _this2 = this;
@@ -67525,12 +67535,16 @@ function (_React$Component) {
             _this3.setState({
               videos: response.videos
             });
+
+            _this3.scrollToBottom(_this3.state.offset);
           }
 
           if (_this3.state.offset > 0) {
             _this3.setState({
               videos: _this3.state.videos.concat(response.videos)
             });
+
+            _this3.scrollToBottom(_this3.state.offset);
           }
         },
         error: function error(response) {

@@ -86,8 +86,15 @@ video{
 
 .grid-container1 > div {
     padding: 10px;
-    width: 286px;
-    margin: 10px 10px 10px 10px;
+    width: 306px;
+    margin: 10px 1px 10px 1px;
+    transition: transform 1s, filter 1s;
+}
+
+.grid-container1 > div:hover {
+    transform:scale(1.01);
+    filter:drop-shadow(8px 8px 10px gray);
+    z-index: 999;
 }
 
 .videoName{

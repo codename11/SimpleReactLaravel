@@ -12,6 +12,13 @@ class List extends React.Component {
         };
         this.listVideos = this.listVideos.bind(this);
         this.offsetIncrement = this.offsetIncrement.bind(this);
+        this.scrollToBottom = this.scrollToBottom.bind(this);
+    }
+
+    scrollToBottom(par){
+
+        window.scrollTo({left: 0, top: (par && par===0 ? 9999 : 999999), behavior: "smooth"});
+
     }
 
     offsetIncrement(e){
@@ -19,8 +26,10 @@ class List extends React.Component {
         e.preventDefault();
         this.setState({
             offset: this.state.offset+1,
-        }, () => {this.listVideos()});
-        
+        }, () => {
+            this.listVideos();
+        });
+    
     }
 
     listVideos(){
@@ -43,6 +52,7 @@ class List extends React.Component {
                     this.setState({
                         videos: response.videos,
                     });
+                    this.scrollToBottom(this.state.offset);
 
                 }
 
@@ -51,6 +61,7 @@ class List extends React.Component {
                     this.setState({
                         videos: this.state.videos.concat(response.videos),
                     });
+                    this.scrollToBottom(this.state.offset);
 
                 }
     
