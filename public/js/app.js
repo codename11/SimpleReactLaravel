@@ -66558,6 +66558,8 @@ __webpack_require__(/*! ./components/show */ "./resources/js/components/show.js"
 
 __webpack_require__(/*! ./components/addsub */ "./resources/js/components/addsub.js");
 
+__webpack_require__(/*! ./components/modsub */ "./resources/js/components/modsub.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -67624,6 +67626,271 @@ function (_React$Component) {
 
 if (document.getElementById('list')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(List, null), document.getElementById('list'));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/modsub.js":
+/*!*******************************************!*\
+  !*** ./resources/js/components/modsub.js ***!
+  \*******************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+var click = 0;
+
+var Modsub =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Modsub, _React$Component);
+
+  function Modsub(props) {
+    var _this;
+
+    _classCallCheck(this, Modsub);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Modsub).call(this, props));
+    _this.state = {
+      videos: null,
+      subtitles: null,
+      subText: null,
+      subTextFormId: null
+    };
+    _this.select = _this.select.bind(_assertThisInitialized(_this));
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.getCkEditor = _this.getCkEditor.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Modsub, [{
+    key: "getCkEditor",
+    value: function getCkEditor() {
+      console.log("got ckeditor");
+      CKEDITOR.replace("ckeditor");
+    }
+  }, {
+    key: "select",
+    value: function select(e) {
+      this.handleSubmit(e);
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this2 = this;
+
+      click++;
+      e.preventDefault();
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      var formId = e.target.id === "subText" ? e.target.id : e.target.parentElement.parentElement.id;
+      var url = "";
+      var formElements = {};
+      var myformData = new FormData();
+
+      if (formId === "videos") {
+        console.log(formId);
+        url = "/modSubOfVideo";
+        formElements.videoId = e.target.value;
+        myformData.append('videoId', formElements.videoId);
+      }
+
+      if (formId === "subtitles") {
+        console.log(formId);
+        url = "/openSubOfVideo";
+        formElements.subId = e.target.value;
+        this.setState({
+          subTextFormId: formElements.subId
+        });
+        myformData.append('subId', formElements.subId);
+      }
+
+      if (formId === "subText") {
+        console.log(formId);
+        url = "/writeSubOfVideo";
+        formElements.subId = e.target.elements[0].value;
+        formElements.subText = e.target.elements[1].value;
+        console.log(formElements.subId);
+        this.setState({
+          subText: formElements.subText
+        });
+        myformData.append('subText', formElements.subText);
+        myformData.append('subId', formElements.subId);
+      }
+
+      myformData.append('_token', token);
+      myformData.append('message', "bravo");
+      $.ajax({
+        url: url,
+        enctype: 'multipart/form-data',
+        type: 'POST',
+        data: myformData,
+        dataType: 'JSON',
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function success(response) {
+          console.log(click);
+          console.log("success");
+
+          if (formId === "videos") {
+            _this2.setState({
+              subtitles: response.subtitles
+            });
+          }
+
+          if (formId === "subtitles") {
+            _this2.setState({
+              subText: response.subText
+            });
+
+            _this2.getCkEditor();
+          }
+
+          if (formId === "subText") {
+            console.log(response);
+
+            _this2.setState({
+              subText: response.subText
+            });
+          }
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+        }
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      //get all videos
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      $.ajax({
+        url: '/addSubAjax',
+        type: 'POST',
+        data: {
+          _token: token,
+          message: "bravo"
+        },
+        dataType: 'JSON',
+        success: function success(response) {
+          console.log("success"); //console.log(response);
+
+          _this3.setState({
+            videos: response.videos
+          });
+        },
+        error: function error(response) {
+          console.log("error"); //console.log(response);
+        }
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      /*console.log("****");
+      console.log(this.state);
+      console.log("****");*/
+      var videos = this.state.videos ? this.state.videos.map(function (item, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+          key: index,
+          value: item.id
+        }, item.name.substr(0, 30) + "...");
+      }) : null;
+      var subs = this.state.subtitles ? this.state.subtitles.map(function (item, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+          key: index,
+          value: item.id
+        }, item.name.substr(0, 30) + "...");
+      }) : null;
+      var subtitles = subs ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        id: "subtitles",
+        encType: "multipart/form-data"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "subtitles"
+      }, "Choose sub to modify:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+        className: "form-control",
+        id: "subtitlesId",
+        name: "subtitlesId",
+        onChange: this.select,
+        required: true
+      }, subs))) : "";
+      var subTextPre = "<pre>" + this.state.subText + "</pre>";
+      var subText = this.state.subText ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        id: "subText",
+        onSubmit: this.handleSubmit,
+        encType: "multipart/form-data"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "hidden",
+        name: "subId",
+        value: this.state.subTextFormId
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "subText"
+      }, "Modify subtitle:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
+        className: "form-control",
+        rows: "5",
+        id: "ckeditor",
+        name: "subTextId",
+        defaultValue: subTextPre
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "submit",
+        className: "btn btn-outline-primary"
+      }, "Submit")) : "";
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        id: "videos",
+        encType: "multipart/form-data"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "video"
+      }, "Choose video:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+        className: "form-control",
+        id: "videoId",
+        name: "videoId",
+        onChange: this.select,
+        required: true
+      }, videos))), subtitles, subText);
+    }
+  }]);
+
+  return Modsub;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+if (document.getElementById('modsub')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Modsub, null), document.getElementById('modsub'));
 }
 
 /***/ }),

@@ -55,3 +55,19 @@ Route::post('/addSubAjax','VideoController@addSubAjax');
 
 Route::post('/addSubToVideo','VideoController@addSubToVideo');
 //End: Rute za dodavanje titlova.
+
+//Begin: Rute za modifikaciju titlova.
+Route::get('/modSub','VideoController@modSub');
+
+Route::post('/modSubOfVideo','VideoController@modSubOfVideo');
+//End: Rute za modifikaciju titlova.
+
+//Begin: Rute za open titlova.
+
+Route::post('/openSubOfVideo','VideoController@openSubOfVideo');
+//End: Rute za open titlova.
+
+//Begin: Rute za write titlova.
+
+Route::post('/writeSubOfVideo','VideoController@writeSubOfVideo');
+//End: Rute za write titlova.

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use Carbon\Carbon;
 
 class VideoController extends Controller
 {
@@ -476,6 +477,95 @@ class VideoController extends Controller
 
         }
 
+    }
+
+    public function modsub(Request $request){
+
+        return view('modsub');
+
+    }
+
+    public function modSubOfVideo(Request $request){
+
+        if($request->ajax()){
+
+            $videoId = $request->videoId;
+            $subtitles = Subtitles::where("video_id", "=", $videoId)->get();
+
+            $response = array(
+                "status" => "ok",
+                "videoId" => $request->input("videoId"),
+                "subtitles" => $subtitles,
+            );
+            return response()->json($response);
+
+        }
+        else{
+
+            $response = array(
+                "status" => "not ok",
+                "requestAll"  => $request->all(),
+            );
+            return response()->json($response);
+
+        }
+        
+    }
+
+    public function openSubOfVideo(Request $request){
+
+        if($request->ajax()){
+
+            $subId = $request->subId;
+            $subtitle = Subtitles::find($subId);
+
+            $path = "storage/".auth()->user()->name."'s Videos/".$subtitle->name;
+            $subText = iconv(mb_detect_encoding(File::get($path), mb_detect_order(), true), "UTF-8", File::get($path));
+            $response = array(
+                "status" => "openSubOfVideo",
+                "subtitle"  => $subtitle,
+                "subText" => $subText,
+            );
+            return response()->json($response);
+        }
+
+    }
+
+    public function writeSubOfVideo(Request $request){
+
+        if($request->ajax()){
+
+            $subText = substr($request->subText,5,strlen($request->subText));
+            $subText = substr($subText,0,strlen($subText)-6);
+
+            $subId = $request->subId;
+            $subtitle = Subtitles::find($subId);
+            
+            $pathToSub = "storage/".auth()->user()->name."'s Videos/".$subtitle->name;
+            
+            File::put($pathToSub,$subText);
+
+            $subtitle->updated_at = Carbon::now()->toDateTimeString();
+            $subtitle->save();
+            
+            $response = array(
+                "status" => "ok",
+                "subId" => $subId,
+                "subText" => $subText,
+                "message" => $request->message,
+            );
+            return response()->json($response);
+        }
+        else{
+
+            $response = array(
+                "status" => "not ok",
+                "requestAll" => $request->all(),
+            );
+            return response()->json($response);
+
+        }
+        
     }
 
 }

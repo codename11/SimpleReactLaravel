@@ -18,3 +18,4 @@ require('./components/dashboard');
 require('./components/updateModal');
 require('./components/show');
 require('./components/addsub');
+require('./components/modsub');
