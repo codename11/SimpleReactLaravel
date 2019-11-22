@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-let click = 0;
 class Modsub extends React.Component {
     
     constructor(props) {
@@ -16,12 +15,24 @@ class Modsub extends React.Component {
         this.select = this.select.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getCkEditor = this.getCkEditor.bind(this);
+        this.getSubText = this.getSubText.bind(this);
 
     }
 
-    getCkEditor(){
-        console.log("got ckeditor");
+    getSubText(e){
+        
+        this.setState({
+            subText: e.target.value,
+        });
+        console.log(this.state.subText);
+        
+    }
+
+    getCkEditor(e){
+        
+        console.log("got ckeditor"); 
         CKEDITOR.replace("ckeditor");
+        
     }
 
     select(e){
@@ -31,7 +42,6 @@ class Modsub extends React.Component {
     }  
 
     handleSubmit(e) {
-        click++;
         e.preventDefault();
 
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
@@ -41,7 +51,7 @@ class Modsub extends React.Component {
         let myformData = new FormData();
 
         if(formId==="videos"){
-            console.log(formId);
+            
             url = "/modSubOfVideo";
             formElements.videoId = e.target.value;
             myformData.append('videoId', formElements.videoId);
@@ -49,36 +59,45 @@ class Modsub extends React.Component {
         }
         
         if(formId==="subtitles"){
-            console.log(formId);
             url = "/openSubOfVideo";
             formElements.subId = e.target.value;
             
             this.setState({
                 subTextFormId: formElements.subId,
             });
-
+            
             myformData.append('subId', formElements.subId);
 
         }
 
         if(formId==="subText"){
-            console.log(formId);
+            
             url = "/writeSubOfVideo";
             formElements.subId = e.target.elements[0].value;
             formElements.subText = e.target.elements[1].value;
-            console.log(formElements.subId);
+            
             this.setState({
                 subText: formElements.subText,
             });
-
-            myformData.append('subText', formElements.subText);
+            
             myformData.append('subId', formElements.subId);
             
         }
 
         myformData.append('_token', token);
         myformData.append('message', "bravo");
-  
+
+        /*
+        Had to manually "rip" text content from ckeditor instance and set myformData with it. 
+        I don't know why or how, but it works. And by reading numerous posts and answers to them 
+        on numerous forums, i concluded is that this is just some of ckeditor quirks. 
+        Especially if you use it with ajax, let alone with more frameworks, frontend and backend alike.
+        */
+        if(CKEDITOR.instances['ckeditor']){
+            formElements.subText = CKEDITOR.instances['ckeditor'].getData();
+            myformData.append('subText', formElements.subText);
+        }
+
         $.ajax({
             url: url,
             enctype: 'multipart/form-data',
@@ -89,14 +108,15 @@ class Modsub extends React.Component {
             contentType: false,
             processData: false,
             success: (response) => { 
-                console.log(click);
                 console.log("success");
+                console.log(response);
                 
                 if(formId==="videos"){
                     
                     this.setState({
                         subtitles: response.subtitles,
                     });
+                    
                 }
                 
                 if(formId==="subtitles"){
@@ -104,16 +124,19 @@ class Modsub extends React.Component {
                     this.setState({
                         subText: response.subText,
                     });
+
                     this.getCkEditor();
+
                 }
                 
                 if(formId==="subText"){
-                    console.log(response);
+                    
                     this.setState({
                         subText: response.subText,
                     });
-                }
 
+                }
+                
             },
             error: (response) => {
 
@@ -140,7 +163,7 @@ class Modsub extends React.Component {
             success: (response) => { 
 
                 console.log("success");
-                //console.log(response);
+                console.log(response);
 
                 this.setState({
                     videos: response.videos,
@@ -150,7 +173,7 @@ class Modsub extends React.Component {
             error: (response) => {
 
                 console.log("error");
-                //console.log(response);
+                console.log(response);
                 
             }
 
@@ -159,9 +182,6 @@ class Modsub extends React.Component {
     }
 
     render(){
-        /*console.log("****");
-        console.log(this.state);
-        console.log("****");*/
         
         let videos = this.state.videos ? this.state.videos.map((item, index) => {
 
@@ -190,12 +210,12 @@ class Modsub extends React.Component {
                 <div className="form-group">
                     <input type="hidden" name="subId" value={this.state.subTextFormId}/>
                     <label htmlFor="subText">Modify subtitle:</label>
-                    <textarea className="form-control" rows="5" id="ckeditor" name="subTextId" defaultValue={subTextPre}/>
+                    <textarea className="form-control" id="ckeditor" rows="5" onChange={this.getSubText} name="subTextId" defaultValue={subTextPre}/>
                 </div>
                 <button type="submit" className="btn btn-outline-primary">Submit</button>
             </form>
         : "";
-
+        
         return (
             <div className="container">
                 <form id="videos" encType="multipart/form-data">
@@ -219,7 +239,8 @@ class Modsub extends React.Component {
 }
 
 if(document.getElementById('modsub')){
-
+    
     ReactDOM.render(<Modsub/>, document.getElementById('modsub'));
-
+    
 }
+

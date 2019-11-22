@@ -67663,7 +67663,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var click = 0;
 
 var Modsub =
 /*#__PURE__*/
@@ -67685,12 +67684,21 @@ function (_React$Component) {
     _this.select = _this.select.bind(_assertThisInitialized(_this));
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.getCkEditor = _this.getCkEditor.bind(_assertThisInitialized(_this));
+    _this.getSubText = _this.getSubText.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Modsub, [{
+    key: "getSubText",
+    value: function getSubText(e) {
+      this.setState({
+        subText: e.target.value
+      });
+      console.log(this.state.subText);
+    }
+  }, {
     key: "getCkEditor",
-    value: function getCkEditor() {
+    value: function getCkEditor(e) {
       console.log("got ckeditor");
       CKEDITOR.replace("ckeditor");
     }
@@ -67704,7 +67712,6 @@ function (_React$Component) {
     value: function handleSubmit(e) {
       var _this2 = this;
 
-      click++;
       e.preventDefault();
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       var formId = e.target.id === "subText" ? e.target.id : e.target.parentElement.parentElement.id;
@@ -67713,14 +67720,12 @@ function (_React$Component) {
       var myformData = new FormData();
 
       if (formId === "videos") {
-        console.log(formId);
         url = "/modSubOfVideo";
         formElements.videoId = e.target.value;
         myformData.append('videoId', formElements.videoId);
       }
 
       if (formId === "subtitles") {
-        console.log(formId);
         url = "/openSubOfVideo";
         formElements.subId = e.target.value;
         this.setState({
@@ -67730,20 +67735,29 @@ function (_React$Component) {
       }
 
       if (formId === "subText") {
-        console.log(formId);
         url = "/writeSubOfVideo";
         formElements.subId = e.target.elements[0].value;
         formElements.subText = e.target.elements[1].value;
-        console.log(formElements.subId);
         this.setState({
           subText: formElements.subText
         });
-        myformData.append('subText', formElements.subText);
         myformData.append('subId', formElements.subId);
       }
 
       myformData.append('_token', token);
       myformData.append('message', "bravo");
+      /*
+      Had to manually "rip" text content from ckeditor instance and set myformData with it. 
+      I don't know why or how, but it works. And by reading numerous posts and answers to them 
+      on numerous forums, i concluded is that this is just some of ckeditor quirks. 
+      Especially if you use it with ajax, let alone with more frameworks, frontend and backend alike.
+      */
+
+      if (CKEDITOR.instances['ckeditor']) {
+        formElements.subText = CKEDITOR.instances['ckeditor'].getData();
+        myformData.append('subText', formElements.subText);
+      }
+
       $.ajax({
         url: url,
         enctype: 'multipart/form-data',
@@ -67754,8 +67768,8 @@ function (_React$Component) {
         contentType: false,
         processData: false,
         success: function success(response) {
-          console.log(click);
           console.log("success");
+          console.log(response);
 
           if (formId === "videos") {
             _this2.setState({
@@ -67772,8 +67786,6 @@ function (_React$Component) {
           }
 
           if (formId === "subText") {
-            console.log(response);
-
             _this2.setState({
               subText: response.subText
             });
@@ -67801,23 +67813,22 @@ function (_React$Component) {
         },
         dataType: 'JSON',
         success: function success(response) {
-          console.log("success"); //console.log(response);
+          console.log("success");
+          console.log(response);
 
           _this3.setState({
             videos: response.videos
           });
         },
         error: function error(response) {
-          console.log("error"); //console.log(response);
+          console.log("error");
+          console.log(response);
         }
       });
     }
   }, {
     key: "render",
     value: function render() {
-      /*console.log("****");
-      console.log(this.state);
-      console.log("****");*/
       var videos = this.state.videos ? this.state.videos.map(function (item, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
           key: index,
@@ -67859,8 +67870,9 @@ function (_React$Component) {
         htmlFor: "subText"
       }, "Modify subtitle:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
         className: "form-control",
-        rows: "5",
         id: "ckeditor",
+        rows: "5",
+        onChange: this.getSubText,
         name: "subTextId",
         defaultValue: subTextPre
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
