@@ -42,5 +42,5 @@ CKEDITOR.editorConfig = function( config ) {
 	];
 	
 	CKEDITOR.config.autoParagraph = false;//Ukida pravljenje p taga oko posta.
-	
+	config.height = '10em';
 };
