@@ -21,6 +21,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
+    
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -30,24 +31,24 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
+                
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         @auth
-                        <li class="nav-item">
+                        <li class="nav-item {{ Request::path() === "list" ? "active" : "" }}">
                             <a class="nav-link" href="/list">List Videos</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item {{ Request::path() === "create" ? "active" : "" }}">
                             <a class="nav-link" href="/create">Create Videos</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item {{ Request::path() === "addSub" ? "active" : "" }}">
                             <a class="nav-link" href="/addSub">Add Subtitle</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item {{ Request::path() === "modSub" ? "active" : "" }}">
                             <a class="nav-link" href="/modSub">Modify Subtitle</a>
                         </li>
                         @endauth
@@ -91,7 +92,7 @@
                 </div>
             </div>
         </nav>
-
+        
         <main class="py-4">
             @yield('content')
         </main>

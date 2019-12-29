@@ -102,6 +102,29 @@ By default, no subtitle is chosen.
 6. Css
 7. Html
 
+## Update1:
+
+Added subtitle editing option. One new option called "Modify subtitle" in navbar is presented.
+
+![Edit subtitle](8.png)
+
+After clicking on selected menu item, you'll be presented an select-option dropdown. From it you'll have to chose video for which you'll later edit subtitle.
+
+On this image, you are presented a list of possible videos to chose from.
+
+![Choose video](9.png)
+
+After selecting desired one, you'll be getting another, just bellow, select option.
+
+![Choose subtitle](10.png)
+
+From which you choose particular subtitle to edit.
+
+In this image, you are seeing text of subtitle itself. By editing and subsequently submiting changes, you're modifying said subtitle file.
+
+![Modify subtitle](11.png)
+
+
 ### My email:
 veljkos82@gmail.com
 

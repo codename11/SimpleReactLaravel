@@ -364,6 +364,10 @@ a:focus {
   margin-bottom: 15%;
 }
 
+.active {
+  background-color: whitesmoke;
+}
+
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
