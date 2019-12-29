@@ -97,7 +97,7 @@ class List extends React.Component {
             let desc = item.description && item.description.length>56 ? item.description.substring(0, 56) : item.description;
             let readMore = desc.length===56 ? <a id='readMore' href={"list/"+item.id}>...Find out more</a> : "";
             
-            return  <div className="card" key={index}>
+            return  <div className="card grid-container1-div" key={index}>
 
                         <div className="card-header videoTitle">{item.title}</div>
 
@@ -119,14 +119,14 @@ class List extends React.Component {
         }) : "";
 
         videos = videos.length > 0 ? videos : (<div><img className="img-fluid cent novideos" src="/storage/novideos.gif" alt="novideos" /><span className="cent notice">No videos uploaded yet...</span></div>);
-
+        
         return (
             <div>
                 <div className="grid-container1">
                     {videos}
-                
+                    {videos && videos.length > 0 ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : ""}
                 </div>
-                <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a>
+                
             </div>
         );
     
