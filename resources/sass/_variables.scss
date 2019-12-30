@@ -364,3 +364,7 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
 .active{
     background-color: whitesmoke;
 }
+
+#karusel > div > div.carousel-item.active{
+    background-color: white;
+}

@@ -67042,7 +67042,7 @@ function (_React$Component) {
       $.getJSON('https://ipinfo.io/geo', function (response) {
         var apiKey = "51540f31c56cd698baf3fa00a533d487";
         var location = response.loc.split(",");
-        var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + location[0] + "&lon=" + location[1] + "&appid=" + apiKey;
+        var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + location[0] + "&lon=" + location[1] + "&appid=" + apiKey;
         $.ajax({
           url: url,
           async: true,
@@ -67613,11 +67613,11 @@ function (_React$Component) {
       }, "No videos uploaded yet..."));
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container1"
-      }, videos, videos && videos.length > 0 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, videos), videos && videos.length > 0 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "#",
         className: "showMore btn btn-outline-info",
         onClick: this.offsetIncrement
-      }, "Show more...") : ""));
+      }, "Show more...") : "");
     }
   }]);
 
