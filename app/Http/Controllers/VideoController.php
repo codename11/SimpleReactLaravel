@@ -172,6 +172,7 @@ class VideoController extends Controller
             $subtitles = $video->subtitle()->get();
 
             $temp = "";
+
             for($i=0;$i<count($subtitles);$i++){
 
                 $path = public_path("storage/".auth()->user()->name."'s Videos/".$subtitles[$i]->name);

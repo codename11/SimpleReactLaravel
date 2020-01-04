@@ -27,7 +27,7 @@ class Dashboard extends React.Component {
             let apiKey ="51540f31c56cd698baf3fa00a533d487";
             let location = response.loc.split(",");
             
-            let url = "http://api.openweathermap.org/data/2.5/weather?lat="+location[0]+"&lon="+location[1]+"&appid="+apiKey;
+            let url = "https://api.openweathermap.org/data/2.5/weather?lat="+location[0]+"&lon="+location[1]+"&appid="+apiKey;
 
             $.ajax({
                 url: url, 

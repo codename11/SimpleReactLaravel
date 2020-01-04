@@ -67250,7 +67250,7 @@ function (_React$Component) {
       $.getJSON('https://ipinfo.io/geo', function (response) {
         var apiKey = "51540f31c56cd698baf3fa00a533d487";
         var location = response.loc.split(",");
-        var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + location[0] + "&lon=" + location[1] + "&appid=" + apiKey;
+        var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + location[0] + "&lon=" + location[1] + "&appid=" + apiKey;
         $.ajax({
           url: url,
           async: true,
@@ -68470,7 +68470,7 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_deleteModal_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
         "delete": this["delete"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_updateModal_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
-        firstSub: this.state.subtitles[0],
+        firstSub: this.state.subtitles ? this.state.subtitles[0] : null,
         modalClose: this.modalClose,
         formClosePurge: this.formClosePurge,
         textArea: this.textArea,

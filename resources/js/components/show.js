@@ -525,7 +525,7 @@ class Show extends React.Component {
         let UpdateAndDelete = this.state.permissions ? <div className="grid-container2">
                 
                 <DeleteModal delete={this.delete}/>
-                <UpdateModal firstSub={this.state.subtitles[0]} modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
+                <UpdateModal firstSub={this.state.subtitles ? this.state.subtitles[0] : null} modalClose={this.modalClose} formClosePurge={this.formClosePurge} textArea={this.textArea} handleSubmit={this.handleSubmit} user={this.state.user} video={this.state.video} token={this.state.token}/>
             
             </div> : "";
 
