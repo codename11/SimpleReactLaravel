@@ -67894,7 +67894,9 @@ function (_React$Component) {
         name: "videoId",
         onChange: this.select,
         required: true
-      }, videos))), subtitles, subText);
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        value: ""
+      }), videos))), subtitles, subText);
     }
   }]);
 
