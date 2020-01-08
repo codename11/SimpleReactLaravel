@@ -67485,7 +67485,8 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(List).call(this, props));
     _this.state = {
       videos: "",
-      offset: 0
+      offset: 0,
+      videoCount: 0
     };
     _this.listVideos = _this.listVideos.bind(_assertThisInitialized(_this));
     _this.offsetIncrement = _this.offsetIncrement.bind(_assertThisInitialized(_this));
@@ -67538,13 +67539,15 @@ function (_React$Component) {
 
           if (_this3.state.offset === 0) {
             _this3.setState({
-              videos: response.videos
+              videos: response.videos,
+              videoCount: response.videoCount
             });
           }
 
           if (_this3.state.offset > 0) {
             _this3.setState({
-              videos: _this3.state.videos.concat(response.videos)
+              videos: _this3.state.videos.concat(response.videos),
+              videoCount: response.videoCount
             });
           }
 
@@ -67613,7 +67616,7 @@ function (_React$Component) {
       }, "No videos uploaded yet..."));
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container1"
-      }, videos), videos && videos.length > 0 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, videos), videos && videos.length > 0 && this.state.videoCount - videos.length > 0 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "#",
         className: "showMore btn btn-outline-info",
         onClick: this.offsetIncrement

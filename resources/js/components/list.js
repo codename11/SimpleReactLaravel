@@ -9,6 +9,7 @@ class List extends React.Component {
         this.state = {
             videos: "",
             offset: 0,
+            videoCount: 0,
         };
         this.listVideos = this.listVideos.bind(this);
         this.offsetIncrement = this.offsetIncrement.bind(this);
@@ -53,6 +54,7 @@ class List extends React.Component {
 
                     this.setState({
                         videos: response.videos,
+                        videoCount: response.videoCount,
                     });
 
                 }
@@ -61,6 +63,7 @@ class List extends React.Component {
 
                     this.setState({
                         videos: this.state.videos.concat(response.videos),
+                        videoCount: response.videoCount,
                     });
                    
                 }
@@ -125,7 +128,8 @@ class List extends React.Component {
                 <div className="grid-container1">
                     {videos} 
                 </div>
-                {videos && videos.length > 0 ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : ""}
+                {(videos && videos.length > 0 && this.state.videoCount-videos.length>0) ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : ""}
+
             </div>
         );
     

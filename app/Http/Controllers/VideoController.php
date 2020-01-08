@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class VideoController extends Controller
 {
@@ -132,8 +133,9 @@ class VideoController extends Controller
 
             $offset = $request->offset*6;
             $videos = Videos::with("user")->skip($offset)->take(6)->get();
-
+            $videoCount = DB::table('videos')->count();
             $response = array(
+                "videoCount" => $videoCount,
                 "videos" => $videos,
                 "request" => $request->all(),
             );
