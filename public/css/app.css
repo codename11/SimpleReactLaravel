@@ -368,12 +368,12 @@ a:focus {
   background-color: whitesmoke;
 }
 
-li.nav-item:not(.active) {
+#navbarSupportedContent > ul.navbar-nav.mr-auto > li.nav-item:not(.active) {
   /* For Safari 3.1 to 6.0 */
   transition: border-bottom 1s;
 }
 
-li.nav-item:not(.active):hover {
+#navbarSupportedContent > ul.navbar-nav.mr-auto > li.nav-item:not(.active):hover {
   border-bottom: 1px solid whitesmoke;
 }
 
