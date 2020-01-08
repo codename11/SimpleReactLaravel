@@ -368,6 +368,15 @@ a:focus {
   background-color: whitesmoke;
 }
 
+li.nav-item:not(.active) {
+  /* For Safari 3.1 to 6.0 */
+  transition: border-bottom 1s;
+}
+
+li.nav-item:not(.active):hover {
+  border-bottom: 1px solid whitesmoke;
+}
+
 #karusel > div > div.carousel-item.active {
   background-color: white;
 }

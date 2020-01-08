@@ -67854,7 +67854,9 @@ function (_React$Component) {
         name: "subtitlesId",
         onChange: this.select,
         required: true
-      }, subs))) : "";
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        value: ""
+      }), subs))) : "";
       var subTextPre = "<pre>" + this.state.subText + "</pre>";
       var subText = this.state.subText ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
         id: "subText",

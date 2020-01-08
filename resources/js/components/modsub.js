@@ -199,6 +199,7 @@ class Modsub extends React.Component {
                 <div className="form-group">
                     <label htmlFor="subtitles">Choose sub to modify:</label>
                     <select className="form-control" id="subtitlesId" name="subtitlesId" onChange={this.select} required>
+                        <option value=""></option>
                         {subs}
                     </select>
                 </div>
