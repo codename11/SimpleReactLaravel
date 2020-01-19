@@ -5,6 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use Illuminate\Http\Request;
+use Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Stats;
+
 class LoginController extends Controller
 {
     /*
@@ -35,5 +41,34 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function authenticated(Request $request)
+    {
+        
+        $email = $request->formElements["email"];
+        $password = $request->formElements["password"];
+        
+        $user = DB::table('users')->where("email", "=", $email)->first();
+        if (Auth::attempt([$email,$password])) {
+        
+            $stat = new Stats;
+            $stat->ip = $request->stats["ip"];
+            $stat->city = $request->stats["city"];
+            $stat->region = $request->stats["region"];
+            $stat->country = $request->stats["country"];
+            $stat->coords = $request->stats["loc"];
+            $stat->timezone = $request->stats["timezone"];
+            $stat->user_id = auth()->user()->id;
+            $stat->save();
+            
+            $response = array(
+                "stat" => $request->all(),
+            );
+            
+            //return response()->json($response);
+            
+            return redirect()->intended('dashboard');
+        }
     }
 }

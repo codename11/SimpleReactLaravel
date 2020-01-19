@@ -74,4 +74,4 @@ Route::post('/writeSubOfVideo','VideoController@writeSubOfVideo');
 
 Route::post('/writeStats','StatsController@store');
 
-//Route::post('/login','Auth\LoginController@authenticated');
+Route::post('/login','Auth\LoginController@authenticated');
