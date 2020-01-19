@@ -12,7 +12,7 @@ class DeleteModal extends React.Component {
     }
 
     componentDidMount(){
-
+        
         this.setState({
             video: this.props.video,
             user: this.props.user,

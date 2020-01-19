@@ -71,3 +71,7 @@ Route::post('/openSubOfVideo','VideoController@openSubOfVideo');
 
 Route::post('/writeSubOfVideo','VideoController@writeSubOfVideo');
 //End: Rute za write titlova.
+
+Route::post('/writeStats','StatsController@store');
+
+//Route::post('/login','Auth\LoginController@authenticated');

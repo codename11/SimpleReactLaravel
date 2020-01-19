@@ -10,8 +10,9 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="shortcut icon" href="larico.png" />
     <!-- Scripts -->
+    <script src="{{ asset('js/skripta.js') }}"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
-
+    
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -21,6 +22,21 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
+    <script>
+        let count = 0;
+    </script>
+    <?php 
+        $route = Route::getFacadeRoot()->current()->uri();
+        $user = auth()->user();
+    ?>
+
+    <script>
+        let data = {!!json_encode($route)!!};
+        let user = {!!json_encode($user)!!};
+        //console.log(data);
+        //getCoords();
+        
+    </script>
     
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
@@ -98,7 +114,7 @@
         </main>
         
     </div>
-    
+
 <script src="/ckeditor/ckeditor.js"></script>
 <script>
     if(document.getElementById("ckeditor")){

@@ -150,6 +150,7 @@ class Modsub extends React.Component {
     }   
 
     componentDidMount(){
+        
         //get all videos
         
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");

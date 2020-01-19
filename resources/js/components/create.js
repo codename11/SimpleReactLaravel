@@ -197,6 +197,7 @@ class Create extends React.Component {
     }    
 
     componentDidMount(){
+        
         this.getCkEditor();
         $.getJSON('https://ipinfo.io/geo', (response) => { 
         

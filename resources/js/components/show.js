@@ -409,7 +409,7 @@ class Show extends React.Component {
     }
 
     componentDidMount(){
-
+        
         document.addEventListener("keyup", (e) => {
 
             if(e.key===" "){
