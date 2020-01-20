@@ -49,19 +49,19 @@ class LoginController extends Controller
         
         if (Auth::attempt(['email' => $email,'password' => $password])) {
         
-            $stat = new Stats;
-            $stat->ip = $request->stats["ip"];
-            $stat->city = $request->stats["city"];
-            $stat->region = $request->stats["region"];
-            $stat->country = $request->stats["country"];
-            $stat->coords = $request->stats["loc"];
-            $stat->timezone = $request->stats["timezone"];
-            $stat->user_id = auth()->user()->id;
-            $stat->save();
-            
-            $response = array(
-                "stat" => $request->all(),
-            );
+            if($request->stats){
+
+                $stat = new Stats;
+                $stat->ip = $request->stats["ip"];
+                $stat->city = $request->stats["city"];
+                $stat->region = $request->stats["region"];
+                $stat->country = $request->stats["country"];
+                $stat->coords = $request->stats["loc"];
+                $stat->timezone = $request->stats["timezone"];
+                $stat->user_id = auth()->user()->id;
+                $stat->save();
+
+            }
             
             return redirect()->intended('dashboard');
         }
