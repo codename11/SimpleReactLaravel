@@ -7,8 +7,6 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use Illuminate\Http\Request;
 use Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use App\Stats;
 
 class LoginController extends Controller
@@ -49,8 +47,7 @@ class LoginController extends Controller
         $email = $request->formElements["email"];
         $password = $request->formElements["password"];
         
-        $user = DB::table('users')->where("email", "=", $email)->first();
-        if (Auth::attempt([$email,$password])) {
+        if (Auth::attempt(['email' => $email,'password' => $password])) {
         
             $stat = new Stats;
             $stat->ip = $request->stats["ip"];
@@ -65,8 +62,6 @@ class LoginController extends Controller
             $response = array(
                 "stat" => $request->all(),
             );
-            
-            //return response()->json($response);
             
             return redirect()->intended('dashboard');
         }

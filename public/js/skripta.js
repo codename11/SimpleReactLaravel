@@ -14,7 +14,7 @@ function getCoords(){
     })
     .then((response) => {
 
-        let url = "/writeStats";
+        let url = "/login";
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
         let forma = document.getElementById("loginForm");
 
@@ -27,11 +27,12 @@ function getCoords(){
             url: url,
             type: 'POST',
             data: {_token: token , message: "bravo", stats: response, formElements: formElements},
-            dataType: 'JSON',
+            dataType: 'html',
             success: (response) => { 
                 console.log("success");
                 console.log(response);
                 forma.submit();
+                
             },
             error: (response) => {
                 console.log("error");
@@ -47,11 +48,22 @@ function getCoords(){
 }
 
 window.addEventListener("click", (e) => {
-    
+  
     if(e.target.id==="loginBtn"){
-        //e.preventDefault();
-        getCoords();
+        getCoords();     
     }
     
 });
 
+window.addEventListener("keypress", (e) => {
+    
+    let forma = document.getElementById("loginForm");
+    let isFocused = (document.activeElement === forma.elements[2]);
+    
+    if(forma.elements[1].value && forma.elements[2].value && e.key === 'Enter' && isFocused){
+
+        getCoords();
+
+    }
+
+});
