@@ -22,6 +22,10 @@ class Videos extends Model
         return $this->hasMany("App\Subtitles",'video_id',"id");
     }
 
+    public function categorie(){
+        return $this->hasMany("App\Categorie","id",'categorie_id');
+    }
+
     public function prev($video)
     {
         if($video->orderBy('id', 'ASC')->where('id', '>', $video->id)->first()){

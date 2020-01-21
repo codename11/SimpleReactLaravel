@@ -531,6 +531,7 @@ class Show extends React.Component {
 
         return (
             <div className="container">
+                
                 <div className="card">
                     <div className="card-header">
 

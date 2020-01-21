@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTimezoneToStatsTable extends Migration
+class AddCategorieIdToVideosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddTimezoneToStatsTable extends Migration
      */
     public function up()
     {
-        Schema::table('stats', function (Blueprint $table) {
-            $table->string('timezone');
+        Schema::table('videos', function (Blueprint $table) {
+            $table->unsignedBigInteger("categorie_id")->nullable();
+            $table->foreign("categorie_id")->references("id")->on("categories")->onDelete("cascade");
         });
     }
 
@@ -25,7 +26,7 @@ class AddTimezoneToStatsTable extends Migration
      */
     public function down()
     {
-        Schema::table('stats', function (Blueprint $table) {
+        Schema::table('videos', function (Blueprint $table) {
             //
         });
     }

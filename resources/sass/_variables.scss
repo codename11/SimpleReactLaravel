@@ -378,3 +378,31 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
 #karusel > div > div.carousel-item.active{
     background-color: white;
 }
+
+.drop1{
+    margin-left: 15px !important;
+}
+
+#list > div > div.container.drop1 > div > button{
+    background-color: whitesmoke !important;
+    border-color: silver;
+}
+
+.dropinp{
+    padding-left: -15px !important;
+    border-bottom: 1px solid silver !important;
+    background-color: whitesmoke !important;
+}
+
+.dropinp:hover{
+    background-color: white !important;
+}
+
+#list > div > div.container.drop1 > div > div{
+    background-color: whitesmoke !important;
+}
+
+#list > div > div.container.drop1 > div > button:focus{
+    outline: none !important;
+    box-shadow: none;
+}

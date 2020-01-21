@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Categories from './categories.js';
 
 class List extends React.Component {
     
@@ -10,10 +11,94 @@ class List extends React.Component {
             videos: "",
             offset: 0,
             videoCount: 0,
+            categories: null,
+            checkedValues: [],
+            selectedCategories: null,
         };
         this.listVideos = this.listVideos.bind(this);
         this.offsetIncrement = this.offsetIncrement.bind(this);
         this.scrollToBottom = this.scrollToBottom.bind(this);
+        this.getCategories = this.getCategories.bind(this);
+        this.myCategorie = this.myCategorie.bind(this);
+    }
+
+    myCategorie(e){
+        
+        let checkBox = e.target.id;
+        //console.log(e.target.value);
+        let index = this.state.checkedValues.indexOf(e.target.value);
+
+        if(index === -1){
+
+            this.setState({
+                checkedValues: [...this.state.checkedValues,e.target.value],
+            });
+
+            let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+
+            $.ajax({
+                url: '/filterCategories',
+                type: 'GET',
+                data: {_token: token , message: "bravo", selectedCategories: [...this.state.checkedValues,e.target.value]},
+                dataType: 'JSON',
+        
+                success: (response) => { 
+
+                    console.log("success");
+                    //console.log(response);  
+                    this.setState({
+                        selectedCategories: response.selectedCategories,
+                    });
+        
+                },
+                error: (response) => {
+
+                    console.log("error");
+                    console.log(response);
+                    
+                }
+
+            });
+
+        }
+        
+        if(index > -1){
+
+            this.setState({
+                checkedValues: [...this.state.checkedValues.filter((item, i) => i!==index)],
+            });
+
+        }
+          
+    }
+
+    getCategories(e){
+        //console.log(e.target);
+        let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+
+        $.ajax({
+            url: '/getCategories',
+            type: 'GET',
+            data: {_token: token , message: "bravo", },
+            dataType: 'JSON',
+    
+            success: (response) => { 
+
+                console.log("success");
+                //console.log(response);
+                this.setState({
+                    categories: response.categories,
+                });
+    
+            },
+            error: (response) => {
+
+                console.log("error");
+                console.log(response);
+                
+            }
+
+        });
     }
 
     scrollToBottom(){
@@ -89,9 +174,18 @@ class List extends React.Component {
     }
 
     render(){
-        //console.log(this.state);
-        
-        let videos = this.state.videos ? this.state.videos.map((item, index) => {
+        console.log(this.state);
+        let filteredVideos = (this.state.videos && this.state.checkedValues && this.state.checkedValues.length>0) ? this.state.videos.filter((item, i) => {
+
+            if(this.state.checkedValues.indexOf(item.categorie_id) > -1){
+
+                return item;
+
+            }
+
+        }) : this.state.videos;
+
+        let videos = filteredVideos ? filteredVideos.map((item, index) => {
         
             let thumb1 = "/storage/"+item.user.name+"'s Thumbnails/"+item.thumbnail;
             let thumb2 = "/storage/"+"nothumbnail.jpg";
@@ -125,6 +219,7 @@ class List extends React.Component {
         
         return (
             <div>
+                <Categories myCategorie={this.myCategorie} getCategories={this.getCategories} categories={this.state.categories ? this.state.categories : null}/>
                 <div className="grid-container1">
                     {videos} 
                 </div>

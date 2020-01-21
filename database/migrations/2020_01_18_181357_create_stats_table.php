@@ -20,7 +20,8 @@ class CreateStatsTable extends Migration
             $table->string('region');
             $table->string('country');
             $table->string('coords');
-
+            $table->string('timezone');
+            
             $table->unsignedBigInteger("user_id");
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
             

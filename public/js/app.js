@@ -66560,6 +66560,8 @@ __webpack_require__(/*! ./components/addsub */ "./resources/js/components/addsub
 
 __webpack_require__(/*! ./components/modsub */ "./resources/js/components/modsub.js");
 
+__webpack_require__(/*! ./components/categories */ "./resources/js/components/categories.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -66810,6 +66812,96 @@ function (_React$Component) {
 if (document.getElementById('addsub')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Addsub, null), document.getElementById('addsub'));
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/categories.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/categories.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+var Categories =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(Categories, _React$Component);
+
+  function Categories(props) {
+    var _this;
+
+    _classCallCheck(this, Categories);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Categories).call(this, props));
+    _this.state = {
+      categories: []
+    }; //this.getCkEditor = this.getCkEditor.bind(this);
+
+    return _this;
+  }
+
+  _createClass(Categories, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var categories = this.props.categories && this.props.categories.length > 0 ? this.props.categories.map(function (item, i) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          className: "dropdown-item dropinp",
+          href: "#",
+          key: "a" + i
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          id: "inp" + i,
+          key: "inp" + i,
+          type: "checkbox",
+          className: "form-check-input",
+          value: item.id,
+          onClick: _this2.props.myCategorie
+        }), item.name);
+      }) : null;
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container drop1"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "dropdown"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "btn btn-primary dropdown-toggle",
+        "data-toggle": "dropdown",
+        onClick: this.props.getCategories
+      }, "Categories"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "dropdown-menu"
+      }, categories)));
+    }
+  }]);
+
+  return Categories;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+/* harmony default export */ __webpack_exports__["default"] = (Categories);
 
 /***/ }),
 
@@ -67451,7 +67543,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _categories_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./categories.js */ "./resources/js/components/categories.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -67472,6 +67573,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
 var List =
 /*#__PURE__*/
 function (_React$Component) {
@@ -67486,15 +67588,93 @@ function (_React$Component) {
     _this.state = {
       videos: "",
       offset: 0,
-      videoCount: 0
+      videoCount: 0,
+      categories: null,
+      checkedValues: [],
+      selectedCategories: null
     };
     _this.listVideos = _this.listVideos.bind(_assertThisInitialized(_this));
     _this.offsetIncrement = _this.offsetIncrement.bind(_assertThisInitialized(_this));
     _this.scrollToBottom = _this.scrollToBottom.bind(_assertThisInitialized(_this));
+    _this.getCategories = _this.getCategories.bind(_assertThisInitialized(_this));
+    _this.myCategorie = _this.myCategorie.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(List, [{
+    key: "myCategorie",
+    value: function myCategorie(e) {
+      var _this2 = this;
+
+      var checkBox = e.target.id; //console.log(e.target.value);
+
+      var index = this.state.checkedValues.indexOf(e.target.value);
+
+      if (index === -1) {
+        this.setState({
+          checkedValues: [].concat(_toConsumableArray(this.state.checkedValues), [e.target.value])
+        });
+        var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+        $.ajax({
+          url: '/filterCategories',
+          type: 'GET',
+          data: {
+            _token: token,
+            message: "bravo",
+            selectedCategories: [].concat(_toConsumableArray(this.state.checkedValues), [e.target.value])
+          },
+          dataType: 'JSON',
+          success: function success(response) {
+            console.log("success"); //console.log(response);  
+
+            _this2.setState({
+              selectedCategories: response.selectedCategories
+            });
+          },
+          error: function error(response) {
+            console.log("error");
+            console.log(response);
+          }
+        });
+      }
+
+      if (index > -1) {
+        this.setState({
+          checkedValues: _toConsumableArray(this.state.checkedValues.filter(function (item, i) {
+            return i !== index;
+          }))
+        });
+      }
+    }
+  }, {
+    key: "getCategories",
+    value: function getCategories(e) {
+      var _this3 = this;
+
+      //console.log(e.target);
+      var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+      $.ajax({
+        url: '/getCategories',
+        type: 'GET',
+        data: {
+          _token: token,
+          message: "bravo"
+        },
+        dataType: 'JSON',
+        success: function success(response) {
+          console.log("success"); //console.log(response);
+
+          _this3.setState({
+            categories: response.categories
+          });
+        },
+        error: function error(response) {
+          console.log("error");
+          console.log(response);
+        }
+      });
+    }
+  }, {
     key: "scrollToBottom",
     value: function scrollToBottom() {
       setTimeout(function () {
@@ -67509,19 +67689,19 @@ function (_React$Component) {
   }, {
     key: "offsetIncrement",
     value: function offsetIncrement(e) {
-      var _this2 = this;
+      var _this4 = this;
 
       e.preventDefault();
       this.setState({
         offset: this.state.offset + 1
       }, function () {
-        _this2.listVideos();
+        _this4.listVideos();
       });
     }
   }, {
     key: "listVideos",
     value: function listVideos() {
-      var _this3 = this;
+      var _this5 = this;
 
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       $.ajax({
@@ -67537,21 +67717,21 @@ function (_React$Component) {
           console.log("success");
           console.log(response);
 
-          if (_this3.state.offset === 0) {
-            _this3.setState({
+          if (_this5.state.offset === 0) {
+            _this5.setState({
               videos: response.videos,
               videoCount: response.videoCount
             });
           }
 
-          if (_this3.state.offset > 0) {
-            _this3.setState({
-              videos: _this3.state.videos.concat(response.videos),
+          if (_this5.state.offset > 0) {
+            _this5.setState({
+              videos: _this5.state.videos.concat(response.videos),
               videoCount: response.videoCount
             });
           }
 
-          _this3.scrollToBottom();
+          _this5.scrollToBottom();
         },
         error: function error(response) {
           console.log("error");
@@ -67567,8 +67747,15 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      //console.log(this.state);
-      var videos = this.state.videos ? this.state.videos.map(function (item, index) {
+      var _this6 = this;
+
+      console.log(this.state);
+      var filteredVideos = this.state.videos && this.state.checkedValues && this.state.checkedValues.length > 0 ? this.state.videos.filter(function (item, i) {
+        if (_this6.state.checkedValues.indexOf(item.categorie_id) > -1) {
+          return item;
+        }
+      }) : this.state.videos;
+      var videos = filteredVideos ? filteredVideos.map(function (item, index) {
         var thumb1 = "/storage/" + item.user.name + "'s Thumbnails/" + item.thumbnail;
         var thumb2 = "/storage/" + "nothumbnail.jpg";
         var thumbnail = item.thumbnail ? thumb1 : thumb2;
@@ -67614,7 +67801,11 @@ function (_React$Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: "cent notice"
       }, "No videos uploaded yet..."));
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_categories_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        myCategorie: this.myCategorie,
+        getCategories: this.getCategories,
+        categories: this.state.categories ? this.state.categories : null
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container1"
       }, videos), videos && videos.length > 0 && this.state.videoCount - videos.length > 0 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "#",

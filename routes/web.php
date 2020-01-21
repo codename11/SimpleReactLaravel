@@ -72,6 +72,14 @@ Route::post('/openSubOfVideo','VideoController@openSubOfVideo');
 Route::post('/writeSubOfVideo','VideoController@writeSubOfVideo');
 //End: Rute za write titlova.
 
-Route::post('/writeStats','StatsController@store');
+//Route::post('/writeStats','StatsController@store');
 
 Route::post('/login','Auth\LoginController@authenticated');
+
+//Begin: Rute za listing kategorija.
+Route::get('/getCategories','CategorieController@index');
+//End: Rute za listing kategorija.
+
+//Begin: Rute za filter kategorija.
+Route::get('/filterCategories','CategorieController@filter');
+//End: Rute za filter kategorija.
