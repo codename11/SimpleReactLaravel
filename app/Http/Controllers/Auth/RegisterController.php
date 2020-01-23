@@ -80,13 +80,22 @@ class RegisterController extends Controller
         else{
             $fileNameToStore = "user.jpg";
         }
-        
-        return User::create([
+/*
+        $to = "";
+        $from = "";
+        $message = "";
+        Mail::to($toHR)->send($messageToHRFirst);*/
+
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             "avatar" => $fileNameToStore
         ]);
+
+        $user->sendEmailVerificationNotification();
+
+        return $user;
 
     }
 }

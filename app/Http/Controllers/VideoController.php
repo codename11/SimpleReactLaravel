@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\User;
 use App\Videos;
 use App\Subtitles;
+use App\Roles;
 use Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,7 @@ class VideoController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'verified']);
     }
     /**
      * Display a listing of the resource.
@@ -128,13 +129,16 @@ class VideoController extends Controller
 
     public function index(Request $request)
     {
-
+        
+        $this->authorize('viewAny', Videos::class);
         if($request->ajax()){
 
             $offset = $request->offset*6;
             $videos = Videos::with("user")->skip($offset)->take(6)->get();
             $videoCount = DB::table('videos')->count();
+            
             $response = array(
+
                 "videoCount" => $videoCount,
                 "videos" => $videos,
                 "request" => $request->all(),

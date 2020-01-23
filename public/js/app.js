@@ -67608,11 +67608,11 @@ function (_React$Component) {
 
       var checkBox = e.target.id; //console.log(e.target.value);
 
-      var index = this.state.checkedValues.indexOf(e.target.value);
+      var index = this.state.checkedValues.indexOf(Number(e.target.value));
 
       if (index === -1) {
         this.setState({
-          checkedValues: [].concat(_toConsumableArray(this.state.checkedValues), [e.target.value])
+          checkedValues: [].concat(_toConsumableArray(this.state.checkedValues), [Number(e.target.value)])
         });
         var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
         $.ajax({
@@ -67621,7 +67621,7 @@ function (_React$Component) {
           data: {
             _token: token,
             message: "bravo",
-            selectedCategories: [].concat(_toConsumableArray(this.state.checkedValues), [e.target.value])
+            selectedCategories: [].concat(_toConsumableArray(this.state.checkedValues), [Number(e.target.value)])
           },
           dataType: 'JSON',
           success: function success(response) {
@@ -67749,12 +67749,13 @@ function (_React$Component) {
     value: function render() {
       var _this6 = this;
 
-      console.log(this.state);
+      //console.log(this.state);
       var filteredVideos = this.state.videos && this.state.checkedValues && this.state.checkedValues.length > 0 ? this.state.videos.filter(function (item, i) {
         if (_this6.state.checkedValues.indexOf(item.categorie_id) > -1) {
           return item;
         }
-      }) : this.state.videos;
+      }) : this.state.videos; //console.log(filteredVideos);
+
       var videos = filteredVideos ? filteredVideos.map(function (item, index) {
         var thumb1 = "/storage/" + item.user.name + "'s Thumbnails/" + item.thumbnail;
         var thumb2 = "/storage/" + "nothumbnail.jpg";

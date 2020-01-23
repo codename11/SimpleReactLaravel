@@ -15,10 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+//Auth::routes();
+Auth::routes(['verify' => true]);
 
-//Begin: Rute za info u dashboard-u kao i za upload iz dasboard-a.
-Route::get('/dashboard', 'DashboardController@dashboard');
+//Begin: Rute za info u dashboard-u kao i za upload iz dashboard-a.
+Route::get('/dashboard', 'DashboardController@dashboard')->middleware('verified');
 Route::post('/dashboardInfo', 'DashboardController@ajaxInfo');
 //End: Rute za info u dashboard-u kao i za upload iz dasboard-a.
 

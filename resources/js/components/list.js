@@ -26,12 +26,12 @@ class List extends React.Component {
         
         let checkBox = e.target.id;
         //console.log(e.target.value);
-        let index = this.state.checkedValues.indexOf(e.target.value);
+        let index = this.state.checkedValues.indexOf(Number(e.target.value));
 
         if(index === -1){
 
             this.setState({
-                checkedValues: [...this.state.checkedValues,e.target.value],
+                checkedValues: [...this.state.checkedValues,Number(e.target.value)],
             });
 
             let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
@@ -39,7 +39,7 @@ class List extends React.Component {
             $.ajax({
                 url: '/filterCategories',
                 type: 'GET',
-                data: {_token: token , message: "bravo", selectedCategories: [...this.state.checkedValues,e.target.value]},
+                data: {_token: token , message: "bravo", selectedCategories: [...this.state.checkedValues,Number(e.target.value)]},
                 dataType: 'JSON',
         
                 success: (response) => { 
@@ -174,7 +174,7 @@ class List extends React.Component {
     }
 
     render(){
-        console.log(this.state);
+        //console.log(this.state);
         let filteredVideos = (this.state.videos && this.state.checkedValues && this.state.checkedValues.length>0) ? this.state.videos.filter((item, i) => {
 
             if(this.state.checkedValues.indexOf(item.categorie_id) > -1){
@@ -184,6 +184,8 @@ class List extends React.Component {
             }
 
         }) : this.state.videos;
+
+        //console.log(filteredVideos);
 
         let videos = filteredVideos ? filteredVideos.map((item, index) => {
         
