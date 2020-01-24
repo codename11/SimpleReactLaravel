@@ -85,7 +85,7 @@ class RegisterController extends Controller
         $from = "";
         $message = "";
         Mail::to($toHR)->send($messageToHRFirst);*/
-
+        /*
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -95,7 +95,14 @@ class RegisterController extends Controller
 
         $user->sendEmailVerificationNotification();
 
-        return $user;
+        return $user;*/
+
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            "avatar" => $fileNameToStore
+        ]);
 
     }
 }

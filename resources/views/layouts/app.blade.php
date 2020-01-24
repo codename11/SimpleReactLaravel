@@ -52,21 +52,23 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         @auth
-                        <li class="nav-item {{ Request::path() === "list" ? "active" : "" }}">
-                            <a class="nav-link" href="/list">List Videos</a>
-                        </li>
+                            @if($user->hasVerifiedEmail())
+                                <li class="nav-item {{ Request::path() === "list" ? "active" : "" }}">
+                                    <a class="nav-link" href="/list">List Videos</a>
+                                </li>
 
-                        <li class="nav-item {{ Request::path() === "create" ? "active" : "" }}">
-                            <a class="nav-link" href="/create">Create Videos</a>
-                        </li>
+                                <li class="nav-item {{ Request::path() === "create" ? "active" : "" }}">
+                                    <a class="nav-link" href="/create">Create Videos</a>
+                                </li>
 
-                        <li class="nav-item {{ Request::path() === "addSub" ? "active" : "" }}">
-                            <a class="nav-link" href="/addSub">Add Subtitle</a>
-                        </li>
+                                <li class="nav-item {{ Request::path() === "addSub" ? "active" : "" }}">
+                                    <a class="nav-link" href="/addSub">Add Subtitle</a>
+                                </li>
 
-                        <li class="nav-item {{ Request::path() === "modSub" ? "active" : "" }}">
-                            <a class="nav-link" href="/modSub">Modify Subtitle</a>
-                        </li>
+                                <li class="nav-item {{ Request::path() === "modSub" ? "active" : "" }}">
+                                    <a class="nav-link" href="/modSub">Modify Subtitle</a>
+                                </li>
+                            @endif
                         @endauth
                     </ul>
 
