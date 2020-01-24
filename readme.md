@@ -127,6 +127,10 @@ By clicking on particular row, you'll be asked to assign role to chosen user. Us
 
 By checking other radio button and submitting, user's role has been changed.
 
+Filtering by genre is also added. Need to add functionlity to administrator so he can add additional genres.
+
+![Filtering](14.png)
+
 ## Technologies used:
 
 1. React
