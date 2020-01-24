@@ -84,3 +84,7 @@ Route::get('/getCategories','CategorieController@index');
 //Begin: Rute za filter kategorija.
 Route::get('/filterCategories','CategorieController@filter');
 //End: Rute za filter kategorija.
+
+//Begin: Rute za update role.
+Route::post('/updateRole','RolesController@update');
+//End: Rute za update role.

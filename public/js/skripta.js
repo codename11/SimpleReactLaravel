@@ -58,11 +58,16 @@ window.addEventListener("click", (e) => {
 window.addEventListener("keypress", (e) => {
     
     let forma = document.getElementById("loginForm");
-    let isFocused = (document.activeElement === forma.elements[2]);
-    
-    if(forma.elements[1].value && forma.elements[2].value && e.key === 'Enter' && isFocused){
 
-        getCoords();
+    if(forma){
+
+        let isFocused = (document.activeElement === forma.elements[2]);
+    
+        if(forma.elements[1].value && forma.elements[2].value && e.key === 'Enter' && isFocused){
+
+            getCoords();
+
+        }
 
     }
 

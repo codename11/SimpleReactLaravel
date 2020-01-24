@@ -410,6 +410,28 @@ a:focus {
   box-shadow: none;
 }
 
+#userTable {
+  padding-left: 0px;
+  margin-top: 10px;
+  border-radius: 5px !important;
+  border: none !important;
+}
+
+#userTable > table {
+  border: none !important;
+  border-radius: 5px !important;
+}
+
+#userTable > table > tbody > tr {
+  cursor: pointer;
+}
+
+.user-danger {
+  color: whitesmoke !important;
+  background-color: #721c24 !important;
+  border-color: #f5c6cb !important;
+}
+
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors

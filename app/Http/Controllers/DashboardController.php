@@ -36,8 +36,12 @@ class DashboardController extends Controller
 
         if($request->ajax()){
 
+            $users = User::all();
             $user = auth()->user();
+
             $response = array(
+                "permission" => $user->isAdmin(),
+                "users" => $users,
                 "user" => $user,
                 "request" => $request->all(),
             );

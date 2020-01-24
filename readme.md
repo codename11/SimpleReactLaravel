@@ -88,19 +88,9 @@ To delete just press red delete button, after whom, modal will pop out with conf
 Similar is for update. Except you can update title, description and choose another thumbnail.
 ![Update video](5.png)
 
-To choose different subtitle(need to add this), click on select-option dropdown.
+To choose different subtitle, click on select-option dropdown.
 ![Choose subtitle](7.png)
 By default, no subtitle is chosen.
-
-## Technologies used:
-
-1. React
-2. Ajax
-3. Laravel
-4. Javascript
-5. Sass
-6. Css
-7. Html
 
 ## Update1:
 
@@ -124,6 +114,28 @@ In this image, you are seeing text of subtitle itself. By editing and subsequent
 
 ![Modify subtitle](11.png)
 
+## Update2:
+
+Added control panel for adminstrator to assign privileges to particular users.
+Row painted reddish is current user, which subsequently must have role of `administrator` to assign roles. 
+
+![Dashboard table](12.png)
+
+By clicking on particular row, you'll be asked to assign role to chosen user. User's previous role will be marked by checked radio button.
+
+![Checked user's role](13.png)
+
+By checking other radio button and submitting, user's role has been changed.
+
+## Technologies used:
+
+1. React
+2. Ajax
+3. Laravel
+4. Javascript
+5. Sass
+6. Css
+7. Html
 
 ### My email:
 veljkos82@gmail.com

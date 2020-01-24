@@ -67323,13 +67323,97 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Dashboard).call(this, props));
     _this.state = {
       user: "",
-      weather: ""
+      weather: "",
+      users: null,
+      clickedRowData: {
+        id: null,
+        name: null,
+        email: null,
+        email_verified_at: null,
+        created_at: null,
+        updated_at: null,
+        avatar: null,
+        role_id: null
+      },
+      permission: null,
+      checkedRadioVal: null
     };
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.getRowData = _this.getRowData.bind(_assertThisInitialized(_this));
+    _this.updateUserRole = _this.updateUserRole.bind(_assertThisInitialized(_this));
+    _this.checkRadio = _this.checkRadio.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Dashboard, [{
+    key: "checkRadio",
+    value: function checkRadio(e) {
+      this.setState({
+        checkedRadioVal: e.target.value
+      });
+    }
+  }, {
+    key: "updateUserRole",
+    value: function updateUserRole(e) {
+      e.preventDefault();
+      var forma = e.target;
+      var user_id = forma.elements[0].value;
+      var role_id = null;
+      var radios = document.getElementsByName('role_id');
+
+      for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+          role_id = radios[i].value;
+        }
+      }
+
+      if (role_id) {
+        var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+        $.ajax({
+          url: '/updateRole',
+          type: 'POST',
+          data: {
+            _token: token,
+            message: "bravo",
+            user_id: user_id,
+            role_id: role_id
+          },
+          dataType: 'JSON',
+          success: function success(response) {
+            console.log("success"); //console.log(response);
+          },
+          error: function error(response) {
+            console.log("error");
+            console.log(response);
+          }
+        });
+      }
+    }
+  }, {
+    key: "getRowData",
+    value: function getRowData(e) {
+      var row = e.target.parentElement;
+      var len = row.cells.length;
+      var rowUser = [];
+
+      for (var i = 0; i < len; i++) {
+        rowUser.push(row.cells[i].innerHTML);
+      }
+
+      this.setState({
+        clickedRowData: {
+          id: rowUser[0],
+          name: rowUser[1],
+          email: rowUser[2],
+          email_verified_at: rowUser[3],
+          created_at: rowUser[4],
+          updated_at: rowUser[5],
+          avatar: rowUser[6],
+          role_id: rowUser[7]
+        }
+      });
+    }
+  }, {
     key: "handleSubmit",
     value: function handleSubmit(e) {
       e.preventDefault();
@@ -67369,12 +67453,12 @@ function (_React$Component) {
         },
         dataType: 'JSON',
         success: function success(response) {
-          console.log("success");
-          console.log(response);
+          console.log("success"); //console.log(response);
 
           _this2.setState({
             user: response.user,
-            request: response.request
+            users: response.users,
+            permission: response.permission
           });
         },
         error: function error(response) {
@@ -67386,6 +67470,9 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
+      console.log(this.state);
       var temp = this.state.weather.main ? (this.state.weather.main.temp - 273.15).toFixed(2) : "";
       var tempText = "";
 
@@ -67399,6 +67486,109 @@ function (_React$Component) {
         tempText = "It is going to be quite cold at";
       }
 
+      var users = this.state.users ? this.state.users.map(function (item, i) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
+          className: item.id === _this3.state.user.id ? "user-danger" : "",
+          key: i,
+          onClick: _this3.getRowData,
+          "data-toggle": "modal",
+          "data-target": "#myModal",
+          title: "It is you!"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "id"
+        }, item.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "name"
+        }, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "email"
+        }, item.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "email_verified_at"
+        }, item.email_verified_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "created_at"
+        }, item.created_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "updated_at"
+        }, item.updated_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "avatar"
+        }, item.avatar), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "role_id"
+        }, item.role_id));
+      }) : null;
+      var table = this.state.permission ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container",
+        id: "userTable"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+        className: "table table-bordered table-dark table-striped table-hover table-responsive-xl"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "id"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email_verified_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "created_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "updated_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "avatar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "role_id"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, users))) : "";
+      var modal = this.state.permission ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal fade alert alert-danger",
+        id: "myModal"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-dialog modal-dialog-centered modal-lg"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-content"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-header alert-success"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", {
+        className: "modal-title"
+      }, "Change user's role"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "close",
+        "data-dismiss": "modal"
+      }, "\xD7")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-body alert alert-light"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+        className: "table table-bordered table-dark table-striped table-hover table-responsive"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "id"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email_verified_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "created_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "updated_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "avatar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "role_id"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.email_verified_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.created_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.updated_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.avatar), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.role_id)))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        onSubmit: this.updateUserRole
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "hidden",
+        name: "user_id",
+        id: "user_id",
+        value: this.state.clickedRowData.id ? this.state.clickedRowData.id : ""
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-check"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "form-check-label"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "radio",
+        className: "form-check-input",
+        name: "role_id",
+        value: "1",
+        onChange: this.checkRadio,
+        checked: (!this.state.checkedRadioVal ? this.state.clickedRowData.role_id === "1" : this.state.checkedRadioVal === "1") ? "checked" : ""
+      }), "Administrator")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-check"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "form-check-label"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "radio",
+        className: "form-check-input",
+        name: "role_id",
+        value: "2",
+        onChange: this.checkRadio,
+        checked: (!this.state.checkedRadioVal ? this.state.clickedRowData.role_id === "2" : this.state.checkedRadioVal === "2") ? "checked" : ""
+      }), "Moderator")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-check"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        className: "form-check-label"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "radio",
+        className: "form-check-input",
+        name: "role_id",
+        value: "3",
+        onChange: this.checkRadio,
+        checked: (!this.state.checkedRadioVal ? this.state.clickedRowData.role_id === "3" : this.state.checkedRadioVal === "3") ? "checked" : ""
+      }), "User")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "submit",
+        className: "btn btn-outline-primary"
+      }, "Submit"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "modal-footer alert-warning"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "button",
+        className: "btn btn-secondary",
+        "data-dismiss": "modal"
+      }, "Close")))))) : "";
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -67412,9 +67602,9 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         className: "nav-link",
         href: "/create"
-      }, "Upload an Video"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Upload an Video")), table), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "card-footer"
-      }, "Go at it. Upload an video!")));
+      }, "Go at it. Upload an video!")), modal);
     }
   }]);
 
