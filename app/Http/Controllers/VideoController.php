@@ -134,11 +134,29 @@ class VideoController extends Controller
         if($request->ajax()){
 
             $offset = $request->offset*6;
-            $videos = Videos::with("user")->skip($offset)->take(6)->get();
-            $videoCount = DB::table('videos')->count();
+
+            $videos = null;
+            $videoCount = null;
+            $selectedCategories = $request->selectedCategories;
+            if($selectedCategories===null){
+
+                $videos = Videos::with("user")->skip($offset)->take(6)->get();
+                $videoCount = DB::table('videos')->count();
+            }
+            
+            if($selectedCategories!==null){
+                $videos = Videos::whereIn("categorie_id", $selectedCategories)->with("user")->get();
+                $videoCount = DB::table('videos')->count();
+
+            }
+
+            if($offset >= count($videos)){
+                $offset = 0;
+            }
             
             $response = array(
-
+                "offset" => $offset,
+                "selectedCategories" => $selectedCategories,
                 "videoCount" => $videoCount,
                 "videos" => $videos,
                 "request" => $request->all(),

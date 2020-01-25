@@ -67834,38 +67834,15 @@ function (_React$Component) {
   _createClass(List, [{
     key: "myCategorie",
     value: function myCategorie(e) {
-      var _this2 = this;
-
-      var checkBox = e.target.id; //console.log(e.target.value);
-
-      var index = this.state.checkedValues.indexOf(Number(e.target.value));
+      var checkBox = e.target;
+      var index = this.state.checkedValues.indexOf(Number(checkBox.value));
+      var selectedCategories = null;
 
       if (index === -1) {
         this.setState({
-          checkedValues: [].concat(_toConsumableArray(this.state.checkedValues), [Number(e.target.value)])
+          checkedValues: [].concat(_toConsumableArray(this.state.checkedValues), [Number(checkBox.value)])
         });
-        var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
-        $.ajax({
-          url: '/filterCategories',
-          type: 'GET',
-          data: {
-            _token: token,
-            message: "bravo",
-            selectedCategories: [].concat(_toConsumableArray(this.state.checkedValues), [Number(e.target.value)])
-          },
-          dataType: 'JSON',
-          success: function success(response) {
-            console.log("success"); //console.log(response);  
-
-            _this2.setState({
-              selectedCategories: response.selectedCategories
-            });
-          },
-          error: function error(response) {
-            console.log("error");
-            console.log(response);
-          }
-        });
+        selectedCategories = [].concat(_toConsumableArray(this.state.checkedValues), [Number(checkBox.value)]);
       }
 
       if (index > -1) {
@@ -67874,12 +67851,17 @@ function (_React$Component) {
             return i !== index;
           }))
         });
+        selectedCategories = _toConsumableArray(this.state.checkedValues.filter(function (item, i) {
+          return i !== index;
+        }));
       }
+
+      this.listVideos(selectedCategories);
     }
   }, {
     key: "getCategories",
     value: function getCategories(e) {
-      var _this3 = this;
+      var _this2 = this;
 
       //console.log(e.target);
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
@@ -67894,7 +67876,7 @@ function (_React$Component) {
         success: function success(response) {
           console.log("success"); //console.log(response);
 
-          _this3.setState({
+          _this2.setState({
             categories: response.categories
           });
         },
@@ -67919,19 +67901,19 @@ function (_React$Component) {
   }, {
     key: "offsetIncrement",
     value: function offsetIncrement(e) {
-      var _this4 = this;
+      var _this3 = this;
 
       e.preventDefault();
       this.setState({
         offset: this.state.offset + 1
       }, function () {
-        _this4.listVideos();
+        _this3.listVideos(_this3.state.selectedCategories);
       });
     }
   }, {
     key: "listVideos",
-    value: function listVideos() {
-      var _this5 = this;
+    value: function listVideos(selectedCategories) {
+      var _this4 = this;
 
       var token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
       $.ajax({
@@ -67940,28 +67922,42 @@ function (_React$Component) {
         data: {
           _token: token,
           message: "bravo",
-          offset: this.state.offset
+          offset: this.state.offset,
+          selectedCategories: selectedCategories
         },
         dataType: 'JSON',
         success: function success(response) {
           console.log("success");
-          console.log(response);
+          var arr = [].concat(_toConsumableArray(_this4.state.videos), _toConsumableArray(response.videos)); //Pomesa sve video-e.
 
-          if (_this5.state.offset === 0) {
-            _this5.setState({
-              videos: response.videos,
-              videoCount: response.videoCount
+          var arr1 = arr.map(function (item, i) {
+            //Stringifikuje sve objekte u nizu.
+            return JSON.stringify(item);
+          });
+          arr1 = _toConsumableArray(new Set(arr1)).map(function (item, i) {
+            //Uporedjuje sve stringifikovane objekte u nizu, i ako nema duplikata, vraca.
+            return JSON.parse(item);
+          });
+
+          if (_this4.state.offset === 0) {
+            _this4.setState({
+              videos: _toConsumableArray(arr1),
+              videoCount: response.videoCount,
+              selectedCategories: response.selectedCategories
             });
           }
 
-          if (_this5.state.offset > 0) {
-            _this5.setState({
-              videos: _this5.state.videos.concat(response.videos),
-              videoCount: response.videoCount
+          if (_this4.state.offset > 0) {
+            _this4.setState({
+              videos: _toConsumableArray(arr1),
+              videoCount: response.videoCount,
+              selectedCategories: response.selectedCategories
             });
           }
 
-          _this5.scrollToBottom();
+          _this4.scrollToBottom(); //console.log(response);
+          //console.log(this.state.videos);
+
         },
         error: function error(response) {
           console.log("error");
@@ -67972,20 +67968,19 @@ function (_React$Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.listVideos();
+      this.listVideos(this.state.selectedCategories);
     }
   }, {
     key: "render",
     value: function render() {
-      var _this6 = this;
+      var _this5 = this;
 
-      //console.log(this.state);
+      console.log(this.state);
       var filteredVideos = this.state.videos && this.state.checkedValues && this.state.checkedValues.length > 0 ? this.state.videos.filter(function (item, i) {
-        if (_this6.state.checkedValues.indexOf(item.categorie_id) > -1) {
+        if (_this5.state.checkedValues.indexOf(item.categorie_id) > -1) {
           return item;
         }
-      }) : this.state.videos; //console.log(filteredVideos);
-
+      }) : this.state.videos;
       var videos = filteredVideos ? filteredVideos.map(function (item, index) {
         var thumb1 = "/storage/" + item.user.name + "'s Thumbnails/" + item.thumbnail;
         var thumb2 = "/storage/" + "nothumbnail.jpg";
@@ -68042,7 +68037,9 @@ function (_React$Component) {
         href: "#",
         className: "showMore btn btn-outline-info",
         onClick: this.offsetIncrement
-      }, "Show more...") : "");
+      }, "Show more...") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "showMore"
+      }));
     }
   }]);
 

@@ -24,41 +24,17 @@ class List extends React.Component {
 
     myCategorie(e){
         
-        let checkBox = e.target.id;
-        //console.log(e.target.value);
-        let index = this.state.checkedValues.indexOf(Number(e.target.value));
+        let checkBox = e.target;
+        let index = this.state.checkedValues.indexOf(Number(checkBox.value));
+        let selectedCategories = null;
 
         if(index === -1){
 
             this.setState({
-                checkedValues: [...this.state.checkedValues,Number(e.target.value)],
+                checkedValues: [...this.state.checkedValues,Number(checkBox.value)],
             });
 
-            let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
-
-            $.ajax({
-                url: '/filterCategories',
-                type: 'GET',
-                data: {_token: token , message: "bravo", selectedCategories: [...this.state.checkedValues,Number(e.target.value)]},
-                dataType: 'JSON',
-        
-                success: (response) => { 
-
-                    console.log("success");
-                    //console.log(response);  
-                    this.setState({
-                        selectedCategories: response.selectedCategories,
-                    });
-        
-                },
-                error: (response) => {
-
-                    console.log("error");
-                    console.log(response);
-                    
-                }
-
-            });
+            selectedCategories = [...this.state.checkedValues,Number(checkBox.value)];
 
         }
         
@@ -67,8 +43,10 @@ class List extends React.Component {
             this.setState({
                 checkedValues: [...this.state.checkedValues.filter((item, i) => i!==index)],
             });
-
+            selectedCategories = [...this.state.checkedValues.filter((item, i) => i!==index)];
         }
+
+        this.listVideos(selectedCategories);
           
     }
 
@@ -115,45 +93,60 @@ class List extends React.Component {
         this.setState({
             offset: this.state.offset+1,
         }, () => {
-            this.listVideos();
+            
+            this.listVideos(this.state.selectedCategories);
         });
     
     }
 
-    listVideos(){
+    listVideos(selectedCategories){
         
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
-
+        
         $.ajax({
             url: '/listData',
             type: 'POST',
-            data: {_token: token , message: "bravo", offset: this.state.offset},
+            data: {_token: token , message: "bravo", offset: this.state.offset, selectedCategories: selectedCategories},
             dataType: 'JSON',
     
             success: (response) => { 
 
                 console.log("success");
-                console.log(response);
+                
+                let arr = [...this.state.videos, ...response.videos];//Pomesa sve video-e.
+
+                let arr1 = arr.map((item, i) =>{ //Stringifikuje sve objekte u nizu.
+                    return JSON.stringify(item);
+                });
+
+                arr1 = [...new Set(arr1)].map((item, i) => {
+                //Uporedjuje sve stringifikovane objekte u nizu, i ako nema duplikata, vraca.
+                    return JSON.parse(item);
+                });
 
                 if(this.state.offset===0){
-
+                    
                     this.setState({
-                        videos: response.videos,
+                        videos: [...arr1],
                         videoCount: response.videoCount,
+                        selectedCategories: response.selectedCategories,
                     });
 
                 }
 
                 if(this.state.offset>0){
-
+                    
                     this.setState({
-                        videos: this.state.videos.concat(response.videos),
+                        videos: [...arr1],
                         videoCount: response.videoCount,
+                        selectedCategories: response.selectedCategories,
                     });
                    
                 }
 
                 this.scrollToBottom();
+                //console.log(response);
+                //console.log(this.state.videos);
     
             },
             error: (response) => {
@@ -169,12 +162,12 @@ class List extends React.Component {
 
     componentDidMount(){
         
-        this.listVideos();
+        this.listVideos(this.state.selectedCategories);
 
     }
 
     render(){
-        //console.log(this.state);
+        console.log(this.state);
         let filteredVideos = (this.state.videos && this.state.checkedValues && this.state.checkedValues.length>0) ? this.state.videos.filter((item, i) => {
 
             if(this.state.checkedValues.indexOf(item.categorie_id) > -1){
@@ -184,8 +177,6 @@ class List extends React.Component {
             }
 
         }) : this.state.videos;
-
-        //console.log(filteredVideos);
 
         let videos = filteredVideos ? filteredVideos.map((item, index) => {
         
@@ -225,7 +216,7 @@ class List extends React.Component {
                 <div className="grid-container1">
                     {videos} 
                 </div>
-                {(videos && videos.length > 0 && this.state.videoCount-videos.length>0) ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : ""}
+                {(videos && videos.length > 0 && this.state.videoCount-videos.length>0) ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : <div className="showMore"></div>}
 
             </div>
         );
