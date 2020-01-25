@@ -22,6 +22,7 @@ class Dashboard extends React.Component {
             },
             permission: null,
             checkedRadioVal: null,
+            changedUserIndex: null,
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getRowData = this.getRowData.bind(this);
@@ -68,6 +69,21 @@ class Dashboard extends React.Component {
 
                     console.log("success");
                     //console.log(response);
+                    let changedUserIndex = 0;
+                    for(let i=0;i<this.state.users.length;i++){
+
+                        if(""+this.state.users[i].id===this.state.clickedRowData.id){
+                            changedUserIndex = i;
+                        }
+
+                    }
+
+                    let arr = [...this.state.users];
+                    arr[changedUserIndex].role_id=role_id;
+                    this.setState({
+                        users: [...arr],
+                        changedUserIndex: changedUserIndex,
+                    });
         
                 },
                 error: (response) => {
@@ -232,6 +248,24 @@ class Dashboard extends React.Component {
                 </table>
             </div> : "";
 
+        let role_id = null;
+
+        if(this.state.changedUserIndex){
+
+            if(this.state.users[this.state.changedUserIndex].role_id===this.state.clickedRowData.role_id){
+                role_id = this.state.clickedRowData.role_id;
+            }
+            else if(this.state.users[this.state.changedUserIndex].role_id!==this.state.clickedRowData.role_id){
+                role_id = this.state.users[this.state.changedUserIndex].role_id;
+            }
+            
+        }
+        else if(!this.state.changedUserIndex){
+
+            role_id = this.state.clickedRowData.role_id;
+
+        }
+        
         let modal = this.state.permission ? <div className="container">
 
             <div className="modal fade alert alert-danger" id="myModal">
@@ -267,7 +301,7 @@ class Dashboard extends React.Component {
                                         <td>{this.state.clickedRowData.created_at}</td>
                                         <td>{this.state.clickedRowData.updated_at}</td>
                                         <td>{this.state.clickedRowData.avatar}</td>
-                                        <td>{this.state.clickedRowData.role_id}</td>
+                                        <td>{role_id}</td>
                                     </tr>
                                 </tbody>
                             </table>
