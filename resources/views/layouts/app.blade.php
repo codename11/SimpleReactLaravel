@@ -31,11 +31,8 @@
     ?>
 
     <script>
-        let data = {!!json_encode($route)!!};
-        let user = {!!json_encode($user)!!};
-        //console.log(data);
-        //getCoords();
-        
+        let data = {!!json_encode($route)!!};  
+        let user = {!!json_encode($user)!!};    
     </script>
     
     <div id="app">
