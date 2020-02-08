@@ -67928,7 +67928,9 @@ function (_React$Component) {
         dataType: 'JSON',
         success: function success(response) {
           console.log("success");
-          var arr = [].concat(_toConsumableArray(_this4.state.videos), _toConsumableArray(response.videos)); //Pomesa sve video-e.
+
+          var arr = _toConsumableArray(response.videos); //Pomesa sve video-e.
+
 
           var arr1 = arr.map(function (item, i) {
             //Stringifikuje sve objekte u nizu.
@@ -68033,7 +68035,7 @@ function (_React$Component) {
         categories: this.state.categories ? this.state.categories : null
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container1"
-      }, videos), videos && videos.length > 0 && this.state.videoCount - videos.length > 0 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, videos), videos && videos.length > 0 && this.state.offset < this.state.videos.length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "#",
         className: "showMore btn btn-outline-info",
         onClick: this.offsetIncrement

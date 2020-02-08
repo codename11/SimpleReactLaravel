@@ -141,12 +141,12 @@ class VideoController extends Controller
             if($selectedCategories===null){
 
                 $videos = Videos::with("user")->skip($offset)->take(6)->get();
-                $videoCount = DB::table('videos')->count();
+                $videoCount = Videos::with("user")->count();
             }
             
             if($selectedCategories!==null){
-                $videos = Videos::whereIn("categorie_id", $selectedCategories)->with("user")->get();
-                $videoCount = DB::table('videos')->count();
+                $videos = Videos::whereIn("categorie_id", $selectedCategories)->with("user")->skip($offset)->take(6)->get();
+                $videoCount = Videos::whereIn("categorie_id", $selectedCategories)->with("user")->count();
 
             }
 
