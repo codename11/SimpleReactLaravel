@@ -102,7 +102,7 @@ class List extends React.Component {
     listVideos(selectedCategories){
         
         let token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
-        
+
         $.ajax({
             url: '/listData',
             type: 'POST',
@@ -112,7 +112,7 @@ class List extends React.Component {
             success: (response) => { 
 
                 console.log("success");
-                
+                console.log(response);
                 let arr = [...response.videos];//Pomesa sve video-e.
 
                 let arr1 = arr.map((item, i) =>{ //Stringifikuje sve objekte u nizu.
@@ -123,13 +123,14 @@ class List extends React.Component {
                 //Uporedjuje sve stringifikovane objekte u nizu, i ako nema duplikata, vraca.
                     return JSON.parse(item);
                 });
-
+                console.log(response.selectedCategories);
                 if(this.state.offset===0){
                     
                     this.setState({
-                        videos: [...arr1],
+                        videos: [...response.videos],
                         videoCount: response.videoCount,
-                        selectedCategories: response.selectedCategories,
+                        selectedCategories: response.selectedCategories ? [...response.selectedCategories] : null,
+                        offset: response.offset,
                     });
 
                 }
@@ -139,7 +140,8 @@ class List extends React.Component {
                     this.setState({
                         videos: [...arr1],
                         videoCount: response.videoCount,
-                        selectedCategories: response.selectedCategories,
+                        selectedCategories:  response.selectedCategories ? [...response.selectedCategories] : null,
+                        offset: response.offset===0 ? response.offset : this.state.offset,
                     });
                    
                 }

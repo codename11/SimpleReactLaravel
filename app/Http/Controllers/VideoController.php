@@ -133,28 +133,35 @@ class VideoController extends Controller
         $this->authorize('viewAny', Videos::class);
         if($request->ajax()){
 
-            $offset = $request->offset*6;
+            $reqOffset = $request->offset;
+            $offset = $reqOffset*6;
 
             $videos = null;
             $videoCount = null;
             $selectedCategories = $request->selectedCategories;
+            $test = "";
             if($selectedCategories===null){
 
                 $videos = Videos::with("user")->skip($offset)->take(6)->get();
                 $videoCount = Videos::with("user")->count();
+                $test = "1";
             }
             
             if($selectedCategories!==null){
+                
                 $videos = Videos::whereIn("categorie_id", $selectedCategories)->with("user")->skip($offset)->take(6)->get();
                 $videoCount = Videos::whereIn("categorie_id", $selectedCategories)->with("user")->count();
-
+                
+                $test = "2";
             }
 
-            if($offset >= count($videos)){
+            if($offset >= count($videos) && count($videos)<6){
                 $offset = 0;
+                $test = "3";
             }
             
             $response = array(
+                "test" => $test ,
                 "offset" => $offset,
                 "selectedCategories" => $selectedCategories,
                 "videoCount" => $videoCount,

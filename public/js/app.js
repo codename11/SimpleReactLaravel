@@ -67928,6 +67928,7 @@ function (_React$Component) {
         dataType: 'JSON',
         success: function success(response) {
           console.log("success");
+          console.log(response);
 
           var arr = _toConsumableArray(response.videos); //Pomesa sve video-e.
 
@@ -67940,12 +67941,14 @@ function (_React$Component) {
             //Uporedjuje sve stringifikovane objekte u nizu, i ako nema duplikata, vraca.
             return JSON.parse(item);
           });
+          console.log(response.selectedCategories);
 
           if (_this4.state.offset === 0) {
             _this4.setState({
-              videos: _toConsumableArray(arr1),
+              videos: _toConsumableArray(response.videos),
               videoCount: response.videoCount,
-              selectedCategories: response.selectedCategories
+              selectedCategories: response.selectedCategories ? _toConsumableArray(response.selectedCategories) : null,
+              offset: response.offset
             });
           }
 
@@ -67953,7 +67956,8 @@ function (_React$Component) {
             _this4.setState({
               videos: _toConsumableArray(arr1),
               videoCount: response.videoCount,
-              selectedCategories: response.selectedCategories
+              selectedCategories: response.selectedCategories ? _toConsumableArray(response.selectedCategories) : null,
+              offset: response.offset === 0 ? response.offset : _this4.state.offset
             });
           }
 
