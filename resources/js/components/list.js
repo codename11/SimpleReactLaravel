@@ -216,7 +216,7 @@ class List extends React.Component {
                 <div className="grid-container1">
                     {videos} 
                 </div>
-                {(videos && videos.length > 0 && this.state.offset<this.state.videos.length) ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : <div className="showMore"></div>}
+                {(videos && videos.length > 0 && this.state.offset<videos.length && videos.length===6) ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : <div className="showMore"></div>}
 
             </div>
         );

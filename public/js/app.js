@@ -68035,7 +68035,7 @@ function (_React$Component) {
         categories: this.state.categories ? this.state.categories : null
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container1"
-      }, videos), videos && videos.length > 0 && this.state.offset < this.state.videos.length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, videos), videos && videos.length > 0 && this.state.offset < videos.length && videos.length === 6 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "#",
         className: "showMore btn btn-outline-info",
         onClick: this.offsetIncrement
