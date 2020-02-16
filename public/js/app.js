@@ -67521,7 +67521,7 @@ function (_React$Component) {
           onClick: _this4.getRowData,
           "data-toggle": "modal",
           "data-target": "#myModal",
-          title: "It is you!"
+          title: item.id === _this4.state.user.id ? "It is you!" : item.name
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           id: "id"
         }, item.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
@@ -67545,7 +67545,9 @@ function (_React$Component) {
         id: "userTable"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
         className: "table table-bordered table-dark table-striped table-hover table-responsive-xl"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "id"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email_verified_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "created_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "updated_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "avatar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "role_id"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, users))) : "";
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("caption", {
+        className: "tableCap"
+      }, "Change user's role"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "id"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email_verified_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "created_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "updated_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "avatar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "role_id"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, users))) : "";
       var role_id = null;
 
       if (this.state.changedUserIndex) {

@@ -216,7 +216,7 @@ class Dashboard extends React.Component {
 
         let users = this.state.users ? this.state.users.map((item,i) => {
 
-            return (<tr  className={item.id===this.state.user.id ? "user-danger" : ""} key={i} onClick={this.getRowData} data-toggle="modal" data-target="#myModal" title="It is you!">
+            return (<tr  className={item.id===this.state.user.id ? "user-danger" : ""} key={i} onClick={this.getRowData} data-toggle="modal" data-target="#myModal" title={item.id===this.state.user.id ? "It is you!" : item.name}>
                 <td id="id">{item.id}</td>
                 <td id="name">{item.name}</td>
                 <td id="email">{item.email}</td>
@@ -230,7 +230,9 @@ class Dashboard extends React.Component {
 
         let table = this.state.permission ? <div className="container" id="userTable">
                 <table className="table table-bordered table-dark table-striped table-hover table-responsive-xl">
+                    <caption className="tableCap">Change user's role</caption>
                     <thead>
+                        <tr></tr>
                         <tr>
                             <th>id</th>
                             <th>name</th>
