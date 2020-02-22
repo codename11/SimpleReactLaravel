@@ -67931,9 +67931,7 @@ function (_React$Component) {
         success: function success(response) {
           console.log("success");
           console.log(response);
-
-          var arr = _toConsumableArray(response.videos); //Pomesa sve video-e.
-
+          var arr = [].concat(_toConsumableArray(_this4.state.videos), _toConsumableArray(response.videos)); //Pomesa sve video-e.
 
           var arr1 = arr.map(function (item, i) {
             //Stringifikuje sve objekte u nizu.
@@ -67947,7 +67945,7 @@ function (_React$Component) {
 
           if (_this4.state.offset === 0) {
             _this4.setState({
-              videos: _toConsumableArray(response.videos),
+              videos: _toConsumableArray(arr1),
               videoCount: response.videoCount,
               selectedCategories: response.selectedCategories ? _toConsumableArray(response.selectedCategories) : null,
               offset: response.offset
@@ -68041,7 +68039,7 @@ function (_React$Component) {
         categories: this.state.categories ? this.state.categories : null
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-container1"
-      }, videos), videos && videos.length > 0 && this.state.offset < videos.length && videos.length === 6 ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, videos), videos && videos.length > 0 && this.state.videoCount > videos.length ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "#",
         className: "showMore btn btn-outline-info",
         onClick: this.offsetIncrement

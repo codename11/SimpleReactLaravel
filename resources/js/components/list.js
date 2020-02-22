@@ -113,7 +113,7 @@ class List extends React.Component {
 
                 console.log("success");
                 console.log(response);
-                let arr = [...response.videos];//Pomesa sve video-e.
+                let arr = [...this.state.videos,...response.videos];//Pomesa sve video-e.
 
                 let arr1 = arr.map((item, i) =>{ //Stringifikuje sve objekte u nizu.
                     return JSON.stringify(item);
@@ -127,7 +127,7 @@ class List extends React.Component {
                 if(this.state.offset===0){
                     
                     this.setState({
-                        videos: [...response.videos],
+                        videos: [...arr1],
                         videoCount: response.videoCount,
                         selectedCategories: response.selectedCategories ? [...response.selectedCategories] : null,
                         offset: response.offset,
@@ -218,7 +218,7 @@ class List extends React.Component {
                 <div className="grid-container1">
                     {videos} 
                 </div>
-                {(videos && videos.length > 0 && this.state.offset<videos.length && videos.length===6) ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : <div className="showMore"></div>}
+                {(videos && videos.length > 0 && this.state.videoCount>videos.length) ? <a href="#"  className='showMore btn btn-outline-info' onClick={this.offsetIncrement}>Show more...</a> : <div className="showMore"></div>}
 
             </div>
         );
