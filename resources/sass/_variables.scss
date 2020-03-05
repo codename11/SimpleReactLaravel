@@ -438,4 +438,14 @@ a, a:link, a:visited, a:hover, a:active, a:focus{
 
 .tableCap{
     caption-side: top;
+    padding-left: 15px;
+    background-color: whitesmoke;
+}
+
+#userTable{
+    padding: 0px;
+}
+
+.tableBottom{
+    margin-bottom: 0px !important;
 }

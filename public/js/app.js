@@ -67431,12 +67431,12 @@ function (_React$Component) {
       this.setState({
         clickedRowData: {
           id: rowUser[0],
-          name: rowUser[1],
-          email: rowUser[2],
-          email_verified_at: rowUser[3],
-          created_at: rowUser[4],
-          updated_at: rowUser[5],
-          avatar: rowUser[6],
+          avatar: rowUser[1],
+          name: rowUser[2],
+          email: rowUser[3],
+          email_verified_at: rowUser[4],
+          created_at: rowUser[5],
+          updated_at: rowUser[6],
           role_id: rowUser[7]
         }
       });
@@ -67525,6 +67525,12 @@ function (_React$Component) {
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           id: "id"
         }, item.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          id: "avatar"
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+          className: "mx-auto d-block img-fluid",
+          src: "./storage/profile_pics/" + item.avatar,
+          alt: "avatar"
+        })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           id: "name"
         }, item.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           id: "email"
@@ -67535,8 +67541,6 @@ function (_React$Component) {
         }, item.created_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           id: "updated_at"
         }, item.updated_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
-          id: "avatar"
-        }, item.avatar), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           id: "role_id"
         }, item.role_id));
       }) : null;
@@ -67544,10 +67548,10 @@ function (_React$Component) {
         className: "container",
         id: "userTable"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
-        className: "table table-bordered table-dark table-striped table-hover table-responsive-xl"
+        className: "table text-center table-bordered table-light table-striped table-hover table-responsive-xl tableBottom"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("caption", {
         className: "tableCap"
-      }, "Change user's role"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "id"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email_verified_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "created_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "updated_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "avatar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "role_id"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, users))) : "";
+      }, "Change user's role / Click on row for specific user / Marked row is of current user"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "id"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "avatar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email_verified_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "created_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "updated_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "role_id"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, users))) : "";
       var role_id = null;
 
       if (this.state.changedUserIndex) {
@@ -67563,7 +67567,7 @@ function (_React$Component) {
       var modal = this.state.permission ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "modal fade alert alert-danger",
+        className: "modal fade",
         id: "myModal"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-dialog modal-dialog-centered modal-lg"
@@ -67580,8 +67584,12 @@ function (_React$Component) {
       }, "\xD7")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "modal-body alert alert-light"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
-        className: "table table-bordered table-dark table-striped table-hover table-responsive"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "id"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email_verified_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "created_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "updated_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "avatar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "role_id"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.email_verified_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.created_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.updated_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.avatar), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, role_id)))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        className: "table table-bordered table-light table-striped table-hover table-responsive"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "id"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "avatar"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "email_verified_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "created_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "updated_at"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "role_id"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+        dangerouslySetInnerHTML: {
+          __html: this.state.clickedRowData.avatar
+        }
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.email), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.email_verified_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.created_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.clickedRowData.updated_at), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, role_id)))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
         onSubmit: this.updateUserRole
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "hidden",

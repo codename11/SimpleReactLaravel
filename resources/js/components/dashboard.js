@@ -115,12 +115,12 @@ class Dashboard extends React.Component {
         this.setState({
             clickedRowData: {
                 id: rowUser[0],
-                name: rowUser[1],
-                email: rowUser[2],
-                email_verified_at: rowUser[3],
-                created_at: rowUser[4],
-                updated_at: rowUser[5],
-                avatar: rowUser[6],
+                avatar: rowUser[1],
+                name: rowUser[2],
+                email: rowUser[3],
+                email_verified_at: rowUser[4],
+                created_at: rowUser[5],
+                updated_at: rowUser[6],
                 role_id: rowUser[7],
             },
         
@@ -218,29 +218,28 @@ class Dashboard extends React.Component {
 
             return (<tr  className={item.id===this.state.user.id ? "user-danger" : ""} key={i} onClick={this.getRowData} data-toggle="modal" data-target="#myModal" title={item.id===this.state.user.id ? "It is you!" : item.name}>
                 <td id="id">{item.id}</td>
+                <td id="avatar"><img className="mx-auto d-block img-fluid" src={"./storage/profile_pics/"+item.avatar} alt="avatar"/></td>
                 <td id="name">{item.name}</td>
                 <td id="email">{item.email}</td>
                 <td id="email_verified_at">{item.email_verified_at}</td>
                 <td id="created_at">{item.created_at}</td>
                 <td id="updated_at">{item.updated_at}</td>
-                <td id="avatar">{item.avatar}</td>
                 <td id="role_id">{item.role_id}</td>
                 </tr>);
         }) : null;
 
         let table = this.state.permission ? <div className="container" id="userTable">
-                <table className="table table-bordered table-dark table-striped table-hover table-responsive-xl">
-                    <caption className="tableCap">Change user's role</caption>
+                <table className="table text-center table-bordered table-light table-striped table-hover table-responsive-xl tableBottom">
+                    <caption className="tableCap">Change user's role / Click on row for specific user / Marked row is of current user</caption>
                     <thead>
-                        <tr></tr>
                         <tr>
                             <th>id</th>
+                            <th>avatar</th>
                             <th>name</th>
                             <th>email</th>
                             <th>email_verified_at</th>
                             <th>created_at</th>
                             <th>updated_at</th>
-                            <th>avatar</th>
                             <th>role_id</th>
                         </tr>
                     </thead>
@@ -270,7 +269,7 @@ class Dashboard extends React.Component {
         
         let modal = this.state.permission ? <div className="container">
 
-            <div className="modal fade alert alert-danger" id="myModal">
+            <div className="modal fade" id="myModal">
                 <div className="modal-dialog modal-dialog-centered modal-lg">
                     <div className="modal-content">
                     
@@ -281,28 +280,28 @@ class Dashboard extends React.Component {
                         
                         <div className="modal-body alert alert-light">
                             
-                            <table className="table table-bordered table-dark table-striped table-hover table-responsive">
+                            <table className="table table-bordered table-light table-striped table-hover table-responsive">
                                 <thead>
                                     <tr>
                                         <th>id</th>
+                                        <th>avatar</th>
                                         <th>name</th>
                                         <th>email</th>
                                         <th>email_verified_at</th>
                                         <th>created_at</th>
                                         <th>updated_at</th>
-                                        <th>avatar</th>
                                         <th>role_id</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>{this.state.clickedRowData.id}</td>
+                                        <td dangerouslySetInnerHTML={{__html: this.state.clickedRowData.avatar}}></td>
                                         <td>{this.state.clickedRowData.name}</td>
                                         <td>{this.state.clickedRowData.email}</td>
                                         <td>{this.state.clickedRowData.email_verified_at}</td>
                                         <td>{this.state.clickedRowData.created_at}</td>
                                         <td>{this.state.clickedRowData.updated_at}</td>
-                                        <td>{this.state.clickedRowData.avatar}</td>
                                         <td>{role_id}</td>
                                     </tr>
                                 </tbody>

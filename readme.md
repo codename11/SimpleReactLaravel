@@ -131,6 +131,9 @@ Filtering by genre is also added. Need to add functionlity to administrator so h
 
 ![Filtering](14.png)
 
+### Update 5.3.2020
+Added actual avatar image for users, instead just name of avatar in dashboard and some styling.
+
 ## Technologies used:
 
 1. React
